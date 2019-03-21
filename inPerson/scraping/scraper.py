@@ -85,5 +85,13 @@ def get_section(data):
 
 if __name__ == '__main__':
     get_data()
-    section = get_section(data)
-    print(section)
+    sections = get_section(data)
+    first = True
+    for section in sections:
+        if first:
+            first = False
+            print('[')
+        else:
+            print(',')
+        json.dump(section, sys.stdout)
+    print(']')
