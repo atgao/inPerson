@@ -27,10 +27,19 @@ TERM_CODE = 1194  # spring 2019
 
 URL_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
 LIST_URL = URL_PREFIX + "?fmt=json&term={term}&subject=all"
+DEFAULT_TIME = "00:00"
 
 data = []
 
+# format time into date time object
+def format_time(time):
+    if time == "":
+        return DEFAULT_TIME
+    else:
+        return datetime.strptime(time, "%I:%M %p").strftime("%H:%M")
+
 # helper function to merge two dictionaries
+# returns new merged dictionary
 def merge(dict1, dict2):
     res = {**dict1, **dict2}
     return rest
@@ -44,8 +53,8 @@ def get_data():
 # returns a dictionary of {start_time, end_time, days, location}
 def get_course_details(classes):
     meetings = classes['schedule']['meetings'][0]
-    start_time = meetings['start_time']
-    end_time = meetings['end_time']
+    start_time = format_time(meetings['start_time'])
+    end_time = format_time(meetings['end_time'])
     days_of_week = []
     location = ""
     if "days" in meetings: # this does not exist for all classes
