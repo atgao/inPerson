@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Classes
 
 
-class Classes(serializers.ModelSerializer):
+class ClassesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classes
-        fields = ("code", "catalog_number". "section")
+        fields = ("code", "catalog_number", "section")
