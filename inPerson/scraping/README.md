@@ -1,5 +1,5 @@
 ## Updating the Database Outline
----
+
 ## Requirements
 It is strongly recommended, though not strictly necessary, to create a new environment with virtualenv or a similar tool.
 
@@ -31,4 +31,4 @@ which formats the data into course_data.json
 
 ## Add json to Heroku Database
 Navigating to the root direct of the project, the following command is run
-python manage.py loaddata scraping/course_data.json 
+python manage.py loaddata scraping/course_data.json
