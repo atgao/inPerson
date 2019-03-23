@@ -1,1 +1,1 @@
-web: gunicorn inPerson.wsgi --log-file -
+web: gunicorn --pythonpath=inPerson inPerson.wsgi --log-file -
