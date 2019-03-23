@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'inPerson.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {'default': dj_database_url.config(default='postgres://hvtswbollrdlja:bd0cf93444dd4d3b72cee71233e86244f50d5597881011b1750f01e36fc87ddf@ec2-23-23-195-205.compute-1.amazonaws.com:5432/darh77lrs2fqv3')}
+DATABASES = {'default': dj_database_url.config(default='postgres://dtrstrpwyxmxer:4c93c1cba1869c88beda4741002847546676002ca179097a490de298d5df9765@ec2-23-21-106-241.compute-1.amazonaws.com:5432/dsrsgr2k2redd')}
 
 
 # Password validation
