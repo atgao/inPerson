@@ -6,11 +6,11 @@ from django.conf import settings
 from .managers import CustomUserManager
 
 class User(AbstractUser):
-    netid = models.CharField(max_length=15, unique=True, default=None, null=True)
+    #netid = models.CharField(max_length=15, unique=True, default=None, null=True)
     class_year = models.IntegerField(blank=False, default=2022)
     email = models.CharField(max_length=15, default=None, null=True)
 
-    USERNAME_FIELD = 'netid'
+    #USERNAME_FIELD = 'netid'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'class_year', 'email']
 
     objects = CustomUserManager()
