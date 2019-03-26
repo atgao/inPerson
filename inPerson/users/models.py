@@ -4,11 +4,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 class User(AbstractUser):
-    username = models.CharField(blank=True, null=True, max_length=500)
-    email = models.EmailField(_('email address'), unique=True)
+    #netid = models.CharField(max_length=15, unique=True, default=None, null=True)
+    class_year = models.IntegerField(blank=False, default=2022)
+    #email = models.EmailField(_('email address'), unique=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    #
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'class_year']
 
     def __str__(self):
-        return "{}".format(self.email)
+        return "{}".format(self.username)
