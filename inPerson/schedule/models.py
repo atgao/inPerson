@@ -2,8 +2,8 @@ from django.db import models
 from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 
-# a recurrent event is like a class or precept
-# or a scheduled athletic practice
+# each class is a class on the princeton course registrar website
+# i.e., COS126 L01 and COS126 P01 would be considered different classes
 class Classes(models.Model):
     class_number = models.IntegerField()
     code = models.CharField(max_length=10)
@@ -17,3 +17,16 @@ class Classes(models.Model):
 
     def __str__(self):
         return "{}{} - {}".format(self.code, self.catalog_number, self.section)
+
+# a recurrent event is an event that occurs on a regular basis at the same
+# time every week, such as a sports practice or class. note that classes are
+# TRANFORMED into a recurrent event
+class RecurrentEvent(models.Model):
+    title = models.CharField(max_length=200, blank=False, null=False)
+    start_time = models.TimeField(blank=False, null=False)
+    end_time = models.TimeField(blank=False, null=False)
+    days = ArrayField(models.CharField(max_length=10,blank=False, null=False))
+    location = models.CharField(max_length=200, blank=True, null=True)
+
+class Schedule(models.Model):
+    
