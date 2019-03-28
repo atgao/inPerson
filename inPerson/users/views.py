@@ -5,3 +5,6 @@ from . import models
 from . import serializers
 
 # Create your views here.
+class UserListView(generics.ListCreateAPIView):
+    queryset = models.User.objects.all();
+    serializer_class = serializers.UserSerializer

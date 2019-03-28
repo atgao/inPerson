@@ -21,5 +21,6 @@ from schedule.views import ListClassesView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('classes/', ListClassesView.as_view(), name = 'classes-all')
+    path('classes/', ListClassesView.as_view(), name = 'classes-all'),
+    path('u/', include('users.urls'))
 ]
