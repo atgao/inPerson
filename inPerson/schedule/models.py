@@ -3,6 +3,13 @@ from django.conf import settings
 from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 
+class Schedule(models.Model):
+    semester = models.CharField(max_length=5, blank=False, null=False) #F18, S19, etc
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{}".format(self.semester)
+
 # each class is a class on the princeton course registrar website
 # i.e., COS126 L01 and COS126 P01 would be considered different classes
 class Classes(models.Model):
@@ -33,10 +40,3 @@ class RecurrentEvent(models.Model):
 
     def __str__(self):
         return "{} {} {}-{}".format(self.title, self.location, self.start_time, self.end_time)
-
-class Schedule(models.Model):
-    semester = models.CharField(max_length=5, blank=False, null=False) #F18, S19, etc
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "{}".format(self.semester)

@@ -78,7 +78,33 @@ WSGI_APPLICATION = 'inPerson.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {'default': dj_database_url.config(default='postgres://dtrstrpwyxmxer:4c93c1cba1869c88beda4741002847546676002ca179097a490de298d5df9765@ec2-23-21-106-241.compute-1.amazonaws.com:5432/dsrsgr2k2redd')}
+DATABASES = {
+        # 'default': dj_database_url.config(default='postgres://dtrstrpwyxmxer:4c93c1cba1869c88beda4741002847546676002ca179097a490de298d5df9765@ec2-23-21-106-241.compute-1.amazonaws.com:5432/dsrsgr2k2redd')
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': 'ec2-23-21-106-241.compute-1.amazonaws.com',
+            'PASSWORD': '4c93c1cba1869c88beda4741002847546676002ca179097a490de298d5df9765',
+            'USER': 'dtrstrpwyxmxer',
+            'NAME': 'dsrsgr2k2redd',
+            'PORT': '',
+            'TEST': {
+                'NAME': 'test_dsrsgr2k2redd',
+            }
+        },
+
+        ## USE THIS FOR TESTING MODELS LOCALLY
+        # 'default': {
+        #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #     'HOST': 'localhost',
+        #     'PASSWORD': 'password',
+        #     'USER': 'inPerson_admin',
+        #     'NAME': 'inperson_db',
+        #     'PORT': '',
+        #     'TEST': {
+        #         'NAME': 'inPerson_db_test',
+        #     }
+        # },
+}
 
 
 # Password validation

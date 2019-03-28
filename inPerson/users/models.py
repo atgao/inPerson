@@ -17,3 +17,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return "{}".format(self.username)
+
+    def get_name(self):
+        return "{} {}".format(self.first_name, self.last_name)
