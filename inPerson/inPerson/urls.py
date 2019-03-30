@@ -16,11 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
-from schedule.views import ListSectionsView
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('classes/', ListSectionsView.as_view(), name = 'sections-all'),
+    path('events/', include('schedule.urls')),
     path('users/', include('users.urls'))
 ]
