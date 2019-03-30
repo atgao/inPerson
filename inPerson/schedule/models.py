@@ -5,7 +5,11 @@ from django.contrib.postgres.fields import ArrayField
 
 class Schedule(models.Model):
     semester = models.CharField(max_length=5, blank=False, null=False) #F18, S19, etc
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                              related_name="student", related_query_name="students")
+
+    class Meta:
+        ordering = ['owner']
 
     def __str__(self):
         return "{}".format(self.semester)
