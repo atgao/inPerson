@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Classes
-from .serializers import ClassesSerializer
+from .models import Section
+from .serializers import SectionsSerializer
 
 
-class ListClassesView(generics.ListAPIView):
+class ListSectionsView(generics.ListAPIView):
     """
     Provides a get method handler.
     """
-    queryset = Classes.objects.all()
-    serializer_class = ClassesSerializer
+    queryset = Section.objects.all()
+    serializer_class = SectionsSerializer

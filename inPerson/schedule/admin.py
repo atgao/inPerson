@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Classes
+from .models import Section
 
-admin.site.register(Classes)
+admin.site.register(Section)
 # Register your models here.

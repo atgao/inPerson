@@ -16,11 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
-from schedule.views import ListClassesView
+from schedule.views import ListSectionsView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('classes/', ListClassesView.as_view(), name = 'classes-all'),
+    path('classes/', ListSectionsView.as_view(), name = 'sections-all'),
     path('users/', include('users.urls'))
 ]

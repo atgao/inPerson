@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Classes
+from .models import Section
 
-class ClassesSerializer(serializers.ModelSerializer):
+class SectionsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Classes
+        model = Section
         fields = ("code", "catalog_number", "section")

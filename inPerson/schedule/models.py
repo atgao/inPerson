@@ -10,9 +10,9 @@ class Schedule(models.Model):
     def __str__(self):
         return "{}".format(self.semester)
 
-# each class is a class on the princeton course registrar website
-# i.e., COS126 L01 and COS126 P01 would be considered different classes
-class Classes(models.Model):
+# a section is a section of a class i.e., COS126 L01 and COS126 P01
+# would be considered different sections
+class Section(models.Model):
     class_number = models.IntegerField()
     code = models.CharField(max_length=10)
     catalog_number = models.CharField(max_length=5)
