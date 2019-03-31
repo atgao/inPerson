@@ -25,7 +25,7 @@ def convert_db(data, project, model):
 with open('courses.json') as handle:
     course_info = json.load(handle)
 
-converted = convert_db(course_info, "schedule", "classes")
+converted = convert_db(course_info, "schedule", "section")
 
 with open('course_data.json', 'w') as handle:
     json.dump(converted, handle)

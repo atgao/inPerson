@@ -3,6 +3,8 @@ from django.conf import settings
 from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 
+from .managers import SectionToEventsManager
+
 class Schedule(models.Model):
     semester = models.CharField(max_length=5, blank=False, null=False) #F18, S19, etc
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
@@ -41,6 +43,11 @@ class RecurrentEvent(models.Model):
     days = ArrayField(models.CharField(max_length=10,blank=False, null=False))
     location = models.CharField(max_length=200, blank=True, null=True)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+
+    objects = SectionToEventsManager()
+
+    class Meta:
+        ordering = ['owner', 'schedule']
 
     def __str__(self):
         return "{} {} {}-{}".format(self.title, self.location, self.start_time, self.end_time)
