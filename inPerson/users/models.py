@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
-from .managers import CustomUserManager
+from . managers import CustomUserManager
 
 class User(AbstractUser):
     #netid = models.CharField(max_length=15, unique=True, default=None, null=True)

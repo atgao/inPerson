@@ -7,6 +7,7 @@ from datetime import time
 from .models import Section
 from .models import RecurrentEvent
 from .models import Schedule
+from .serializers import SectionsSerializer
 
 from users.models import User
 from django.contrib.auth import get_user_model
@@ -51,6 +52,8 @@ class SectionToEvent(APITestCase):
 
     def test_convert_section_to_event(self):
         a_class = Section.objects.get(class_number="40063")
-        #e = RecurrentEvent()
-        # e.objects.create_event_from_section(a_class)
-        RecurrentEvent.objects.create_event_from_section(a_class)
+        user1 = User.objects.get(username="rsedgewick")
+        a_schedule = Schedule.objects.get(owner=user1)
+        e = RecurrentEvent.objects.create_event_from_section(a_schedule, SectionsSerializer(a_class).data)
+        self.assertEqual(e.schedule.owner.username, "rsedgewick")
+        self.assertEqual(e.schedule.semester, "S19")

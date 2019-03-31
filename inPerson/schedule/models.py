@@ -36,7 +36,6 @@ class Section(models.Model):
 # time every week, such as a sports practice or class. note that classes are
 # TRANFORMED into a recurrent event
 class RecurrentEvent(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, blank=False, null=False)
     start_time = models.TimeField(blank=False, null=False)
     end_time = models.TimeField(blank=False, null=False)
@@ -47,7 +46,7 @@ class RecurrentEvent(models.Model):
     objects = SectionToEventsManager()
 
     class Meta:
-        ordering = ['owner', 'schedule']
+        ordering = ['schedule', 'start_time']
 
     def __str__(self):
         return "{} {} {}-{}".format(self.title, self.location, self.start_time, self.end_time)
