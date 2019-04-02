@@ -30,6 +30,7 @@ LIST_URL = URL_PREFIX + "?fmt=json&term={term}&subject=all"
 DEFAULT_TIME = "00:00"
 
 data = []
+TERM_SUFFIX = ""
 
 # format time into date time object
 def format_time(time):
@@ -48,6 +49,8 @@ def get_data():
     WEBFEED_URL = LIST_URL.format(term=TERM_CODE)
     global data
     data = requests.get(WEBFEED_URL).json()['term'][0]['subjects']
+    global TERM_SUFFIX
+    TERM_SUFFIX = requests.get(WEBFEED_URL).json()['term'][0]['suffix']
 
 # helper function to get start time, end time, loc and days of a class
 # returns a dictionary of {start_time, end_time, days, location}
@@ -73,6 +76,7 @@ def get_course_details(classes):
 # get all sections of a course
 def get_section(data):
     courses = []
+    global TERM_SUFFIX
     for dept in data:
         code = dept['code']
 
@@ -86,7 +90,7 @@ def get_section(data):
                 class_number = classes['class_number']
                 section = classes['section']
                 details = get_course_details(classes)
-                dict = {'class_number': class_number, 'code': code,
+                dict = {'term': TERM_SUFFIX, 'class_number': class_number, 'code': code,
                 'catalog_number': catalog_number, 'title': title, 'section': section}
                 dict.update(details) # merge the two dictionaries into dict
                 courses.append(dict)
