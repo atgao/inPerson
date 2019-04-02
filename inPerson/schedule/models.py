@@ -19,6 +19,7 @@ class Schedule(models.Model):
 # a section is a section of a class i.e., COS126 L01 and COS126 P01
 # would be considered different sections
 class Section(models.Model):
+    term = models.CharField(max_length=5, default="F2018")
     class_number = models.IntegerField()
     code = models.CharField(max_length=10)
     catalog_number = models.CharField(max_length=5)
