@@ -41,6 +41,26 @@ class ListRecurrentEventsView(generics.ListAPIView):
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
 
+class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET recurrevent/:id/
+    POST recurrevent/           CREATES PERSONAL recurring event
+    DELETE recurrevent/:id/
+    PUT recurrevent/:id/        UPDATES recurring event
+
+    TO DO:
+    POST recurrevent/:groupid   CREATES GROUP recurring event
+    """
+    queryset = RecurrentEvent.objects.all()
+    serializer_class = RecurrentEventsSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            event = self.queryset.get(pk=kwargs["pk"])
+            return Response(RecurrentEventsSerializer(event).data)
+        except RecurrentEvent.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 class ListSchedulesView(generics.ListAPIView):
     """
     Lists all schedules of all users.
