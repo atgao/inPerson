@@ -7,7 +7,7 @@ urlpatterns = [
     # url(r'^classes/<int:pk>/$', views.SectionsDetailView.as_view(), name="section-details"),
     # path('classes/<int:pk>/', views.SectionsDetailView.as_view(), name="section-details"),
 
-    url(r'^classes/', views.ListSectionsView.as_view(), name = 'sections-all'),
+    url(r'^classes/search/$', views.ListSectionsView.as_view(), name = 'search'),
     url(r'^events/', views.ListRecurrentEventsView.as_view(), name = 'recurrent-events-all'),
     url(r'^schedules/', views.ListSchedulesView.as_view(), name = 'schedules-all')
 

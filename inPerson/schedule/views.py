@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
+from django_filters import rest_framework as filters
+from rest_framework.filters import SearchFilter
 from django.core import serializers
 
 from .models import Section
@@ -10,6 +12,7 @@ from .serializers import SectionsSerializer
 from .serializers import RecurrentEventsSerializer
 from .serializers import SchedulesSerializer
 
+from .filters import SectionFilter
 
 class ListSectionsView(generics.ListAPIView):
     """
@@ -17,6 +20,10 @@ class ListSectionsView(generics.ListAPIView):
     """
     queryset = Section.objects.all()
     serializer_class = SectionsSerializer
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter)
+    filter_class = SectionFilter
+    search_fields = ('code', 'catalog_number', 'title')
+
 
 class SectionsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
