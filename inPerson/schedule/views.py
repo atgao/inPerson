@@ -22,7 +22,7 @@ class ListSectionsView(generics.ListAPIView):
     serializer_class = SectionsSerializer
     filter_backends = (filters.DjangoFilterBackend, SearchFilter)
     filter_class = SectionFilter
-    search_fields = ('code', 'catalog_number', 'title')
+    search_fields = ('code', 'catalog_number', 'title', 'term')
 
 
 class SectionsDetailView(generics.RetrieveUpdateDestroyAPIView):

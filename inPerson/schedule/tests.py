@@ -24,12 +24,12 @@ class ScheduleTest(APITestCase):
         User = get_user_model()
         User.objects.create_user(first_name="Rob", last_name="Sedgewick", username="rsedgewick", class_year=2022, password="password")
         user1 = User.objects.get(username="rsedgewick")
-        Schedule.objects.create(semester="S19", owner=user1)
+        Schedule.objects.create(term="S19", owner=user1)
 
     def test_schedule_to_a_user(self):
         user1 = User.objects.get(username="rsedgewick")
         a_schedule = Schedule.objects.get(owner=user1)
-        self.assertEqual(a_schedule.semester, "S19")
+        self.assertEqual(a_schedule.term, "S19")
         self.assertEqual(a_schedule.owner.username, "rsedgewick")
 
 
@@ -42,7 +42,7 @@ class SectionToEvent(APITestCase):
         User = get_user_model()
         User.objects.create_user(first_name="Rob", last_name="Sedgewick", username="rsedgewick", class_year=2022, password="password")
         user1 = User.objects.get(username="rsedgewick")
-        Schedule.objects.create(semester="S19", owner=user1)
+        Schedule.objects.create(term="S19", owner=user1)
         days = ["T", "Th"]
         start_time = time(11)
         end_time = time(12, 20)
@@ -56,4 +56,27 @@ class SectionToEvent(APITestCase):
         a_schedule = Schedule.objects.get(owner=user1)
         e = RecurrentEvent.objects.create_event_from_section(a_schedule, SectionsSerializer(a_class).data)
         self.assertEqual(e.schedule.owner.username, "rsedgewick")
-        self.assertEqual(e.schedule.semester, "S19")
+        self.assertEqual(e.schedule.term, "S19")
+
+class GetSingleSectionTest(APITestCase):
+    """
+    Try getting details of a section
+    """
+    def setUp(self):
+        Section.objects.create(class_number=40063, code="COS", catalog_number="333",
+                                title="Advanced Programming Techniques",start_time=time(11),
+                                end_time=time(12, 20), days=["T", "Th"], location="BOWEN 222")
+        Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="L01",
+                                title="Algorithms and Data Structures", start_time=time(11),
+                                end_time=time(12,20), days=["T", "Th"], location="FRIEN 101")
+        Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="P01",
+                                title="Algorithms and Data Structures", start_time=time(15),
+                                end_time=time(16,20), days=["T", "Th"], location="FRIEN 108")
+        Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="P01A",
+                                title="Algorithms and Data Structures", start_time=time(15),
+                                end_time=time(16,20), days=["T", "Th"], location="ANDB1 017")
+
+    def test_get_valid_section(self):
+        cos333_lecture = Section.objects.get(code="COS", catalog_number="333")
+        # must test reverse url
+        response = client.get()
