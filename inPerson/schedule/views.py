@@ -52,7 +52,6 @@ class ListRecurrentEventsView(generics.ListCreateAPIView):
         return Response(data=serializer.data,
                         status=status.HTTP_200_OK)
 
-
 class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET recurrevent/:id/
@@ -72,9 +71,24 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
         except RecurrentEvent.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-class ListSchedulesView(generics.ListAPIView):
-    """
-    Lists all schedules of all users.
-    """
-    queryset = Schedule.objects.all()
-    serializer_class = SchedulesSerializer
+    # TO DO: MUST VALIDATE THIS DATA
+    def put(self, request, *args, **kwargs):
+        try:
+            event = self.queryset.get(pk=kwargs["pk"])
+            serializer = RecurrentEventsSerializer()
+            updated_event = serializer.update(event, request.data)
+            return Response(data=RecurrentEventsSerializer(updated_event).data,
+                            status=status.HTTP_200_OK)
+        except RecurrentEvent.DoesNotExist:
+            return Response(data={"message": "Event does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            event = self.querset.get(pk=kwargs["pk"])
+            event.delete()
+            return Response(data={"message": "Event successfully deleted"},
+                            status=status.HTTP_200_OK)
+        except RecurrentEvent.DoesNotExist:
+            return Response(data={"message": "Event does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)

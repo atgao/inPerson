@@ -77,8 +77,9 @@ class GetSingleSectionTest(APITestCase):
     def test_get_valid_section(self):
         cos333_lecture = Section.objects.get(code="COS", catalog_number="333")
         # must test reverse url
+        # how do i search it up??
         response = self.client.get(reverse("search-sections"))
-        
+
     # test views
     class BaseViewTest(APITestCase):
         client = APIClient()
@@ -103,10 +104,9 @@ class GetSingleSectionTest(APITestCase):
                                     title=title,start_time=start_time, end_time=end_time, days=days, location=location)
             RecurrentEvent.objects.create_event_from_section(schedule, SectionsSerializer(a_section).data)
 
-        def fetch_all_recurrevents_from_schedule(self, pk=0):
-            return self.client.get(
-                reverse("search-sections", kwargs={"pk": pk})
-            )
+        def fetch_all_recurrevents_from_schedule(self):
+            response = self.client.get(reverse("schedule-recurrevents-list-create-individual"))
+            return response
 
         def setUp(self):
             # create a test user
@@ -126,3 +126,7 @@ class GetSingleSectionTest(APITestCase):
             """
             expected = RecurrentEvent.objects.all()
             serialized = RecurrentEventsSerializer(expected, many=True)
+            print(serialized)
+            print("HELLO")
+            response = fetch_all_recurrevents_from_schedule(self.user)
+            self.assertEqual(response.data, serialized.data)
