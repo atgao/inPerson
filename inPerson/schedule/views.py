@@ -27,21 +27,39 @@ class ListSectionsView(generics.ListAPIView):
         serializer = SectionsSerializer(queryset, many=True)
         return Response(serializer.data)
 
-class ListRecurrentEventsView(generics.ListAPIView):
+class ListRecurrentEventsView(generics.ListCreateAPIView):
     """
-    Provides a get method handler.
+    GET recurrevent/user/       GETS all recurrent events of a user
+    POST recurrevent/
     """
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
+    # will need to add permissions class in future?? and decorators
+
+    # add validate data
+    def post(self, request, schedule, *args, **kwargs):
+        # TO DO: must add in check if class!!
+        # must also add in error responses
+        a_class = args[0]
+        e = RecurrentEvent.objects.create_event_from_section(schedule, a_class)
+        return Response(data=RecurrentEventsSerializer(e).data,
+                        status=status.HTTP_200_OK)
+
+    def list(self, request):
+        schedule = Schedule.objects.filter(owner=request.user)
+        events = RecurrentEvent.objects.filter(schedule__in=schedule)
+        serializer = RecurrentEventsSerializer(events, many=True)
+        return Response(data=serializer.data,
+                        status=status.HTTP_200_OK)
+
 
 class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET recurrevent/:id/
-    POST recurrevent/           CREATES PERSONAL recurring event
     DELETE recurrevent/:id/
     PUT recurrevent/:id/        UPDATES recurring event
 
-    TO DO:
+    TO DO: (would this be here??)
     POST recurrevent/:groupid   CREATES GROUP recurring event
     """
     queryset = RecurrentEvent.objects.all()

@@ -59,7 +59,7 @@ class GetSingleSectionTest(APITestCase):
     Try getting details of a section
     """
     client = APIClient()
-    
+
     def setUp(self):
         Section.objects.create(class_number=40063, code="COS", catalog_number="333",
                                 title="Advanced Programming Techniques",start_time=time(11),
@@ -77,10 +77,8 @@ class GetSingleSectionTest(APITestCase):
     def test_get_valid_section(self):
         cos333_lecture = Section.objects.get(code="COS", catalog_number="333")
         # must test reverse url
-        response = self.client.get("search-sections", kwargs={"code": "COS"})
-        print(response)
-
-
+        response = self.client.get(reverse("search-sections"))
+        
     # test views
     class BaseViewTest(APITestCase):
         client = APIClient()
@@ -127,4 +125,4 @@ class GetSingleSectionTest(APITestCase):
             schedule.
             """
             expected = RecurrentEvent.objects.all()
-            serialized = RecurrentEventsSerializer(expected)
+            serialized = RecurrentEventsSerializer(expected, many=True)
