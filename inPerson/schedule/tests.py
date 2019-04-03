@@ -4,15 +4,11 @@ from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
 from datetime import time
 
-from .models import Section
-from .models import RecurrentEvent
-from .models import Schedule
-from .serializers import SectionsSerializer
+from .models import Section, RecurrentEvent, Schedule
+from .serializers import SectionsSerializer, RecurrentEventsSerializer, SchedulesSerializer
 
 from users.models import User
 from django.contrib.auth import get_user_model
-
-
 
 class ScheduleTest(APITestCase):
     """
@@ -62,6 +58,8 @@ class GetSingleSectionTest(APITestCase):
     """
     Try getting details of a section
     """
+    client = APIClient()
+    
     def setUp(self):
         Section.objects.create(class_number=40063, code="COS", catalog_number="333",
                                 title="Advanced Programming Techniques",start_time=time(11),
@@ -79,4 +77,54 @@ class GetSingleSectionTest(APITestCase):
     def test_get_valid_section(self):
         cos333_lecture = Section.objects.get(code="COS", catalog_number="333")
         # must test reverse url
-        response = client.get()
+        response = self.client.get("search-sections", kwargs={"code": "COS"})
+        print(response)
+
+
+    # test views
+    class BaseViewTest(APITestCase):
+        client = APIClient()
+
+        @staticmethod
+        def create_recurrevent_from_class(schedule, class_number="", code="", catalog_number="", title="",
+                        start_time="", end_time="", days="", location=""):
+            """
+            Create a section of a class in the db
+            :param class_number:
+            :param code:
+            :param catalog_number:
+            :param title:
+            :param start_time:
+            :param end_time:
+            :param end_time:
+            :param days:
+            :param: location:
+            :return:
+            """
+            a_section = Section.objects.create(class_number=class_number, code=code, catalog_number=catalog_number,
+                                    title=title,start_time=start_time, end_time=end_time, days=days, location=location)
+            RecurrentEvent.objects.create_event_from_section(schedule, SectionsSerializer(a_section).data)
+
+        def fetch_all_recurrevents_from_schedule(self, pk=0):
+            return self.client.get(
+                reverse("search-sections", kwargs={"pk": pk})
+            )
+
+        def setUp(self):
+            # create a test user
+            User = get_user_model()
+            User.objects.create_user(first_name="Rob", last_name="Sedgewick", username="rsedgewick", class_year=2022, password="password")
+            a_schedule = Schedule.objects.create(term="S19", owner=user1)
+            self.create_recurrevent_from_class(a_schedule, 40063, "COS", "333", "Advanced Programming Techniques", time(11),
+                                time(12, 20), ["T", "Th"], "BOWEN 222")
+            self.create_recurrevent_from_class(a_schedule, 40001, "CHI", "418", "C03", "Advanced Chinese Contemporary Literature and Film", time(13,30), time(14,50),
+                                ["T", "Th"], "FRIST 228")
+
+    class GetAllRecurrentEventsFromSchedule(BaseViewTest):
+        def test_get_all_events_from_schedule(self):
+            """
+            This method ensures that we're able to retrieve all events from a user's
+            schedule.
+            """
+            expected = RecurrentEvent.objects.all()
+            serialized = RecurrentEventsSerializer(expected)
