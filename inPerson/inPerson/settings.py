@@ -39,7 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-Party Apps
     'rest_framework',
+
+    # Local Apps
     'schedule',
     'users'
 ]
@@ -78,7 +82,16 @@ WSGI_APPLICATION = 'inPerson.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {'default': dj_database_url.config(default='postgres://dtrstrpwyxmxer:4c93c1cba1869c88beda4741002847546676002ca179097a490de298d5df9765@ec2-23-21-106-241.compute-1.amazonaws.com:5432/dsrsgr2k2redd')}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'inpersondb',
+        'USER': 'admin',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5433',
+    }
+}
 
 
 # Password validation
