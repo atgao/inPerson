@@ -39,11 +39,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third party applications
     'rest_framework',
     'django_filters',
+    'uniauth',
+
+    # Applications created within this project
     'schedule',
-    'users'
+    'users',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'uniauth.backends.CASBackend',
+]
+
+# Specify uniauth settings
+LOGIN_URL = "/accounts/login/"
+UNIAUTH_LOGIN_DISPLAY_STANDARD = False
+UNIAUTH_LOGOUT_CAS_COMPLETELY = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -97,13 +112,13 @@ DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'HOST': 'localhost',
+            'USER': 'inperson_admin',
             'PASSWORD': 'password',
-            'USER': 'inPerson_admin',
             'NAME': 'inperson_db',
-            'PORT': '',
+            'PORT': '5433',
             'TEST': {
                 'NAME': 'inPerson_db_test',
-            }
+            },
         },
 }
 
