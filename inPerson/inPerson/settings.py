@@ -153,5 +153,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 django_heroku.settings(locals())
 
-# Login Redirection
-LOGIN_REDIRECT_URL = '/'
+# Login/Logout Redirection
+# Logout for testing (??)
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
