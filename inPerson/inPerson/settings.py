@@ -55,10 +55,6 @@ AUTHENTICATION_BACKENDS = [
     'uniauth.backends.CASBackend',
 ]
 
-# Specify uniauth settings
-LOGIN_URL = "/accounts/login/"
-UNIAUTH_LOGIN_DISPLAY_STANDARD = False
-UNIAUTH_LOGOUT_CAS_COMPLETELY = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -170,5 +166,9 @@ django_heroku.settings(locals())
 
 # Login/Logout Redirection
 # Logout for testing (??)
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+# Specify uniauth settings
+LOGIN_URL = "home"
+UNIAUTH_LOGIN_DISPLAY_STANDARD = False
+UNIAUTH_LOGOUT_CAS_COMPLETELY = True
+# LOGIN_REDIRECT_URL = 'home'
+# LOGOUT_REDIRECT_URL = 'home'
