@@ -19,6 +19,7 @@ from rest_framework import routers
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')), 
     path('events/', include('schedule.urls')),
     path('users/', include('users.urls'))
 ]
