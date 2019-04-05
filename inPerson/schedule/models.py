@@ -14,7 +14,7 @@ class Schedule(models.Model):
         ordering = ['owner']
 
     def __str__(self):
-        return "{}".format(self.semester)
+        return "{} {}".format(self.owner.username, self.term)
 
 # a section is a section of a class i.e., COS126 L01 and COS126 P01
 # would be considered different sections
