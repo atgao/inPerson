@@ -39,11 +39,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third party applications
     'rest_framework',
     'django_filters',
+    'uniauth',
+
+    # Applications created within this project
     'schedule',
-    'users'
+    'users',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'uniauth.backends.CASBackend',
+]
+
+# Specify uniauth settings
+LOGIN_URL = "/accounts/login/"
+UNIAUTH_LOGIN_DISPLAY_STANDARD = False
+UNIAUTH_LOGOUT_CAS_COMPLETELY = True
+UNIAUTH_LOGIN_REDIRECT_URL = 'home'
+UNIAUTH_LOGOUT_REDIRECT_URL = 'home'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -97,14 +114,16 @@ DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'HOST': 'localhost',
+            'USER': 'inperson_admin',
             'PASSWORD': 'password',
-            'USER': 'inPerson_admin',
             'NAME': 'inperson_db',
             'PORT': '',
             'TEST': {
                 'NAME': 'inPerson_db_test',
-            }
+            },
         },
+
+
 }
 
 
@@ -152,8 +171,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 django_heroku.settings(locals())
-
-# Login/Logout Redirection
-# Logout for testing (??)
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
