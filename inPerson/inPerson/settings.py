@@ -59,6 +59,8 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = "/accounts/login/"
 UNIAUTH_LOGIN_DISPLAY_STANDARD = False
 UNIAUTH_LOGOUT_CAS_COMPLETELY = True
+UNIAUTH_LOGIN_REDIRECT_URL = 'home'
+UNIAUTH_LOGOUT_REDIRECT_URL = 'home'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,11 +117,13 @@ DATABASES = {
             'USER': 'inperson_admin',
             'PASSWORD': 'password',
             'NAME': 'inperson_db',
-            'PORT': '5433',
+            'PORT': '',
             'TEST': {
                 'NAME': 'inPerson_db_test',
             },
         },
+
+
 }
 
 
@@ -167,8 +171,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 django_heroku.settings(locals())
-
-# Login/Logout Redirection
-# Logout for testing (??)
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
