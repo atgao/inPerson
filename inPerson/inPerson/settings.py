@@ -99,7 +99,7 @@ DATABASES = {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'HOST': 'localhost',
             'PASSWORD': 'password',
-            'USER': 'inPerson_admin',
+            'USER': 'inperson_admin',
             'NAME': 'inperson_db',
             'PORT': '',
             'TEST': {
