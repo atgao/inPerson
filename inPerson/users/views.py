@@ -11,8 +11,8 @@ from django.contrib.auth import get_user_model
 
 # third-party apps
 from friendship.models import Friend, Follow, Block
+from .serializers import FriendsSerializer, FollowsSerializer
 
-# Create your views here.
 class UserListView(generics.ListCreateAPIView):
     User = get_user_model()
     queryset = models.User.objects.all();
@@ -25,12 +25,13 @@ class UserListView(generics.ListCreateAPIView):
 
     # create a new user if one does not exist
     # make sure that user has valid login info
-    # def post(self, request)
+    # def post(self, request):
+    #     queryset = models.User.objects.all()
+    #     if
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET users/:id/
-    PUT users/:id/
     """
     User = get_user_model()
     queryset = models.User.objects.all()
@@ -46,3 +47,43 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
                 data={"message": "User {} does not exist".format(pk)},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+class FollowsListView(generics.ListCreateAPIView):
+    """
+    GET users/following
+    """
+
+    queryset = Follow.objects.all()
+    serializer_class = FollowsSerializer
+
+    # return a list of the user's friends
+    def list(self, request):
+        queryset = Follow.objects.following(request.user)
+        serializer = FollowsSerializer(queryset, many=True)
+        # print(serializer.data)
+        return Response(data=serializer.data,
+                        status=status.HTTP_200_OK)
+
+    # TODO : add validate data
+    # def post(self, request, to_user):
+    #     other_user = User.objects.get(pk=)
+
+
+class FriendsListView(generics.ListCreateAPIView):
+    """
+    GET users/following
+    """
+
+    queryset = Friend.objects.all()
+    serializer_class = FriendsSerializer
+
+    # return a list of the user's friends
+    def list(self, request):
+        queryset = Friend.objects.friends(request.user)
+        serializer = FriendsSerializer(queryset, many=True)
+        return Response(data=serializer.data,
+                        status=status.HTTP_200_OK)
+
+    # TODO : add validate data
+    # def post(self, request, to_user):
+    #     other_user = User.objects.get(pk=)

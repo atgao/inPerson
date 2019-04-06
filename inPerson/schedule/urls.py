@@ -12,4 +12,5 @@ urlpatterns = [
         name='schedule-recurrevents-list-create-individual'),
     path('events/<int:pk>/', views.RecurrentEventsDetailView.as_view(),
         name ='recurrent-events-get'),
+        
 ]
