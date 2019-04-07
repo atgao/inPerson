@@ -20,9 +20,11 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', include('followrequests.urls'))
     path('admin/', admin.site.urls),
     path('accounts/', include('uniauth.urls.cas_only')),
     path('events/', include('schedule.urls')),
-    path('users/', include('users.urls')),
+    path('user/', include('users.urls')),
+    # path('user/', include('followrequests.urls')) # this will need to be changed
 
 ]

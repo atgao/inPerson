@@ -16,16 +16,16 @@ from . import signals
 class FollowRequest(models.Model):
     """ Model to represent follow request"""
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                                  related_name="follow-requests-sent")
+                                  related_name="follow_requests_sent")
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                                  related_name="follow-requests-recieved")
+                                  related_name="follow_requests_recieved")
 
     message = models.TextField(_('Message'), blank=True)
 
     created = models.DateTimeField(default=timezone.now)
     rejected = models.DateTimeField(blank=True, null=True)
 
-     class Meta:
+    class Meta:
         verbose_name = _('Follow Request')
         verbose_name_plural = _('Follow Requests')
         unique_together = ('from_user', 'to_user')

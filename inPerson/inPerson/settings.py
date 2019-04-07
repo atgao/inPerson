@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # Applications created within this project
     'schedule',
     'users',
+    'followrequests'
 ]
 
 AUTHENTICATION_BACKENDS = [
