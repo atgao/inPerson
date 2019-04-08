@@ -12,3 +12,8 @@ class FollowRequestsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FollowRequest
         fields = "__all__"
+
+class BlocksSerializer(serializer.ModelSerializer):
+    class Meta:
+        model = Block
+        fields = "__all__"

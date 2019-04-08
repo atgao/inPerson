@@ -86,7 +86,7 @@ class FollowersRemoveDetailView(generics.DestroyAPIView):
                             status=status.HTTP_404_NOT_FOUND)
 
 
-class FollowerRequestsListView(generics.ListCreateAPIView):
+class FollowerRequestsListCreateView(generics.ListCreateAPIView):
     """
     GET user/requests                   retrieves list of user's follower requests
     POST user/requests/:userid          accepts follow request from userid
@@ -95,13 +95,6 @@ class FollowerRequestsListView(generics.ListCreateAPIView):
     User = get_user_model()
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
-
-    # TODO : LOGIN IS REQUIRED
-    def list(self, request):
-        queryset = FollowRequest.objects.filter(to_user=request.user)
-        serializer = FollowRequestsSerializer(queryset, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
     # TODO: LOGIN IS REQUIRED
     # pk is the db id from the user to accept the request from
     def post(self, request, pk):
@@ -115,6 +108,14 @@ class FollowerRequestsListView(generics.ListCreateAPIView):
         except FollowRequest.DoesNotExist:
             return Response(data={"No follow request between {} to {} exists".format(pk, request.user)},
                             status=status.HTTP_200_OK)
+
+    # TODO : LOGIN IS REQUIRED
+    def list(self, request):
+        queryset = FollowRequest.objects.filter(to_user=request.user)
+        serializer = FollowRequestsSerializer(queryset, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
 
 class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -167,11 +168,11 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
     def post(self, request, pk):
         from_user = models.User.objects.get(pk=pk)
         to_user = request.user
-    try:
-        request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
-        request.cancel()
-        return Reponse(data={"Canceled follow request from {}".format(pk)},
-                       status=status.HTTP_200_OK)
-    except FollowRequest.DoesNotExist:
-        return Response(data={"Follow Request does not exist from {}".format(pk)},
-                        status=status.HTTP_404_NOT_FOUND)
+        try:
+            request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
+            request.cancel()
+            return Reponse(data={"Canceled follow request from {}".format(pk)},
+                           status=status.HTTP_200_OK)
+        except FollowRequest.DoesNotExist:
+            return Response(data={"Follow Request does not exist from {}".format(pk)},
+                            status=status.HTTP_404_NOT_FOUND)
