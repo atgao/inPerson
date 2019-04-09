@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 
 # third-party apps
 from friendship.models import Follow, Block
-from . serializers import FollowsSerializer, FollowRequestsSerializer
+from . serializers import FollowsSerializer, FollowRequestsSerializer, BlocksSerializer
 
 class FollowsListView(generics.ListAPIView):
     """
@@ -40,7 +40,8 @@ class FollowsDestroyView(generics.DestroyAPIView):
 
     # unfollow user with id=pk
     def delete(self, request, pk):
-        followee = models.User.get(pk=pk)
+        User = get_user_model()
+        followee = User.get(pk=pk)
         try:
             follow = Follow.objects.filter(follower=request.user, followee=followee)
             return Response(data={"{} unfollowed {}".format(request.user, pk)},
@@ -76,7 +77,8 @@ class FollowersRemoveDetailView(generics.DestroyAPIView):
 
     # unfollow user with id=pk
     def delete(self, request, pk):
-        follower = models.User.get(pk=pk)
+        User = get_user_model()
+        follower = User.get(pk=pk)
         try:
             follow = Follow.objects.filter(follower=follower, followee=request.user)
             return Response(data={"{} unfollowed {}".format(pk, request.user)},
@@ -98,7 +100,8 @@ class FollowerRequestsListCreateView(generics.ListCreateAPIView):
     # TODO: LOGIN IS REQUIRED
     # pk is the db id from the user to accept the request from
     def post(self, request, pk):
-        from_user = models.User.objects.get(pk=pk)
+        User = get_user_model()
+        from_user = User.objects.get(pk=pk)
         to_user = request.user
         try:
             request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
@@ -110,7 +113,7 @@ class FollowerRequestsListCreateView(generics.ListCreateAPIView):
                             status=status.HTTP_200_OK)
 
     # TODO : LOGIN IS REQUIRED
-    def list(self, request):
+    def list(self, request, pk):
         queryset = FollowRequest.objects.filter(to_user=request.user)
         serializer = FollowRequestsSerializer(queryset, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -130,8 +133,9 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     # TO DO: MUST VALIDATE THIS DATA
     # LOGIN IS REQUIRED
     def put(self, request, pk):
+        User = get_user_model()
         follower = request.user
-        followee = models.User.objects.get(pk=pk)
+        followee = User.objects.get(pk=pk)
         created = datetime.datetime.now()
         try:
             # must get message for follow request somehow??
@@ -139,15 +143,16 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
                                         created=created)
             return Repsonse(data={"{} sent follow request to {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
-        except models.User.DoesNotExist:
+        except User.DoesNotExist:
             return Response(data={"Cannot follow user {} since {} does not exist".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
 
     # LOGIN IS REQUIRED
     # pk is of the user to reject the follow request from
     def delete(self, request, pk):
+        User = get_user_model()
         follower = request.user
-        followee = models.User.objects.get(pk=pk)
+        followee = User.objects.get(pk=pk)
         try:
             request = FollowRequest.objects.get(from_user=follower, to_user=followee)
             request.reject()
@@ -166,7 +171,8 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
     serializer_class = FollowRequestsSerializer
 
     def post(self, request, pk):
-        from_user = models.User.objects.get(pk=pk)
+        User = get_user_model()
+        from_user = User.objects.get(pk=pk)
         to_user = request.user
         try:
             request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
@@ -176,3 +182,50 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
         except FollowRequest.DoesNotExist:
             return Response(data={"Follow Request does not exist from {}".format(pk)},
                             status=status.HTTP_404_NOT_FOUND)
+
+class BlocksListView(generics.ListAPIView):
+    """
+    GET user/blocks/                get list of users that the requesting user is blocking
+    """
+
+    queryset = Block.objects.all()
+    serializer_class = BlocksSerializer
+
+    def list(self, request):
+        queryset = Block.objects.filter(blocker=request.user)
+        serializer = BlocksSerializer(queryset, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    POST blocks/:userid               block user with userid
+    GET  blocks/:userid               see if a user is blocking current user
+    DELETE blocks/:userid             unblock user with userid
+    """
+
+    queryset = Block.objects.all()
+    serializer_class = BlocksSerializer
+
+    def get(self, request, pk):
+        User = get_user_model()
+        blocker = User.get.objects(pk=pk)
+        try:
+            Block.objects.is_blocked(blocker, request.user)
+            return Response(data={"{} is blocked by {}".format(request.user, pk)},
+                            status=status.HTTP_200_OK)
+        except Block.DoesNotExist:
+            return Response(data={"Block does not exist"},status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, pk):
+        User = get_user_model()
+        blocked = User.get.objects(pk=pk)
+        Block.objects.add_block(request.user, blocked)
+        return Response(data={"{} blocked user {}".format(request.user, pk)},
+                        status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        User = get_user_model()
+        blocked = User.get.objects(pk=pk)
+        Block.objects.remove_block(request.user, blocked)
+        return Response(data={"User {} is unblocked by {}".format(pk, request.user)},
+                        status=status.HTTP_200_OK)

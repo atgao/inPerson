@@ -39,7 +39,7 @@ class FollowRequest(models.Model):
         followee = self.to_user
         relation = Follow.objects.add_follower(follower, followee)
 
-        follow_request_accepted.send(sender=self, from_user=follower,
+        signals.follow_request_accepted.send(sender=self, from_user=follower,
                                      to_user=followee)
         self.delete() # request no longer needed
 
@@ -48,9 +48,9 @@ class FollowRequest(models.Model):
         """ reject this follow request """
         self.rejected = timezone.now()
         self.save()
-        follow_request_rejected.send(sender=self)
+        signals.follow_request_rejected.send(sender=self)
 
     def cancel(self):
         """ cancel this follow request """
         self.delete()
-        follow_request_rejected.send(sender=self)
+        signals.follow_request_canceled.send(sender=self)
