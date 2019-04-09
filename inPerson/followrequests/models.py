@@ -43,7 +43,6 @@ class FollowRequest(models.Model):
                                      to_user=followee)
         self.delete() # request no longer needed
 
-
     def reject(self):
         """ reject this follow request """
         self.rejected = timezone.now()

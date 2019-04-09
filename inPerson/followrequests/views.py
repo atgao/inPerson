@@ -41,9 +41,10 @@ class FollowsDestroyView(generics.DestroyAPIView):
     # unfollow user with id=pk
     def delete(self, request, pk):
         User = get_user_model()
-        followee = User.get(pk=pk)
+        followee = User.objects.get(pk=pk)
         try:
             follow = Follow.objects.filter(follower=request.user, followee=followee)
+            follow.remove_follower(follower=request.user, followee=followee)
             return Response(data={"{} unfollowed {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
         except Follow.DoesNotExist:
@@ -57,6 +58,9 @@ class FollowersListView(generics.ListAPIView):
 
     queryset = Follow.objects.all()
     serializer_class = FollowsSerializer
+
+    def get_queryset(self):
+        return Follow.objects.filter(followee=request.user)
 
     # return a list of the user's followers
     def list(self, request):
@@ -78,19 +82,32 @@ class FollowersRemoveDetailView(generics.DestroyAPIView):
     # unfollow user with id=pk
     def delete(self, request, pk):
         User = get_user_model()
-        follower = User.get(pk=pk)
+        follower = User.objects.get(pk=pk)
         try:
-            follow = Follow.objects.filter(follower=follower, followee=request.user)
+            Follow.objects.remove_follower(follower=follower, followee=request.user)
             return Response(data={"{} unfollowed {}".format(pk, request.user)},
                             status=status.HTTP_200_OK)
         except Follow.DoesNotExist:
             return Response(data={"Cannot unfollow {}".format(pk)},
                             status=status.HTTP_404_NOT_FOUND)
 
-
-class FollowerRequestsListCreateView(generics.ListCreateAPIView):
+class FollowerRequestsListView(generics.ListAPIView):
     """
     GET user/requests                   retrieves list of user's follower requests
+    """
+
+    User = get_user_model()
+    queryset = FollowRequest.objects.all()
+    serializer_class = FollowRequestsSerializer
+
+    # TODO : LOGIN IS REQUIRED
+    def list(self, request):
+        queryset = FollowRequest.objects.filter(to_user=request.user)
+        serializer = FollowRequestsSerializer(queryset, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class FollowerRequestsCreateView(generics.CreateAPIView):
+    """
     POST user/requests/:userid          accepts follow request from userid
     """
 
@@ -112,11 +129,7 @@ class FollowerRequestsListCreateView(generics.ListCreateAPIView):
             return Response(data={"No follow request between {} to {} exists".format(pk, request.user)},
                             status=status.HTTP_200_OK)
 
-    # TODO : LOGIN IS REQUIRED
-    def list(self, request, pk):
-        queryset = FollowRequest.objects.filter(to_user=request.user)
-        serializer = FollowRequestsSerializer(queryset, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 
 
@@ -136,7 +149,7 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         User = get_user_model()
         follower = request.user
         followee = User.objects.get(pk=pk)
-        created = datetime.datetime.now()
+        created = datetime.now()
         try:
             # must get message for follow request somehow??
             FollowRequest.objects.create(from_user=follower, to_user=followee,
@@ -208,7 +221,7 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def get(self, request, pk):
         User = get_user_model()
-        blocker = User.get.objects(pk=pk)
+        blocker = User.objects.get.objects(pk=pk)
         try:
             Block.objects.is_blocked(blocker, request.user)
             return Response(data={"{} is blocked by {}".format(request.user, pk)},
@@ -218,14 +231,14 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def post(self, request, pk):
         User = get_user_model()
-        blocked = User.get.objects(pk=pk)
+        blocked = User.objects.get.objects(pk=pk)
         Block.objects.add_block(request.user, blocked)
         return Response(data={"{} blocked user {}".format(request.user, pk)},
                         status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
         User = get_user_model()
-        blocked = User.get.objects(pk=pk)
+        blocked = User.objects.get.objects(pk=pk)
         Block.objects.remove_block(request.user, blocked)
         return Response(data={"User {} is unblocked by {}".format(pk, request.user)},
                         status=status.HTTP_200_OK)

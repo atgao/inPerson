@@ -6,7 +6,7 @@ from .models import FollowRequest
 class FollowsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ('followee', 'follower', 'created')
+        fields = "__all__"
 
 class FollowRequestsSerializer(serializers.ModelSerializer):
     class Meta:

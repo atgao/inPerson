@@ -18,12 +18,12 @@ urlpatterns = [
     path('remove/<int:pk>/', views.FollowersRemoveDetailView.as_view(), name="remove-follower"),
 
     # requests
-    path('user/requests/<int:pk>/', views.FollowerRequestsListCreateView.as_view(),
+    path('user/requests/', views.FollowerRequestsListView.as_view(),
+          name="accept-follow-requests"),
+    path('user/requests/<int:pk>/', views.FollowerRequestsCreateView.as_view(),
          name="accept-follow-requests"),
-    path('user/requests/', views.FollowerRequestsListCreateView.as_view(),
-         name="list-follow-requests"),
 
-    # blocks 
+    # blocks
     path('blocks/<int:pk>/', views.BlocksCreateGetDeleteView.as_view(),
          name="block-check-blocks-unblock")
 
