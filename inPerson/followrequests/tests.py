@@ -67,7 +67,46 @@ class FollowersTest(APITestCase):
         self.client.login(username='rsedgewick', password='password')
         requests = FollowRequest.objects.filter(to_user=self.rsedgewick)
         serializer = FollowRequestsSerializer(requests, many=True)
-        response = self.client.get(reverse("accept-list-follow-requests",
-                                    kwargs={"pk": self.rsedgewick.pk}))
+        response = self.client.get(reverse("list-follow-requests"))
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_accept_follow_request(self):
+        self.client.login(username='rsedgewick', password='password')
+        kwayne = User.objects.get(username="kwayne")
+
+        # accept follow request from kwayne
+        response = self.client.post(reverse("accept-follow-requests",
+                                   kwargs={"pk":kwayne.pk}))
+        # only 1 follow request should exist
+        requests = FollowRequest.objects.filter(to_user=self.rsedgewick)
+        serializer = FollowRequestsSerializer(requests, many=True)
+        response = self.client.get(reverse("list-follow-requests"))
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # now test that the followers have been updated
+        followers = Follow.objects.filter(followee=self.rsedgewick)
+        serializer = FollowsSerializer(followers, many=True)
+        response = self.client.get(reverse("followers-list"))
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_reject_follow_request(self):
+        self.client.login(username='rsedgewick', password='password')
+        jdoe = User.objects.get(username="jdoe")
+
+        # reject follow request from jdoe
+        # this request should be deleted
+        response = self.client.delete(reverse("send-delete-follow-request",
+                                   kwargs={"pk": jdoe.pk}))
+
+        # check follow requests to verify
+        requests = FollowRequest.objects.filter(to_user=self.rsedgewick)
+        serializer = FollowRequestsSerializer(requests, many=True)
+        response = self.client.get(reverse("list-follow-requests"))
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_new_follow_request(self):
+        self.client.login(username='rsedgewick', password='password')

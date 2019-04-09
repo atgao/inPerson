@@ -45,9 +45,11 @@ class FollowRequest(models.Model):
 
     def reject(self):
         """ reject this follow request """
-        self.rejected = timezone.now()
-        self.save()
+        # print("REJECTING REQUEST RN")
+        self.rejected = timezone.now
+        # self.save()
         signals.follow_request_rejected.send(sender=self)
+        self.delete()
 
     def cancel(self):
         """ cancel this follow request """

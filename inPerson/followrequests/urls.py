@@ -19,7 +19,7 @@ urlpatterns = [
 
     # requests
     path('user/requests/', views.FollowerRequestsListView.as_view(),
-          name="accept-follow-requests"),
+          name="list-follow-requests"),
     path('user/requests/<int:pk>/', views.FollowerRequestsCreateView.as_view(),
          name="accept-follow-requests"),
 

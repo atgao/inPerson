@@ -23,7 +23,6 @@ class FollowsListView(generics.ListAPIView):
 
     # return a list of the user's following
     def list(self, request):
-        # queryset = Follow.objects.following(request.user)
         queryset = Follow.objects.filter(follower=request.user)
         serializer = FollowsSerializer(queryset, many=True)
         return Response(data=serializer.data,
@@ -64,7 +63,6 @@ class FollowersListView(generics.ListAPIView):
 
     # return a list of the user's followers
     def list(self, request):
-        # queryset = Follow.objects.following(request.user)
         queryset = Follow.objects.filter(followee=request.user)
         serializer = FollowsSerializer(queryset, many=True)
         return Response(data=serializer.data,
@@ -121,8 +119,8 @@ class FollowerRequestsCreateView(generics.CreateAPIView):
         from_user = User.objects.get(pk=pk)
         to_user = request.user
         try:
-            request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
-            request.accept()
+            f_request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
+            f_request.accept()
             return Response(data={"Follow request from {} accepted by {}".format(pk, request.user)},
                             status=status.HTTP_200_OK)
         except FollowRequest.DoesNotExist:
@@ -159,16 +157,16 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         except User.DoesNotExist:
             return Response(data={"Cannot follow user {} since {} does not exist".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
+        # must add in case for blocked user
 
     # LOGIN IS REQUIRED
     # pk is of the user to reject the follow request from
     def delete(self, request, pk):
         User = get_user_model()
-        follower = request.user
-        followee = User.objects.get(pk=pk)
+        follower = User.objects.get(pk=pk)
         try:
-            request = FollowRequest.objects.get(from_user=follower, to_user=followee)
-            request.reject()
+            f_request = FollowRequest.objects.get(from_user=follower, to_user=request.user)
+            f_request.reject()
             return Response(data={"{} rejected follow request from {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
         except FollowRequest.DoesNotExist:
@@ -188,8 +186,8 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
         from_user = User.objects.get(pk=pk)
         to_user = request.user
         try:
-            request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
-            request.cancel()
+            f_request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
+            f_request.cancel()
             return Reponse(data={"Canceled follow request from {}".format(pk)},
                            status=status.HTTP_200_OK)
         except FollowRequest.DoesNotExist:
