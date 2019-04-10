@@ -5,7 +5,7 @@ class SectionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = ("code", "catalog_number", "section", "title",
-                  "start_time", "end_time", "days", "location")
+                  "start_time", "end_time", "days", "location", "term")
 
 class RecurrentEventsSerializer(serializers.ModelSerializer):
     class Meta:

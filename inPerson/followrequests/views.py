@@ -126,10 +126,6 @@ class FollowerRequestsCreateView(generics.CreateAPIView):
             return Response(data={"No follow request between {} to {} exists".format(pk, request.user)},
                             status=status.HTTP_200_OK)
 
-
-
-
-
 class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     PUT follow/:userid                  request to follow user with userid
