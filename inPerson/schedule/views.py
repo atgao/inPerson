@@ -14,6 +14,7 @@ from .filters import SectionFilter
 
 class ListSectionsView(generics.ListAPIView):
     """
+    GET classes/?search=....
     Provides a get method handler.
     """
     queryset = Section.objects.all()
@@ -29,8 +30,8 @@ class ListSectionsView(generics.ListAPIView):
 
 class ListRecurrentEventsView(generics.ListCreateAPIView):
     """
-    GET recurrevent/user/       GETS all recurrent events of a user
-    POST recurrevent/
+    GET  events/user/       GETS all recurrent events of a user
+    POST events/user/
     """
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
@@ -54,9 +55,9 @@ class ListRecurrentEventsView(generics.ListCreateAPIView):
 
 class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET recurrevent/:id/
-    DELETE recurrevent/:id/
-    PUT recurrevent/:id/        UPDATES recurring event
+    GET events/:id/
+    DELETE events/:id/
+    PUT events/:id/        UPDATES recurring event
 
     TO DO: (would this be here??)
     POST recurrevent/:groupid   CREATES GROUP recurring event

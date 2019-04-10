@@ -17,13 +17,17 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
 from django.views.generic.base import TemplateView
+from schedule.views import ListSectionsView
 
 urlpatterns = [
-
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', include('followrequests.urls')),
     path('admin/', admin.site.urls),
-    # path('accounts/', include('django.contrib.auth.urls')),
-    path('events/', include('schedule.urls')),
-    path('users/', include('users.urls')),
     path('accounts/', include('uniauth.urls.cas_only')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home')
+    path('events/', include('schedule.urls')),
+    path('user/', include('users.urls')),
+
+    # search classes 
+    path('classes/', ListSectionsView.as_view(), name='search-sections'),
+
 ]

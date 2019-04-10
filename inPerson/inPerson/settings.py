@@ -42,12 +42,14 @@ INSTALLED_APPS = [
 
     # Third party applications
     'rest_framework',
+    'friendship',
     'django_filters',
     'uniauth',
 
     # Applications created within this project
     'schedule',
     'users',
+    'followrequests'
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -116,6 +118,7 @@ DATABASES = {
             'HOST': 'localhost',
             'USER': 'inperson_admin',
             'PASSWORD': 'password',
+            'USER': 'inperson_admin',
             'NAME': 'inperson_db',
             'PORT': '',
             'TEST': {
