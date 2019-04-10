@@ -42,8 +42,7 @@ class FollowsDestroyView(generics.DestroyAPIView):
         User = get_user_model()
         followee = User.objects.get(pk=pk)
         try:
-            follow = Follow.objects.filter(follower=request.user, followee=followee)
-            follow.remove_follower(follower=request.user, followee=followee)
+            Follow.objects.remove_follower(follower=request.user, followee=followee)
             return Response(data={"{} unfollowed {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
         except Follow.DoesNotExist:
@@ -152,7 +151,7 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
             # must get message for follow request somehow??
             FollowRequest.objects.create(from_user=follower, to_user=followee,
                                         created=created)
-            return Repsonse(data={"{} sent follow request to {}".format(request.user, pk)},
+            return Response(data={"{} sent follow request to {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response(data={"Cannot follow user {} since {} does not exist".format(pk, pk)},
@@ -174,7 +173,7 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class FollowerRequestsCancelView(generics.CreateAPIView):
     """
-    POST cancel/:userid             cancel request from userid
+    POST cancel/:userid             cancel request to userid
     """
 
     User = get_user_model()
@@ -183,12 +182,12 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
 
     def post(self, request, pk):
         User = get_user_model()
-        from_user = User.objects.get(pk=pk)
-        to_user = request.user
+        from_user = request.user
+        to_user = User.objects.get(pk=pk)
         try:
             f_request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
             f_request.cancel()
-            return Reponse(data={"Canceled follow request from {}".format(pk)},
+            return Response(data={"Canceled follow request from {}".format(pk)},
                            status=status.HTTP_200_OK)
         except FollowRequest.DoesNotExist:
             return Response(data={"Follow Request does not exist from {}".format(pk)},
@@ -219,7 +218,7 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def get(self, request, pk):
         User = get_user_model()
-        blocker = User.objects.get.objects(pk=pk)
+        blocker = User.objects.get(pk=pk)
         try:
             Block.objects.is_blocked(blocker, request.user)
             return Response(data={"{} is blocked by {}".format(request.user, pk)},
@@ -229,14 +228,14 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def post(self, request, pk):
         User = get_user_model()
-        blocked = User.objects.get.objects(pk=pk)
+        blocked = User.objects.get(pk=pk)
         Block.objects.add_block(request.user, blocked)
         return Response(data={"{} blocked user {}".format(request.user, pk)},
                         status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
         User = get_user_model()
-        blocked = User.objects.get.objects(pk=pk)
+        blocked = User.objects.get(pk=pk)
         Block.objects.remove_block(request.user, blocked)
         return Response(data={"User {} is unblocked by {}".format(pk, request.user)},
                         status=status.HTTP_200_OK)
