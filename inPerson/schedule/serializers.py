@@ -17,9 +17,11 @@ class RecurrentEventsSerializer(serializers.ModelSerializer):
         instance.start_time = validated_data.get("start_time", instance.start_time)
         instance.end_time = validated_data.get("end_time", instance.end_time)
         instance.days = validated_data.get("days", instance.days)
-        instance.location = validated_data.get("title", instance.location)
+        instance.location = validated_data.get("location", instance.location)
+        instance.save()
+        return instance
 
 class SchedulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = ("semester", "owner")
+        fields = ("term", "owner")

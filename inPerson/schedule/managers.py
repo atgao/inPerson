@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import ArrayField
 from users.models import User
 from django.contrib.auth import get_user_model
 
-class SectionToEventsManager(models.Manager):
+class RecurrentEventsManager(models.Manager):
     # make sure the sections model is serialized then comes in as a dictionary
     def create_event_from_section(self, schedule, *args, **kwargs):
         dict = args[0]
@@ -20,6 +20,12 @@ class SectionToEventsManager(models.Manager):
         event = self.model(title=title, start_time=start_time, end_time=end_time,
                             days=days, location=location, schedule=schedule)
         event.save()
+        return event
+
+    def add_event_to_schedule(self, schedule, *args, **kwargs):
+        event = self.create(schedule=schedule, title=args["title"],
+                            start_time=args["start_time"], end_time=args["end_time"],
+                            days=args["days"], location=args["location"])
         return event
 
 class CurrentScheduleManager(models.Manager):

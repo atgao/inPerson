@@ -3,7 +3,7 @@ from django.conf import settings
 from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 
-from .managers import SectionToEventsManager
+from .managers import RecurrentEventsManager
 from .managers import CurrentScheduleManager
 
 class Schedule(models.Model):
@@ -47,7 +47,7 @@ class RecurrentEvent(models.Model):
     location = models.CharField(max_length=200, blank=True, null=True)
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
 
-    objects = SectionToEventsManager()
+    objects = RecurrentEventsManager()
 
     class Meta:
         ordering = ['schedule', 'start_time']

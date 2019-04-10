@@ -12,6 +12,11 @@ from users.models import User
 from django.contrib.auth import get_user_model
 
 
+# converts a datetime object
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
+
 class ScheduleTest(APITestCase):
     """
     Test that a schedule belongs to the correct user
@@ -99,5 +104,112 @@ class AddSectionToSchedule(APITestCase):
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         e = RecurrentEvent.objects.get(location="BOWEN 222")
-        # print(e.title)
-        # self.assertEqual()
+
+class GetSingleSectionTest(APITestCase):
+    """
+    Try getting details of a section
+    """
+    client = APIClient()
+
+    def setUp(self):
+        Section.objects.create(class_number=40063, code="COS", catalog_number="333",
+                                title="Advanced Programming Techniques",start_time=time(11),
+                                end_time=time(12, 20), days=["T", "Th"], location="BOWEN 222", term="S2019")
+        Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="L01",
+                                title="Algorithms and Data Structures", start_time=time(11),
+                                end_time=time(12,20), days=["T", "Th"], location="FRIEN 101", term="S2019")
+        Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="P01",
+                                title="Algorithms and Data Structures", start_time=time(15),
+                                end_time=time(16,20), days=["T", "Th"], location="FRIEN 108", term="S2019")
+        Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="P01A",
+                                title="Algorithms and Data Structures", start_time=time(15),
+                                end_time=time(16,20), days=["T", "Th"], location="ANDB1 017", term="S2019")
+
+    def test_get_valid_section(self):
+        cos333_lecture = Section.objects.filter(code="COS", catalog_number="333")
+        response = self.client.get(reverse("search-sections") + "?search=COS+333")
+        serializer = SectionsSerializer(cos333_lecture, many=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+# test views
+class ScheduleTest(APITestCase):
+    client = APIClient()
+
+    def setUp(self):
+        # create a test user
+        User = get_user_model()
+        self.rsedgewick = User.objects.create_user(first_name="Rob", last_name="Sedgewick",
+                                             username="rsedgewick", class_year=2022,
+                                             password="password")
+        a_schedule = Schedule.objects.create(term="S2019", owner=self.rsedgewick)
+        s_cos333 = Section.objects.create(class_number=40063, code="COS", catalog_number="333",
+                                title="Advanced Programming Techniques",start_time=time(11),
+                                end_time=time(12, 20), days=["T", "Th"], location="BOWEN 222", term="S2019")
+        s_cos226 = Section.objects.create(class_number=40000, code="COS", catalog_number="226", section="L01",
+                                title="Algorithms and Data Structures", start_time=time(11),
+                                end_time=time(12,20), days=["T", "Th"], location="FRIEN 101", term="S2019")
+        s_chi418 = Section.objects.create(class_number=40003, code="CHI", catalog_number="418", section="C03",
+                                title="Algorithms and Data Structures", start_time=time(13),
+                                end_time=time(14,50), days=["T", "Th"], location="FRIST 228", term="S2019")
+
+        # add classes to schedule
+        RecurrentEvent.objects.create_event_from_section(a_schedule, SectionsSerializer(s_cos333).data)
+        RecurrentEvent.objects.create_event_from_section(a_schedule, SectionsSerializer(s_cos226).data)
+        RecurrentEvent.objects.create_event_from_section(a_schedule, SectionsSerializer(s_chi418).data)
+
+    def test_get_events_from_schedule(self):
+        self.client.login(username='rsedgewick', password='password')
+        schedule = Schedule.objects.get(owner=self.rsedgewick)
+        events = RecurrentEvent.objects.filter(schedule=schedule)
+        serializer = RecurrentEventsSerializer(events, many=True)
+        response = self.client.get(reverse("get-schedule-add-event"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+    # having difficulties with this because of the datetime object
+    def test_create_custom_event(self):
+        self.client.login(username='rsedgewick', password='password')
+        schedule = Schedule.objects.get(owner=self.rsedgewick)
+        event = {"title": "Lunch", "start_time":time(11), "end_time":time(12,30),
+                 "location": "CS302", "days": ["M", "T", "W", "Th", "F"]}
+        # response = self.client.post(reverse("create-update-delete-recurrent-event"),
+        #                             data=json.dumps(event, default=myconverter),
+        #                             content_type='application/json')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # events = RecurrentEvent.objects.filter(schedule=schedule)
+        # serializer = RecurrentEventsSerializer(events, many=True)
+        # print(serializer.data)
+        # response = self.client.get(reverse("get-schedule-add-event"))
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(response.data, serializer.data)
+
+    def test_delete_event(self):
+        self.client.login(username='rsedgewick', password='password')
+        schedule = Schedule.objects.get(owner=self.rsedgewick)
+        event = RecurrentEvent.objects.get(location="BOWEN 222")
+        response = self.client.delete(reverse("create-update-delete-recurrent-event",
+                                      kwargs={"pk": event.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        events = RecurrentEvent.objects.filter(schedule=schedule)
+        serializer = RecurrentEventsSerializer(events, many=True)
+        response = self.client.get(reverse("get-schedule-add-event"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_update_event(self):
+        self.client.login(username='rsedgewick', password='password')
+        schedule = Schedule.objects.get(owner=self.rsedgewick)
+        event = RecurrentEvent.objects.get(location="BOWEN 222")
+        updated_event = {"location": "MCCOSH 50"}
+        response = self.client.put(reverse("create-update-delete-recurrent-event",
+                                   kwargs={"pk": event.pk}), data=json.dumps(updated_event),
+                                   content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        events = RecurrentEvent.objects.filter(schedule=schedule)
+        serializer = RecurrentEventsSerializer(events, many=True)
+        response = self.client.get(reverse("get-schedule-add-event"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+        e_cos333 = RecurrentEvent.objects.get(location="MCCOSH 50")
+        self.assertEqual(e_cos333.location, "MCCOSH 50")

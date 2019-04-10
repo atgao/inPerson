@@ -4,10 +4,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    path('user/', views.ListRecurrentEventsView.as_view(),
-        name='schedule-recurrevents-list-create-individual'),
-    path('events/<int:pk>/', views.RecurrentEventsDetailView.as_view(),
-        name ='recurrent-events-get'),
+    path('user/', views.ListCreateRecurrentEventsView.as_view(),
+        name='get-schedule-add-event'),
+    path('<int:pk>/', views.RecurrentEventsDetailView.as_view(),
+        name ='create-update-delete-recurrent-event'),
 
     # classes urls
     path('schedule/classes/', views.CreateSectionstoScheduleView.as_view(),

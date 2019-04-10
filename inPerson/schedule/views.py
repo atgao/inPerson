@@ -38,7 +38,6 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
         a_class = request.data
-        print(a_class)
         if a_class["term"] != schedule.term: # can't add section when its not same term
             return Response(data={"Class is not in same term"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -50,28 +49,31 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-
-class ListRecurrentEventsView(generics.ListCreateAPIView):
+class ListCreateRecurrentEventsView(generics.ListCreateAPIView):
     """
     GET  events/user/       GETS all recurrent events of a user
-    POST events/user/
+    POST events/user/       CREATE custom recurrent event
     """
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
     # will need to add permissions class in future?? and decorators
 
     # add validate data
-    def post(self, request, schedule, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         # TO DO: must add in check if class!!
         # must also add in error responses
-        a_class = args[0]
-        e = RecurrentEvent.objects.create_event_from_section(schedule, a_class)
-        return Response(data=RecurrentEventsSerializer(e).data,
-                        status=status.HTTP_200_OK)
+        schedule = Schedule.objects.get_current_schedule_for_user(request.user)
+        try:
+            e = RecurrentEvent.objects.create(request.data, schedule=schedule)
+            return Response(data={"Created event {}".format(e.pk)},
+                            status=status.HTTP_200_OK)
+        except RecurrentEvent.DoesNotExist:
+            return Response(data={"Could not create event"},
+                            status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
-        schedule = Schedule.objects.filter(owner=request.user)
-        events = RecurrentEvent.objects.filter(schedule__in=schedule)
+        schedule = Schedule.objects.get_current_schedule_for_user(request.user)
+        events = RecurrentEvent.objects.filter(schedule=schedule)
         serializer = RecurrentEventsSerializer(events, many=True)
         return Response(data=serializer.data,
                         status=status.HTTP_200_OK)
@@ -81,9 +83,6 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     GET events/:id/
     DELETE events/:id/
     PUT events/:id/        UPDATES recurring event
-
-    TO DO: (would this be here??)
-    POST recurrevent/:groupid   CREATES GROUP recurring event
     """
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
@@ -109,7 +108,7 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            event = self.querset.get(pk=kwargs["pk"])
+            event = self.queryset.get(pk=kwargs["pk"])
             event.delete()
             return Response(data={"message": "Event successfully deleted"},
                             status=status.HTTP_200_OK)
