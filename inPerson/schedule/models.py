@@ -4,11 +4,14 @@ from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 
 from .managers import SectionToEventsManager
+from .managers import CurrentScheduleManager
 
 class Schedule(models.Model):
     term = models.CharField(max_length=5, blank=False, null=False) #F2018, S2019, etc
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                               related_name="student", related_query_name="students")
+
+    objects = CurrentScheduleManager()
 
     class Meta:
         ordering = ['owner', '-term']
