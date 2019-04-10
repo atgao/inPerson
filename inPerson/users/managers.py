@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
+from schedules.models import Schedule
 
 class CustomUserManager(BaseUserManager):
     """
@@ -28,3 +29,8 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(first_name, last_name, username, class_year, password, email=None)
+
+    def get_current_schedule(self, first_name, last_name, username):
+        user = User.objects.get(first_name=first_name, last_name=last_name, username=username)
+        schedules = Schedule.objects.filter(owner=user)
+        
