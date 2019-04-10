@@ -11,7 +11,7 @@ class Schedule(models.Model):
                               related_name="student", related_query_name="students")
 
     class Meta:
-        ordering = ['owner']
+        ordering = ['owner', '-term']
 
     def __str__(self):
         return "{} {}".format(self.owner.username, self.term)
