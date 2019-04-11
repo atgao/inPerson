@@ -113,17 +113,25 @@ DATABASES = {
         # },
 
         ## USE THIS FOR TESTING MODELS LOCALLY
+        # 'default': {
+        #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #     'HOST': 'localhost',
+        #     'USER': 'inperson_admin',
+        #     'PASSWORD': 'password',
+        #     'USER': 'inperson_admin',
+        #     'NAME': 'inperson_db',
+        #     'PORT': '',
+        #     'TEST': {
+        #         'NAME': 'inPerson_db_test',
+        #     },
+        # },
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': 'localhost',
+            'HOST': 'inpersondb.c7xstdrblfzl.us-east-2.rds.amazonaws.com',
             'USER': 'inperson_admin',
             'PASSWORD': 'password',
-            'USER': 'inperson_admin',
-            'NAME': 'inperson_db',
+            'NAME': 'inpersondb',
             'PORT': '',
-            'TEST': {
-                'NAME': 'inPerson_db_test',
-            },
         },
 
 
