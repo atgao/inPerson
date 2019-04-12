@@ -50,7 +50,10 @@ INSTALLED_APPS = [
     # Applications created within this project
     'schedule',
     'users',
-    'followrequests'
+    'followrequests',
+
+    # For connection to frontend
+    'corsheaders'
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -73,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'inPerson.urls'
@@ -92,6 +96,12 @@ TEMPLATES = [
         },
     },
 ]
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = (
+       'localhost:3000',
+)
 
 WSGI_APPLICATION = 'inPerson.wsgi.application'
 
