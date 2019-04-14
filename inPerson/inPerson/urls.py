@@ -21,16 +21,16 @@ from schedule.views import ListSectionsView, CreateSectionstoScheduleView
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('', include('followrequests.urls')),
+    path('api/', include('followrequests.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('uniauth.urls.cas_only')),
-    path('events/', include('schedule.urls')),
-    path('user/', include('users.urls')),
+    path('api/events/', include('schedule.urls')),
+    path('api/user/', include('users.urls')),
 
     # search classes
     # classes urls
-    path('user/schedule/classes/', CreateSectionstoScheduleView.as_view(),
+    path('api/user/schedule/classes/', CreateSectionstoScheduleView.as_view(),
         name='add-class-to-schedule'),
-    path('classes/', ListSectionsView.as_view(), name='search-sections'),
+    path('api/classes/', ListSectionsView.as_view(), name='search-sections'),
 
 ]

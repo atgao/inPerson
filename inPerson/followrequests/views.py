@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render
 from django_filters import rest_framework as filters
 from datetime import datetime
+import requests
 
 from . models import FollowRequest
 from rest_framework import generics
@@ -56,10 +57,7 @@ class FollowersListView(generics.ListAPIView):
 
     queryset = Follow.objects.all()
     serializer_class = FollowsSerializer
-
-    def get_queryset(self):
-        return Follow.objects.filter(followee=request.user)
-
+    
     # return a list of the user's followers
     def list(self, request):
         queryset = Follow.objects.filter(followee=request.user)
