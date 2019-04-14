@@ -5,3 +5,4 @@ __pycache__/
 /venv
 local_settings.py
 venv/
+node_modules/

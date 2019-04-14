@@ -50,7 +50,10 @@ INSTALLED_APPS = [
     # Applications created within this project
     'schedule',
     'users',
-    'followrequests'
+    'followrequests',
+
+    # For connection to frontend
+    'corsheaders'
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -73,6 +76,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'inPerson.urls'
@@ -92,6 +97,14 @@ TEMPLATES = [
         },
     },
 ]
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = (
+       'localhost:3000',
+)
+
+ALLOWED_HOSTS = ['nperson.herokuapp.com', '127.0.0.1:8000']
 
 WSGI_APPLICATION = 'inPerson.wsgi.application'
 
@@ -163,5 +176,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/static/'
 django_heroku.settings(locals())
