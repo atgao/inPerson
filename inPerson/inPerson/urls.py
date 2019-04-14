@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
 from django.views.generic.base import TemplateView
-from schedule.views import ListSectionsView
+from schedule.views import ListSectionsView, CreateSectionstoScheduleView
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -27,7 +27,10 @@ urlpatterns = [
     path('events/', include('schedule.urls')),
     path('user/', include('users.urls')),
 
-    # search classes 
+    # search classes
+    # classes urls
+    path('user/schedule/classes/', CreateSectionstoScheduleView.as_view(),
+        name='add-class-to-schedule'),
     path('classes/', ListSectionsView.as_view(), name='search-sections'),
 
 ]
