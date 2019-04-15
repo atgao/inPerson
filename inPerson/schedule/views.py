@@ -31,7 +31,7 @@ class ListSectionsView(generics.ListAPIView):
         except request.user.DoesNotExist:
             return Response(data={"message": "User not found"},
                             status=status.HTTP_404_NOT_FOUND)
-        else:
+        except:
             return Response(data={"message": Error},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -55,7 +55,10 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
         except RecurrentEvent.DoesNotExist:
             return Response(data={"message": "Event does not exist"},
                             status=status.HTTP_404_NOT_FOUND)
-        else:
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
             return Response(data={"message": Error},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -101,9 +104,11 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         try:
             event = self.queryset.get(pk=kwargs["pk"])
-            return Response(RecurrentEventsSerializer(event).data)
+            return Response(data=RecurrentEventsSerializer(event).data,
+                            status=status.HTTP_200_OK)
         except RecurrentEvent.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"message": "Event not found"},
+                            status=status.HTTP_404_NOT_FOUND)
 
     # TO DO: MUST VALIDATE THIS DATA
     def put(self, request, *args, **kwargs):
