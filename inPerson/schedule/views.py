@@ -26,7 +26,7 @@ class ListSectionsView(generics.ListAPIView):
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = SectionsSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class CreateSectionstoScheduleView(generics.ListCreateAPIView):
     """
@@ -90,7 +90,8 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         try:
             event = self.queryset.get(pk=kwargs["pk"])
-            return Response(RecurrentEventsSerializer(event).data)
+            return Response(data=RecurrentEventsSerializer(event).data,
+                            status=status.HTTP_200_OK)
         except RecurrentEvent.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
