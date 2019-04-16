@@ -18,9 +18,11 @@ from django.urls import path, include, re_path
 from rest_framework import routers
 from django.views.generic.base import TemplateView
 from schedule.views import ListSectionsView, CreateSectionstoScheduleView
+from .views import menu_view
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    # path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', menu_view, name="home"),
     path('api/', include('followrequests.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('uniauth.urls.cas_only')),
