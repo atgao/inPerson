@@ -50,11 +50,22 @@ class FollowsDestroyView(generics.DestroyAPIView):
         followee = User.objects.get(pk=pk)
         try:
             Follow.objects.remove_follower(follower=request.user, followee=followee)
-            return Response(data={"{} unfollowed {}".format(request.user, pk)},
-                            status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # *** check if correct
+        except request.user.DoesNotExist:
+            return Response(data={"message": "Cannot unfollow {} since {} not found".format(pk, request.user)},
+                            status=status.HTTP_401_UNAUTHORIZED)
         except Follow.DoesNotExist:
-            return Response(data={"Cannot unfollow {}".format(pk)},
+            return Response(data={"message": "Cannot unfollow {} since {} was not following".format(pk, request.user)},
+                            status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            return Response(data={"message": "Cannot unfollow {} since {} not found".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowersListView(generics.ListAPIView):
     """
@@ -92,11 +103,22 @@ class FollowersRemoveDetailView(generics.DestroyAPIView):
         follower = User.objects.get(pk=pk)
         try:
             Follow.objects.remove_follower(follower=follower, followee=request.user)
-            return Response(data={"{} unfollowed {}".format(pk, request.user)},
-                            status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # *** check if correct
+        except request.user.DoesNotExist:
+            return Response(data={"message": "Cannot delete follower {} since {} not found".format(pk, request.user)},
+                            status=status.HTTP_401_UNAUTHORIZED)
         except Follow.DoesNotExist:
-            return Response(data={"Cannot unfollow {}".format(pk)},
+            return Response(data={"message": "Cannot delete follower {} since {} was not following".format(pk, pk)},
+                            status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            return Response(data={"message": "Cannot delete follower {} since {} not found".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowerRequestsListView(generics.ListAPIView):
     """
@@ -109,9 +131,15 @@ class FollowerRequestsListView(generics.ListAPIView):
 
     # TODO : LOGIN IS REQUIRED
     def list(self, request):
-        queryset = FollowRequest.objects.filter(to_user=request.user)
-        serializer = FollowRequestsSerializer(queryset, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = FollowRequest.objects.filter(to_user=request.user)
+            serializer = FollowRequestsSerializer(queryset, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowerRequestsCreateView(generics.CreateAPIView):
     """
@@ -130,11 +158,23 @@ class FollowerRequestsCreateView(generics.CreateAPIView):
         try:
             f_request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
             f_request.accept()
-            return Response(data={"Follow request from {} accepted by {}".format(pk, request.user)},
+            return Response(data={"message": "Follow request from {} accepted by {}".format(pk, request.user)},
                             status=status.HTTP_200_OK)
+        # *** check if correct
+        except to_user.DoesNotExist:
+            return Response(data={"message": "Cannot accept follow request since {} does not exist".format(request.user)},
+                            status=status.HTTP_401_UNAUTHORIZED)
         except FollowRequest.DoesNotExist:
-            return Response(data={"No follow request between {} to {} exists".format(pk, request.user)},
+            return Response(data={"message": "No follow request from {} to {} exists".format(pk, request.user)},
                             status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            return Response(data={"message": "Cannot accept follow request since {} does not exist".format(pk)},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -157,10 +197,18 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
             # must get message for follow request somehow??
             FollowRequest.objects.create(from_user=follower, to_user=followee,
                                         created=created)
-            return Response(data={"{} sent follow request to {}".format(request.user, pk)},
+            return Response(data={"message": "{} sent follow request to {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
+        # *** check if correct
+        except follower.DoesNotExist:
+            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(pk, request.user)}, 
+                            status=status.HTTP_401_UNAUTHORIZED)
+        
+        # *** 403: request couldn't go through, bc request btwn these users already exists (or b/c blocked?)
+        # how to check for existence before the initial try?
+
         except User.DoesNotExist:
-            return Response(data={"Cannot follow user {} since {} does not exist".format(pk, pk)},
+            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(
@@ -177,10 +225,23 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         try:
             f_request = FollowRequest.objects.get(from_user=follower, to_user=request.user)
             f_request.reject()
-            return Response(data={"{} rejected follow request from {}".format(request.user, pk)},
-                            status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        # *** check if correct
+        except request.user.DoesNotExist:
+            return Response(data={"message": "Cannot reject follow request since {} does not exist".format(request.user)},
+                    status=status.HTTP_401_UNAUTHORIZED)
         except FollowRequest.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"message": "No follow request from {} to {} exists".format(pk, request.user)}, 
+                            status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            return Response(data={"message": "Cannot reject follow request since {} does not exist".format(pk)},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowerRequestsCancelView(generics.CreateAPIView):
     """
@@ -198,11 +259,22 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
         try:
             f_request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
             f_request.cancel()
-            return Response(data={"Canceled follow request from {}".format(pk)},
-                           status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # *** check if correct
+        except request.user.DoesNotExist:
+            return Response(data={"message": "Cannot cancel follow request to {} since {} does not exist".format(pk, request.user)}, 
+                            status=status.HTTP_401_UNAUTHORIZED)
         except FollowRequest.DoesNotExist:
-            return Response(data={"Follow Request does not exist from {}".format(pk)},
+            return Response(data={"message": "Follow request to {} does not exist".format(pk)},
+                            status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            return Response(data={"message": "Cannot cancel follow request to {} since {} does not exist".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class BlocksListView(generics.ListAPIView):
     """
@@ -213,9 +285,15 @@ class BlocksListView(generics.ListAPIView):
     serializer_class = BlocksSerializer
 
     def list(self, request):
-        queryset = Block.objects.filter(blocker=request.user)
-        serializer = BlocksSerializer(queryset, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        try:
+            queryset = Block.objects.filter(blocker=request.user)
+            serializer = BlocksSerializer(queryset, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -227,26 +305,52 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Block.objects.all()
     serializer_class = BlocksSerializer
 
+    def post(self, request, pk):
+        User = get_user_model()
+        blocked = User.objects.get(pk=pk)
+        try:
+            Block.objects.add_block(request.user, blocked)
+            return Response(data={"message": "{} has blocked user {}".format(pk, request.user)},
+                            status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(data={"message": "User {} not found".format(pk)}, 
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     def get(self, request, pk):
         User = get_user_model()
         blocker = User.objects.get(pk=pk)
         try:
             Block.objects.is_blocked(blocker, request.user)
-            return Response(data={"{} is blocked by {}".format(request.user, pk)},
+            return Response(data={"message": "{} is blocked by {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
-        except Block.DoesNotExist:
-            return Response(data={"Block does not exist"},status=status.HTTP_404_NOT_FOUND)
-
-    def post(self, request, pk):
-        User = get_user_model()
-        blocked = User.objects.get(pk=pk)
-        Block.objects.add_block(request.user, blocked)
-        return Response(data={"{} blocked user {}".format(request.user, pk)},
-                        status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(data={"message": "User {} not found".format(pk)}, 
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def delete(self, request, pk):
         User = get_user_model()
         blocked = User.objects.get(pk=pk)
-        Block.objects.remove_block(request.user, blocked)
-        return Response(data={"User {} is unblocked by {}".format(pk, request.user)},
-                        status=status.HTTP_200_OK)
+        try:
+            Block.objects.remove_block(request.user, blocked)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Block.DoesNotExist:
+            return Response(data={"message": "Block does not exist"}, 
+                            status=status.HTTP_403_FORBIDDEN)
+        except User.DoesNotExist:
+            return Response(data={"message": "User {} not found".format(pk)}, 
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
