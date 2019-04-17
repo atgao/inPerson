@@ -180,9 +180,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_URL = '/build/'
+STATIC_URl = '/static/'
 STATICFILES_DIRS = (
   '/build/',
+  '/static/',
   os.path.join(FRONTEND_DIR, 'build'),
 )
 django_heroku.settings(locals())
