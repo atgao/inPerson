@@ -7,3 +7,4 @@ local_settings.py
 venv/
 node_modules/
 student_data.json
+build/

@@ -16,6 +16,7 @@ import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.dirname(BASE_DIR)
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -86,7 +87,7 @@ ROOT_URLCONF = 'inPerson.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(os.path.dirname(BASE_DIR), 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,11 +101,11 @@ TEMPLATES = [
     },
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = (
-       'localhost:3000',
-)
+# CORS_ORIGIN_WHITELIST = (
+#        'localhost:3000',
+# )
 
 ALLOWED_HOSTS = ['nperson.herokuapp.com', '127.0.0.1:8000']
 
@@ -179,5 +180,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_URL = '/static/'
+STATIC_URL = '/build/'
+STATICFILES_DIRS = (
+  '/build/',
+  os.path.join(FRONTEND_DIR, 'build'),
+)
 django_heroku.settings(locals())
