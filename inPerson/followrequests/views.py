@@ -134,7 +134,7 @@ class FollowerRequestsCreateView(generics.CreateAPIView):
                             status=status.HTTP_200_OK)
         except FollowRequest.DoesNotExist:
             return Response(data={"No follow request between {} to {} exists".format(pk, request.user)},
-                            status=status.HTTP_200_OK)
+                            status=status.HTTP_403_FORBIDDEN)
 
 class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
