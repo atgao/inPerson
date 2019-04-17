@@ -24,10 +24,16 @@ class FollowsListView(generics.ListAPIView):
 
     # return a list of the user's following
     def list(self, request):
-        queryset = Follow.objects.filter(follower=request.user)
-        serializer = FollowsSerializer(queryset, many=True)
-        return Response(data=serializer.data,
-                        status=status.HTTP_200_OK)
+        try:
+            queryset = Follow.objects.filter(follower=request.user)
+            serializer = FollowsSerializer(queryset, many=True)
+            return Response(data=serializer.data,
+                            status=status.HTTP_200_OK)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowsDestroyView(generics.DestroyAPIView):
     """
@@ -57,13 +63,19 @@ class FollowersListView(generics.ListAPIView):
 
     queryset = Follow.objects.all()
     serializer_class = FollowsSerializer
-    
+
     # return a list of the user's followers
     def list(self, request):
-        queryset = Follow.objects.filter(followee=request.user)
-        serializer = FollowsSerializer(queryset, many=True)
-        return Response(data=serializer.data,
-                        status=status.HTTP_200_OK)
+        try:
+            queryset = Follow.objects.filter(followee=request.user)
+            serializer = FollowsSerializer(queryset, many=True)
+            return Response(data=serializer.data,
+                            status=status.HTTP_200_OK)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class FollowersRemoveDetailView(generics.DestroyAPIView):
     """
@@ -150,6 +162,11 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         except User.DoesNotExist:
             return Response(data={"Cannot follow user {} since {} does not exist".format(pk, pk)},
                             status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         # must add in case for blocked user
 
     # LOGIN IS REQUIRED
