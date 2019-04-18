@@ -26,7 +26,18 @@ class ListSectionsView(generics.ListAPIView):
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = SectionsSerializer(queryset, many=True)
+<<<<<<< HEAD
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+=======
+        try:
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(data={"message": Error},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+>>>>>>> issue-error-codes
 
 class CreateSectionstoScheduleView(generics.ListCreateAPIView):
     """
@@ -39,14 +50,21 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
         a_class = request.data
         if a_class["term"] != schedule.term: # can't add section when its not same term
-            return Response(data={"Class is not in same term"},
+            return Response(data={"message": "Class is not in same term"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         try:
             e = RecurrentEvent.objects.create_event_from_section(schedule, a_class)
             return Response(data=RecurrentEventsSerializer(e).data,
                             status=status.HTTP_200_OK)
         except RecurrentEvent.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"message": "Event does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(data={"message": Error},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ListCreateRecurrentEventsView(generics.ListCreateAPIView):
@@ -65,18 +83,30 @@ class ListCreateRecurrentEventsView(generics.ListCreateAPIView):
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
         try:
             e = RecurrentEvent.objects.create(request.data, schedule=schedule)
-            return Response(data={"Created event {}".format(e.pk)},
+            serializer = RecurrentEventsSerializer(e)
+            return Response(data=serializer.data,
                             status=status.HTTP_200_OK)
-        except RecurrentEvent.DoesNotExist:
-            return Response(data={"Could not create event"},
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
                             status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     def list(self, request):
-        schedule = Schedule.objects.get_current_schedule_for_user(request.user)
-        events = RecurrentEvent.objects.filter(schedule=schedule)
-        serializer = RecurrentEventsSerializer(events, many=True)
-        return Response(data=serializer.data,
-                        status=status.HTTP_200_OK)
+        try:
+            schedule = Schedule.objects.get_current_schedule_for_user(request.user)
+            events = RecurrentEvent.objects.filter(schedule=schedule)
+            serializer = RecurrentEventsSerializer(events, many=True)
+            return Response(data=serializer.data,
+                            status=status.HTTP_200_OK)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -93,7 +123,14 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(data=RecurrentEventsSerializer(event).data,
                             status=status.HTTP_200_OK)
         except RecurrentEvent.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"message": "Event not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # TO DO: MUST VALIDATE THIS DATA
     def put(self, request, *args, **kwargs):
@@ -104,15 +141,27 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(data=RecurrentEventsSerializer(updated_event).data,
                             status=status.HTTP_200_OK)
         except RecurrentEvent.DoesNotExist:
-            return Response(data={"message": "Event does not exist"},
+            return Response(data={"message": "Event not found"},
                             status=status.HTTP_404_NOT_FOUND)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, *args, **kwargs):
         try:
             event = self.queryset.get(pk=kwargs["pk"])
             event.delete()
-            return Response(data={"message": "Event successfully deleted"},
+            return Response(data={"message": "Success"},
                             status=status.HTTP_200_OK)
         except RecurrentEvent.DoesNotExist:
-            return Response(data={"message": "Event does not exist"},
+            return Response(data={"message": "Event not found"},
                             status=status.HTTP_404_NOT_FOUND)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
