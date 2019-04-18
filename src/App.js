@@ -83,6 +83,7 @@ class App extends Component {
     };
 
   render() {
+      console.log(window.__INITIAL_STATE__)
     return (
       <div className="App">
         <CssBaseline />

@@ -1,5 +1,8 @@
 <!-- templates/home.html -->
 {% extends 'base.html' %}
+<script>
+    window.__INITIAL_STATE__ = { user: user }
+</script>
 
 {% block title %}Home{% endblock %}
 
@@ -7,6 +10,7 @@
 {% if user.is_authenticated %}
   Hi {{ user.pk }}, {{ user.username }}!
   <p><a href="{% url 'uniauth:logout' %}">logout</a></p>
+  {% include 'index.html' %}
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'uniauth:login' %}">login</a>
