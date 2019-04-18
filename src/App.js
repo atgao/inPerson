@@ -58,12 +58,18 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            userid: null,
             user: user,
             openDrawer: false
         }
     }
 
     componentDidMount() {
+        if (this.state.userid === null) {
+            let userid = document.getElementById("userid").textContent
+            this.setState({userid})
+        }
+
         // axios.get('localhost:8080/api/recurrevent/user', {user: {userid: 1}})
         // .then((res) => {console.log(res.data)})
         // .catch((err) => console.log(err))
@@ -83,7 +89,6 @@ class App extends Component {
     };
 
   render() {
-      console.log(window.__INITIAL_STATE__)
     return (
       <div className="App">
         <CssBaseline />

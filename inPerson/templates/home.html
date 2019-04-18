@@ -1,19 +1,50 @@
 <!-- templates/home.html -->
 {% extends 'base.html' %}
-<script>
-    window.__INITIAL_STATE__ = { user: user }
-</script>
 
 {% block title %}Home{% endblock %}
 
+{% block style %}
+{% if not user.is_authenticated %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            background-image: url("https://mediadc.brightspotcdn.com/dims4/default/1fa66da/2147483647/strip/true/crop/4107x2738+0+0/resize/4107x2738!/quality/90/?url=https%3A%2F%2Fmediadc.brightspotcdn.com%2Fc6%2Fb3%2F82548f8bed932cb678d2bb2e5a64%2F73251703338edd8f96a864a6c6ed8604.jpg");
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        #login-button {
+            height: 45;
+            color: white;
+            font-size: 22;
+            background-color: orange;
+        }
+    </style>
+{% else %}
+    <style></style>
+{% endif %}
+
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.pk }}, {{ user.username }}!
-  <p><a href="{% url 'uniauth:logout' %}">logout</a></p>
+    <p id="userid">{{ user.pk }}</p>
+  <!-- Hi {{ user.pk }}, {{ user.username }}! -->
+  <!-- <p><a href="{% url 'uniauth:logout' %}">logout</a></p> -->
   {% include 'index.html' %}
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'uniauth:login' %}">login</a>
+  <!-- <p>You are not logged in</p> -->
+  <a id="login-button" role="button" class="btn btn-outline-primary" href="{% url 'uniauth:login' %}">Click here to login</a>
 {% endif %}
 
 {% endblock %}
