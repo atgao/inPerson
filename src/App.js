@@ -66,10 +66,13 @@ class App extends Component {
 
     componentDidMount() {
         if (this.state.userid === null) {
+            console.log("updating...")
             let userid = document.getElementById("userid").textContent
-            this.setState({userid})
+            this.setState({userid: userid})
+            console.log("updated!")
+            
         }
-
+        console.log(this.state.userid)
         // axios.get('localhost:8080/api/recurrevent/user', {user: {userid: 1}})
         // .then((res) => {console.log(res.data)})
         // .catch((err) => console.log(err))
