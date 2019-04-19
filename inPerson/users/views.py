@@ -40,8 +40,9 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get(self, request, pk):
         try:
-            a_user = self.get_queryset()
-            return Response(serializers.UserSerializer(a_user).data, status=status.HTTP_200_OK)
+            a_user = models.User.objects.get(pk=pk)
+            serializer = serializers.UserSerializer(a_user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except models.User.DoesNotExist:
             return Response(
                 data={"message": "User {} does not exist".format(pk)},
