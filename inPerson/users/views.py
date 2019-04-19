@@ -28,17 +28,7 @@ class UserListView(generics.ListCreateAPIView):
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = serializers.UserSerializer(queryset, many=True)
-<<<<<<< HEAD
         return Response(data=serializer.data, status=status.HTTP_200_OK)
-=======
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    # create a new user if one does not exist
-    # make sure that user has valid login info
-    # def post(self, request):
-    #     queryset = models.User.objects.all()
-    #     if
->>>>>>> issue-error-codes
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -55,9 +45,6 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         except models.User.DoesNotExist:
             return Response(
                 data={"message": "User {} does not exist".format(pk)},
-<<<<<<< HEAD
-                status=status.HTTP_404_NOT_FOUND)
-=======
                 status=status.HTTP_404_NOT_FOUND
             )
         except:
@@ -65,4 +52,3 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
                 data={"message": "Internal server error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
->>>>>>> issue-error-codes

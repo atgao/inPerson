@@ -26,9 +26,6 @@ class ListSectionsView(generics.ListAPIView):
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = SectionsSerializer(queryset, many=True)
-<<<<<<< HEAD
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-=======
         try:
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         except request.user.DoesNotExist:
@@ -37,7 +34,6 @@ class ListSectionsView(generics.ListAPIView):
         except:
             return Response(data={"message": Error},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
->>>>>>> issue-error-codes
 
 class CreateSectionstoScheduleView(generics.ListCreateAPIView):
     """
