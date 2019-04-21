@@ -2,7 +2,7 @@ from django.shortcuts import render
 from schedule.models import Schedule
 from schedule.serializers import SchedulesSerializer
 
-CURRENT_TERM = "S2019"
+CURRENT_TERM = "S2019" 
 
 def menu_view(request):
     schedule = Schedule.objects.filter(owner=request.user, term=CURRENT_TERM)

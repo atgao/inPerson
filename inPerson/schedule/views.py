@@ -108,6 +108,28 @@ class CreateScheduleView(generics.CreateAPIView):
             return Response(data={"message": "Error"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class DeleteScheduleView(generics.DestroyAPIView):
+    """
+    DELETE schedule/user
+    """
+    queryset = Schedule.objects.all()
+    serializer_class = SchedulesSerializer
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            schedule = self.queryset.get(owner=request.user)
+            schedule.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Schedule.DoesNotExist:
+            return Response(data={"message": "Schedule not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ListCreateRecurrentEventsView(generics.ListCreateAPIView):
     """
