@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
 from django.views.generic.base import TemplateView
-from schedule.views import ListSectionsView, CreateSectionstoScheduleView
+from schedule.views import ListSectionsView, CreateSectionstoScheduleView, ListOtherUserScheduleView, CreateScheduleView
 from .views import menu_view
 
 urlpatterns = [
@@ -34,5 +34,9 @@ urlpatterns = [
     path('api/user/schedule/classes/', CreateSectionstoScheduleView.as_view(),
         name='add-class-to-schedule'),
     path('api/classes/', ListSectionsView.as_view(), name='search-sections'),
+    path('api/schedule/<int:pk>/', ListOtherUserScheduleView.as_view(),
+         name='get-friends-schedule'),
+    path('api/schedule/user', CreateScheduleView.as_view(),
+         name='create-schedule')
 
 ]
