@@ -80,7 +80,7 @@ class ListOtherUserScheduleView(generics.ListAPIView):
             serializer = RecurrentEventsSerializer(events, many=True)
             return Response(data=serializer.data,
                             status=status.HTTP_200_OK)
-        except request.user.DoesNotExist:
+        except request.user.DoesNotExist or User.DoesNotExist:
             return Response(data={"message": "User does not exist"},
                             status=status.HTTP_404_NOT_FOUND)
         except:
