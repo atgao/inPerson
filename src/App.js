@@ -12,7 +12,7 @@ import { drawerWidth } from './consts/ui'
 
 // dummy data
 import { user } from './consts/dummydata/user'
-// import axios from "axios";
+import axios from "axios";
 
 const styles = theme => ({
     root: {
@@ -57,8 +57,19 @@ const styles = theme => ({
 class App extends Component {
     constructor(props) {
         super(props)
+        const emptyUser = {
+            netid: '',
+            first_name: '',
+            last_name: '',
+            class_year: '',
+            connection: {
+                followers: [],
+                following: []
+            }
+        }
         this.state = {
             userid: null,
+            // user: emptyUser,
             user: user,
             openDrawer: false
         }
@@ -66,16 +77,50 @@ class App extends Component {
 
     componentDidMount() {
         if (this.state.userid === null) {
-            console.log("updating...")
+            console.log("updating userid...")
             let userid = document.getElementById("userid").textContent
+            console.log(userid)
             this.setState({userid: userid})
-            console.log("updated!")
-            
+            console.log("updated userid!")
+            let user = this.state.user
+            axios.get(`/api/user/${userid}`,)
+            .then((res) => {
+                Object.assign(user, res.data)
+                // user['connections'] = {}
+                axios.get("/api/user/followers", {user:{ userid: userid }})
+                .then((res) => 
+                {
+                    user['connections']['followers'] = res.data
+                    console.log(user)
+                })
+                .catch((err) => console.log(err))
+
+                axios.get("/api/user/following", {user:{ userid: userid }})
+                .then((res) => 
+                {
+                    user['connections']['following'] = res.data
+                    console.log(user)
+                })
+                .catch((err) => console.log(err))
+
+                return user;
+                
+            })
+            .then((user) => {
+                console.log("Updating user")
+                console.log(user)
+                // this.setState({user:user})
+                console.log("user updated")
+            })
+            .catch((err) => console.log(err))
         }
-        console.log(this.state.userid)
-        // axios.get('localhost:8080/api/recurrevent/user', {user: {userid: 1}})
-        // .then((res) => {console.log(res.data)})
-        // .catch((err) => console.log(err))
+        else {
+            console.log("User already set in state")
+            console.log(this.state.userid)
+            console.log(this.state.user)
+        }
+        
+        
 
 
         // get follow requests
