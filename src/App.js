@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { withStyles } from '@material-ui/core/styles';
 
 
 import Calendar from './components/Calendar'
@@ -9,9 +10,6 @@ import Navbar from "./components/Navbar";
 import Menu from "./components/Menu";
 
 import { drawerWidth } from './consts/ui'
-
-// dummy data
-//import { user } from './consts/dummydata/user'
 import axios from "axios";
 
 const styles = theme => ({
@@ -161,4 +159,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
