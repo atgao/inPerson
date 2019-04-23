@@ -1,12 +1,12 @@
 # inPerson
 Capstone project for COS333 Spring 2019
-Team Members: Alrce Gao, Anna Qin, Michael Peng, Ioana Teodorescu
+Team Members: Alice Gao, Anna Qin, Michael Peng, Ioana Teodorescu
 Website: nperson.herokuapp.com
 
 To run the project initially locally run in the base folder:
-npm install
-pip install -r requirements.txt
-./runserver.sh
+npm install\n
+pip install -r requirements.txt\n
+./runserver.sh\n
 
 ## Frontend TODOS (for Ioana)
 --- By Tuesday ---
