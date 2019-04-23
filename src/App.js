@@ -62,69 +62,75 @@ class App extends Component {
             first_name: '',
             last_name: '',
             class_year: '',
-            connection: {
+            connections: {
                 followers: [],
                 following: []
             }
         }
         this.state = {
             userid: null,
-            // user: emptyUser,
-            user: user,
+            user: emptyUser,
+            // user: user,
             openDrawer: false
         }
     }
 
     componentDidMount() {
-        if (this.state.userid === null) {
+        // console.log(this.state)
+        if (this.state.userid === null || this.state.user.netid.length === 0) {
             console.log("updating userid...")
             let userid = document.getElementById("userid").textContent
-            console.log(userid)
-            this.setState({userid: userid})
+            // console.log(userid)
             console.log("updated userid!")
+
             let user = this.state.user
+    
+
             axios.get(`/api/user/${userid}`,)
-            .then((res) => {
+            .then(async (res) => {
                 Object.assign(user, res.data)
                 // user['connections'] = {}
-                axios.get("/api/user/followers", {user:{ userid: userid }})
+                await axios.get("/api/user/followers", {user:{ userid: userid }})
                 .then((res) => 
                 {
                     user['connections']['followers'] = res.data
-                    console.log(user)
+                    // console.log(user)
                 })
                 .catch((err) => console.log(err))
 
-                axios.get("/api/user/following", {user:{ userid: userid }})
+                await axios.get("/api/user/following", {user:{ userid: this.state.userid }})
                 .then((res) => 
                 {
                     user['connections']['following'] = res.data
-                    console.log(user)
+                    // user['connections']['following'].push({
+                    //     netid: user['netid'],
+                    //     first_name: user['first_name'],
+                    //     last_name: user['last_name'],
+                    //     class_year: user['class_year']
+                    // })
+                    // console.log(user)
                 })
                 .catch((err) => console.log(err))
 
-                return user;
-                
+                return user; 
             })
             .then((user) => {
                 console.log("Updating user")
-                console.log(user)
-                // this.setState({user:user})
+                // console.log(user)
+                this.setState({user:user, userid: userid})
                 console.log("user updated")
             })
             .catch((err) => console.log(err))
         }
         else {
             console.log("User already set in state")
-            console.log(this.state.userid)
-            console.log(this.state.user)
+            // console.log(this.state.userid)
+            c// onsole.log(this.state.user)
         }
-        
-        
-
-
         // get follow requests
     }
+
+
 
     handleDrawerOpen = () => {
         this.setState({ openDrawer: true })

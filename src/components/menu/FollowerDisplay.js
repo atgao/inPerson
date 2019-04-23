@@ -55,7 +55,7 @@ ExpansionPanelSummary.muiName = 'ExpansionPanelSummary';
 
 const ExpansionPanelDetails = withStyles(theme => ({
     root: {
-        padding: theme.spacing.unit * 2,
+        padding: 20,
     },
 }))(MuiExpansionPanelDetails);
 
