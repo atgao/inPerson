@@ -80,7 +80,10 @@ class SearchBar extends React.Component {
     
 
     followUser = async (userid) => {
-        await axios.put(`/api/follow/${userid}`, {user: {userid: this.state.userid}})
+        await axios.put(`/api/follow/${userid}/`, {
+            user: {userid: this.state.userid},
+            // csrfmiddlewaretoken: "{{ csrf_token }}" // this didn't work
+        })
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
     }
