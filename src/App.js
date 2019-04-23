@@ -68,31 +68,24 @@ class App extends Component {
         this.state = {
             userid: null,
             user: emptyUser,
-            // user: user,
+            followRequests: [],
             openDrawer: false
         }
     }
 
     componentDidMount() {
-        // console.log(this.state)
         if (this.state.userid === null || this.state.user.netid.length === 0) {
-            console.log("updating userid...")
             let userid = document.getElementById("userid").textContent
-            // console.log(userid)
-            console.log("updated userid!")
-
             let user = this.state.user
     
 
             axios.get(`/api/user/${userid}`,)
             .then(async (res) => {
                 Object.assign(user, res.data)
-                // user['connections'] = {}
                 await axios.get("/api/user/followers", {user:{ userid: userid }})
                 .then((res) => 
                 {
                     user['connections']['followers'] = res.data
-                    // console.log(user)
                 })
                 .catch((err) => console.log(err))
 
@@ -100,13 +93,12 @@ class App extends Component {
                 .then((res) => 
                 {
                     user['connections']['following'] = res.data
-                    // user['connections']['following'].push({
-                    //     netid: user['netid'],
-                    //     first_name: user['first_name'],
-                    //     last_name: user['last_name'],
-                    //     class_year: user['class_year']
-                    // })
-                    // console.log(user)
+                    user['connections']['following'].push({
+                        netid: user['netid'],
+                        first_name: user['first_name'],
+                        last_name: user['last_name'],
+                        class_year: user['class_year']
+                    })
                 })
                 .catch((err) => console.log(err))
 
@@ -114,16 +106,13 @@ class App extends Component {
             })
             .then((user) => {
                 console.log("Updating user")
-                // console.log(user)
                 this.setState({user:user, userid: userid})
                 console.log("user updated")
             })
             .catch((err) => console.log(err))
         }
         else {
-            console.log("User already set in state")
-            // console.log(this.state.userid)
-            // console.log(this.state.user)
+            console.log("User already set in state") // shouldn't happen
         }
         // get follow requests
     }
@@ -134,7 +123,6 @@ class App extends Component {
         this.setState({ openDrawer: true })
     };
 
-    handleCloseAlert = () => {}
     
     handleDrawerClose = () => {
         this.setState({ openDrawer: false })
@@ -146,7 +134,8 @@ class App extends Component {
         <CssBaseline />
         <Navbar user={this.state.user} 
                 handleDrawerOpen={this.handleDrawerOpen} 
-                open={this.state.openDrawer}/>
+                open={this.state.openDrawer}
+                followRequests={this.state.followRequests}/>
         <Menu user={this.state.user} 
                 handleDrawerClose={this.handleDrawerClose} 
                 open={this.state.openDrawer}/>

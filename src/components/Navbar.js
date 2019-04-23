@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
+import Badge from '@material-ui/core/Badge';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -10,7 +11,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-// import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -210,11 +211,11 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                {/* <IconButton color="inherit">
+                <IconButton color="inherit">
                     <Badge badgeContent={17} color="secondary">
                     <NotificationsIcon />
                     </Badge>
-                </IconButton> */}
+                </IconButton>
                 <IconButton
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
