@@ -76,11 +76,6 @@ class FollowerDisplay extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.user !== this.props.user) {
             let arr = []
-            console.log("here come the props in Follower Display")
-            console.log(this.props.user)
-            console.log(this.props.user['connections'])
-            console.log(this.props.user['connections']['followers'])
-            console.log("props over for Follower Display")
             for (let i = 0; i < this.props.user['connections']['followers'].length; i++) arr.push(false)
             this.setState({user: this.props.user, openAlert: arr})
         }

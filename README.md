@@ -11,11 +11,11 @@ pip install -r requirements.txt
 ## Frontend TODOS (for Ioana)
 --- By Tuesday ---
 1. Search bar
-    * UI - popup
+    * ~UI - popup~
     * ~request - search~
-    * UI - follow button
+    * ~UI - follow button~
     * ~request - follow user~
-    * -> Later: follow request already sent
+    * -> Later: follow request already sent/ following
     * -> Later: advanced search
 
 

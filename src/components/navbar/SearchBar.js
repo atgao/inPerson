@@ -1,7 +1,9 @@
 import React from 'react';
-import InputBase from '@material-ui/core/InputBase';
+
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
+
+import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,6 +11,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+
 import axios from 'axios';
 
 
@@ -59,6 +66,7 @@ class SearchBar extends React.Component {
         super(props)
         this.state = {
             searchResults: [],
+            query: '',
             userid: props.userid
         }
     }
@@ -69,16 +77,59 @@ class SearchBar extends React.Component {
         }
     }
 
-    onSearch = async (query) => {
-        await axios.get(`/api/user/?search=${query}`)
-        .then((res) => this.setState({searchResults: res.data}))
-        .catch((err) => console.log(err))
-    }
+    
 
     followUser = async (userid) => {
         await axios.put(`/api/follow/${userid}`, {user: {userid: this.state.userid}})
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
+    }
+
+    getName = (student) => {
+        let sign = ""
+        if (student['id'] === this.state.userid) sign += "You"
+        else {
+            sign += student["first_name"]
+            sign += " "
+            sign += student["last_name"]
+            sign += " '"
+            sign += (student["class_year"] % 100)
+        }
+        return sign
+    }
+
+    handleClickOpen = async () => {
+        await this.onSearch()
+        this.setState({ open: true });
+        console.log(this.state.searchResults)
+    };
+    
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
+    onSearch = async () => {
+        await axios.get(`/api/user/?search=${this.state.query}`)
+        .then((res) => this.setState({searchResults: res.data}))
+        .catch((err) => console.log(err))
+    }
+
+    renderResults = () => 
+    {
+        return(
+            <List>
+                {this.state.searchResults.map((user) => (
+                    <ListItem key={user.id}>
+                        <ListItemText>{this.getName(user)}</ListItemText>
+                        <ListItemSecondaryAction>
+                            <Button variant="contained" color="primary" onClick={()=>this.followUser(user.id)}>
+                                Follow
+                            </Button>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                ))}
+            </List>
+        )
     }
     
     render() {
@@ -94,61 +145,37 @@ class SearchBar extends React.Component {
                         root: classes.inputRoot,
                         input: classes.inputInput,
                     }}
+                    onChange={(event)=>{
+                        this.setState({query: event.target.value})
+                    }}
+                    onKeyPress= {(e) => {
+                        if (e.key === 'Enter') {
+                          console.log('Enter key pressed');
+                          this.handleClickOpen()
+                        }
+                    }}
                 />
-                <Button onClick={this.handleClickOpen('body')}>scroll=body</Button>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
-          scroll={this.state.scroll}
+          scroll="paper"
           aria-labelledby="scroll-dialog-title"
+          maxWidth='xs'
+          fullWidth={true}
         >
-          <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
+          <DialogTitle id="scroll-dialog-title">Search Results</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac
-              facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum
-              at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus
-              sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum
-              nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur
-              et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras
-              mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
-            </DialogContentText>
+            
+                {this.state.searchResults.length === 0? 
+                    <DialogContentText> No results found.</DialogContentText>
+                :
+                    this.renderResults()
+                }
+                
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClose} variant="outlined" color="secondary">
               Cancel
-            </Button>
-            <Button onClick={this.handleClose} color="primary">
-              Subscribe
             </Button>
           </DialogActions>
         </Dialog>
