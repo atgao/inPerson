@@ -68,16 +68,17 @@ class App extends Component {
         this.state = {
             userid: null,
             user: emptyUser,
+            csrf_token: null,
             followRequests: [],
             openDrawer: false
         }
     }
 
     componentDidMount() {
-        if (this.state.userid === null || this.state.user.netid.length === 0) {
-            let userid = document.getElementById("userid").textContent
+        if (this.state.userid === null || this.state.user.netid.length === 0 || this.state.csrf_token === null) {
+            const userid = document.getElementById("userid").textContent
             let user = this.state.user
-    
+            const csrf_token = document.getElementById("csrf_token").textContent
 
             axios.get(`/api/user/${userid}`,)
             .then(async (res) => {
@@ -106,7 +107,7 @@ class App extends Component {
             })
             .then((user) => {
                 console.log("Updating user")
-                this.setState({user:user, userid: userid})
+                this.setState({user:user, userid: userid, csrf_token: csrf_token})
                 console.log("user updated")
             })
             .catch((err) => console.log(err))
@@ -135,7 +136,8 @@ class App extends Component {
         <Navbar user={this.state.user} 
                 handleDrawerOpen={this.handleDrawerOpen} 
                 open={this.state.openDrawer}
-                followRequests={this.state.followRequests}/>
+                followRequests={this.state.followRequests}
+                csrf_token={this.state.csrf_token} />
         <Menu user={this.state.user} 
                 handleDrawerClose={this.handleDrawerClose} 
                 open={this.state.openDrawer}/>

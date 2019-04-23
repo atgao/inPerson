@@ -108,12 +108,13 @@ class Navbar extends React.Component {
         anchorEl: null,
         mobileMoreAnchorEl: null,
         open: this.props.open,
-        user: this.props.user
+        user: this.props.user,
+        csrf_token: this.props.csrf_token
     };
     
     componentDidUpdate(prevProps) {
-        if (prevProps.open !== this.props.open || prevProps.user != this.props.user) {
-            this.setState({open: this.props.open, user: this.props.user})
+        if (prevProps.open !== this.props.open || prevProps.user !== this.props.user || prevProps.csrf_token !== this.props.csrf_token) {
+            this.setState({open: this.props.open, user: this.props.user, csrf_token: this.props.csrf_token})
         }
     }
 
@@ -203,7 +204,7 @@ class Navbar extends React.Component {
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                 inPerson
                 </Typography>
-                <SearchBar classes = {classes} />
+                <SearchBar classes = {classes} csrf_token={this.state.csrf_token}/>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
                 {/* <IconButton color="inherit">
