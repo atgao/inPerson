@@ -11,7 +11,7 @@ import Menu from "./components/Menu";
 import { drawerWidth } from './consts/ui'
 
 // dummy data
-import { user } from './consts/dummydata/user'
+//import { user } from './consts/dummydata/user'
 import axios from "axios";
 
 const styles = theme => ({
@@ -125,7 +125,7 @@ class App extends Component {
         else {
             console.log("User already set in state")
             // console.log(this.state.userid)
-            c// onsole.log(this.state.user)
+            // console.log(this.state.user)
         }
         // get follow requests
     }
