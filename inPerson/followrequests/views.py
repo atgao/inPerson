@@ -193,7 +193,6 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         followee = User.objects.get(pk=pk)
         created = datetime.now()
 
-        block = Block.objects.get(blocked=follower, blocker=followee)
         try:
             # must get message for follow request somehow??
             FollowRequest.objects.create(from_user=follower, to_user=followee,
@@ -209,9 +208,6 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         # must test that there is a block or user already follows
         except IntegrityError:
             return Response(data={"message": "Cannot send request to user {} since {} request already exists".format(followee, follower)},
-                            status=status.HTTP_403_FORBIDDEN)
-        except not Block.DoesNotExist: # this must be tested
-            return Response(data={"message": "Blocked"},
                             status=status.HTTP_403_FORBIDDEN)
         except:
             return Response(

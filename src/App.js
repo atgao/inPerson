@@ -3,11 +3,14 @@ import './App.css';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 
 import Calendar from './components/Calendar'
 import Navbar from "./components/Navbar";
 import Menu from "./components/Menu";
+import Notifier from "./components/Notifier";
+import {openSnackbar} from "./components/Notifier";
 
 import { drawerWidth } from './consts/ui'
 import axios from "axios";
@@ -84,14 +87,14 @@ class App extends Component {
             .then(async (res) => {
                 Object.assign(user, res.data)
                 await axios.get("/api/user/followers", {user:{ userid: userid }})
-                .then((res) => 
+                .then((res) =>
                 {
                     user['connections']['followers'] = res.data
                 })
                 .catch((err) => console.log(err))
 
-                await axios.get("/api/user/following", {user:{ userid: this.state.userid }})
-                .then((res) => 
+                await axios.get("/api/user/following", {user:{ userid: userid }})
+                .then((res) =>
                 {
                     user['connections']['following'] = res.data
                     user['connections']['following'].push({
@@ -103,49 +106,107 @@ class App extends Component {
                 })
                 .catch((err) => console.log(err))
 
-                return user; 
+                return user;
             })
             .then((user) => {
                 console.log("Updating user")
                 this.setState({user:user, userid: userid, csrf_token: csrf_token})
                 console.log("user updated")
             })
+            .then(async () => {
+                await axios.get('/api/user/requests', {user: {userid:userid}})
+                .then((res) => {
+                    this.setState({followRequests: res.data})
+                    console.log("follow requests set")
+                })
+                .catch((err) => console.log(err))
+
+            })
             .catch((err) => console.log(err))
         }
         else {
             console.log("User already set in state") // shouldn't happen
         }
-        // get follow requests
     }
 
+
+    acceptFollowRequest = async (userid) => {
+        await axios.post(`/api/user/request/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        this.removeFollowRequest(userid)
+
+    };
+
+    deleteFollowRequest = async (userid) => {
+        await axios.delete(`/api/follow/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        this.removeFollowRequest(userid)
+    }
 
 
     handleDrawerOpen = () => {
         this.setState({ openDrawer: true })
     };
 
-    
+
     handleDrawerClose = () => {
         this.setState({ openDrawer: false })
     };
 
+    removeFollower = async (userid) => {
+        await axios.delete(`/api/remove/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        let user = this.state.user
+        user.connections.followers = user.connections.followers.filter((user) => user.id !== userid)
+        this.setState({user})
+    }
+
+    removeFollowing = async (userid) => {
+        await axios.delete(`/api/unfollow/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        let user = this.state.user
+        user.connections.following = user.connections.following.filter((user) => user.id !== userid)
+        this.setState({user})
+    }
+
+    removeFollowRequest = (userid) => {
+        let arr = this.state.followRequests
+        arr = arr.filter(e => e.from_user === userid)
+        this.setState({followRequests: arr})
+    }
+
+
+
   render() {
     return (
       <div className="App">
-        <CssBaseline />
-        <Navbar user={this.state.user} 
-                handleDrawerOpen={this.handleDrawerOpen} 
+      <MuiThemeProvider>
+      <CssBaseline />
+        <Navbar user={this.state.user}
+                handleDrawerOpen={this.handleDrawerOpen}
                 open={this.state.openDrawer}
                 followRequests={this.state.followRequests}
                 csrf_token={this.state.csrf_token} />
-        <Menu user={this.state.user} 
-                handleDrawerClose={this.handleDrawerClose} 
+        <Menu user={this.state.user}
+                handleDrawerClose={this.handleDrawerClose}
                 open={this.state.openDrawer}/>
-        <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}>
+        <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
             <div style={styles.drawerHeader} />
             <Calendar/>
         </main>
+        <Notifier />
+        </MuiThemeProvider>
       </div>
+      
+        
     );
   }
 }

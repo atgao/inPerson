@@ -16,10 +16,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import Notifier from "./../Notifier";
+import {openSnackbar} from "./../Notifier";
+
 import axios from 'axios';
 
-// test
-// axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
+// for csrf token
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.withCredentials = true
@@ -73,7 +75,8 @@ class SearchBar extends React.Component {
         this.state = {
             searchResults: [],
             query: '',
-            userid: props.userid
+            userid: props.userid,
+            didErr: false,
         }
     }
 
@@ -101,7 +104,9 @@ class SearchBar extends React.Component {
         },
         )
         .then((res) => console.log(res))
-        .catch((err) => console.log(err))
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
     }
 
     getName = (student) => {
