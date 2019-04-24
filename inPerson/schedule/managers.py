@@ -31,6 +31,8 @@ class RecurrentEventsManager(models.Manager):
 class CurrentScheduleManager(models.Manager):
     def get_current_schedule_for_user(self, user, *args, **kwargs):
         schedules = self.filter(owner=user)
+        if schedules.count() == 0:
+            return
         current_schedule = schedules[0]
         current_term = current_schedule.term
         for schedule in schedules: # find the most recent schedule
