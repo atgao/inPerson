@@ -8,7 +8,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Calendar from './components/Calendar'
 import Navbar from "./components/Navbar";
 import Menu from "./components/Menu";
-import MySnackbarContent from "./components/Snackbar";
+import Notifier from "./components/Notifier";
+import {openSnackbar} from "./components/Notifier";
 
 import { drawerWidth } from './consts/ui'
 import axios from "axios";

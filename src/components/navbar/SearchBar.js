@@ -16,6 +16,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import Notifier from "./../Notifier";
+import {openSnackbar} from "./../Notifier";
+
 import axios from 'axios';
 
 // for csrf token
@@ -101,7 +104,9 @@ class SearchBar extends React.Component {
         },
         )
         .then((res) => console.log(res))
-        .catch((err) => console.log(err))
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
     }
 
     getName = (student) => {
