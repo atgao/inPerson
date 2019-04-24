@@ -29,7 +29,7 @@ To run the project initially locally run in the base folder:
     * request - ignore follow request
 
 3. Account menu
-    * UI - display name
+    * ~UI - display name~
     * UI - display blocked users
     * request - get blocked users
 

@@ -38,8 +38,8 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    <p id="userid">{{ user.pk }}</p>
-    <p id='csrf_token'>{{ csrf_token }}</p>
+    <p id="userid" hidden>{{ user.pk }}</p>
+    <p id='csrf_token' hidden>{{ csrf_token }}</p>
   <!-- Hi {{ user.pk }}, {{ user.username }}! -->
   <!-- <p><a href="{% url 'uniauth:logout' %}">logout</a></p> -->
   {% include 'index.html' %}

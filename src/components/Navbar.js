@@ -149,6 +149,7 @@ class Navbar extends React.Component {
             open={isMenuOpen}
             onClose={this.handleMenuClose}
         >
+            <MenuItem onClick={this.handleMenuClose}>{this.state.user.first_name} {this.state.user.last_name} '{(''+this.state.user.class_year).slice(2)}</MenuItem>
             <MenuItem onClick={() => window.location.pathname = '/accounts/logout'}>Logout</MenuItem>
         </Menu>
         );
