@@ -90,7 +90,7 @@ class App extends Component {
                 })
                 .catch((err) => console.log(err))
 
-                await axios.get("/api/user/following", {user:{ userid: this.state.userid }})
+                await axios.get("/api/user/following", {user:{ userid: userid }})
                 .then((res) => 
                 {
                     user['connections']['following'] = res.data
@@ -110,14 +110,39 @@ class App extends Component {
                 this.setState({user:user, userid: userid, csrf_token: csrf_token})
                 console.log("user updated")
             })
+            .then(async () => {
+                await axios.get('/api/user/requests', {user: {userid:userid}})
+                .then((res) => {
+                    this.setState({followRequests: res.data})
+                    console.log("follow requests set")
+                })
+                .catch((err) => console.log(err))
+                
+            })
             .catch((err) => console.log(err))
         }
         else {
             console.log("User already set in state") // shouldn't happen
         }
-        // get follow requests
     }
 
+
+    acceptFollowRequest = async (userid) => {
+        await axios.post(`/api/user/request/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        this.removeFollowRequest(userid)
+        
+    };
+
+    deleteFollowRequest = async (userid) => {
+        await axios.delete(`/api/follow/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        this.removeFollowRequest(userid)
+    }
 
 
     handleDrawerOpen = () => {
@@ -128,6 +153,34 @@ class App extends Component {
     handleDrawerClose = () => {
         this.setState({ openDrawer: false })
     };
+
+    removeFollower = async (userid) => {
+        await axios.delete(`/api/remove/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        let user = this.state.user
+        user.connections.followers = user.connections.followers.filter((user) => user.id !== userid)
+        this.setState({user})
+    }
+
+    removeFollowing = async (userid) => {
+        await axios.delete(`/api/unfollow/${userid}`, {user: {userid: this.state.userid}})
+        .then(console.log)
+        .catch(console.log)
+
+        let user = this.state.user
+        user.connections.following = user.connections.following.filter((user) => user.id !== userid)
+        this.setState({user})
+    }
+
+    removeFollowRequest = (userid) => {
+        let arr = this.state.followRequests
+        arr = arr.filter(e => e.from_user === userid)
+        this.setState({followRequests: arr})
+    }
+
+    
 
   render() {
     return (
@@ -141,7 +194,7 @@ class App extends Component {
         <Menu user={this.state.user} 
                 handleDrawerClose={this.handleDrawerClose} 
                 open={this.state.openDrawer}/>
-        <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}>
+        <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
             <div style={styles.drawerHeader} />
             <Calendar/>
         </main>

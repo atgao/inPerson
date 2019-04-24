@@ -17,25 +17,27 @@ To run the project initially locally run in the base folder:
     * ~UI - follow button~
     * ~request - follow user~
     * -> Later: follow request already sent/ following
-    * -> Later: advanced search
+    * ->-> Later Later: advanced search
 
 
 --- Tuesday Morning ---
 
 2. Follow Requests menu
-    * request - get follow requests
+    * ~request - get follow requests~
     * UI - accept, ignore
-    * request - accept follow request
-    * request - ignore follow request
+    * ~request - accept follow request~ --> not tested
+    * ~request - delete follow request~ --> not tested
+    * ~request - ignore follow request~ --> not tested
 
 3. Account menu
     * ~UI - display name~
-    * UI - display blocked users
-    * request - get blocked users
+    * ->-> Later Later: UI - display blocked users
+    * ->-> Later Later: request - get blocked users
 
 4. Followers/Following menu
-    * request - remove follower
-    * request - remove following
+    * ~request - remove follower~   --> not tested
+    * ~request - remove following~  --> not tested
+    * UI - add buttons with requests to UI
 
 
 --- By Wednesday ---
@@ -49,15 +51,26 @@ To run the project initially locally run in the base folder:
     * UI - add in sidebar classes menu
         * search bar
         * display list results
-    * -> Later: advanced search
+    * ->-> Later Later: advanced search
 
 
 --- By Thursday ---
 
 7. All the things marked with /Later/
-8. Make UI prettier
+    * follow request already sent/ following
+
+8. Fix UI/ Make UI prettier
 9. Testing
 10. Deploy
+11. Handle errors -> can someone else do this?
+
+-- If there's time until Thursday --
+
+12. Later Later -- in order: 
+    * classes advanced search
+    * request - block users
+    * request - get blocked user
+    * UI - display blocked users
 
 
 

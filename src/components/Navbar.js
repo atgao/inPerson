@@ -109,12 +109,23 @@ class Navbar extends React.Component {
         mobileMoreAnchorEl: null,
         open: this.props.open,
         user: this.props.user,
-        csrf_token: this.props.csrf_token
+        csrf_token: this.props.csrf_token,
+        followRequests: [],
+        noFollowReqs: 0
     };
     
     componentDidUpdate(prevProps) {
-        if (prevProps.open !== this.props.open || prevProps.user !== this.props.user || prevProps.csrf_token !== this.props.csrf_token) {
-            this.setState({open: this.props.open, user: this.props.user, csrf_token: this.props.csrf_token})
+        if (prevProps.open !== this.props.open || 
+            prevProps.user !== this.props.user || 
+            prevProps.csrf_token !== this.props.csrf_token ||
+            prevProps.followRequests !== this.props.followRequests) {
+            this.setState({
+                open: this.props.open, 
+                user: this.props.user, 
+                csrf_token: this.props.csrf_token,
+                followRequests: this.props.followRequests,
+                noFollowReqs: this.props.followRequests.length
+            })
         }
     }
 
