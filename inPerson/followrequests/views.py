@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render
 from django_filters import rest_framework as filters
+from django.db import IntegrityError
 from datetime import datetime
 import requests
 
@@ -9,7 +10,6 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import status
 from django.contrib.auth import get_user_model
-from django.views.decorators.csrf import csrf_exempt # test
 
 # third-party apps
 from friendship.models import Follow, Block
@@ -186,43 +186,39 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     User = get_user_model()
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
-    print("===CALLING FOLLOWER REQUESTS VIEW===")
 
-    # TO DO: MUST VALIDATE THIS DATA
-    # LOGIN IS REQUIRED
-    @csrf_exempt
     def put(self, request, pk):
-        print("TRYING TO PRINT OUT REQUEST")
-        print(request)
         User = get_user_model()
         follower = request.user
         followee = User.objects.get(pk=pk)
         created = datetime.now()
+
+        block = Block.objects.get(blocked=follower, blocker=followee)
         try:
             # must get message for follow request somehow??
             FollowRequest.objects.create(from_user=follower, to_user=followee,
                                         created=created)
             return Response(data={"message": "{} sent follow request to {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
-        # *** check if correct
         except follower.DoesNotExist:
-            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(pk, request.user)},
+            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(followee, request.user)},
                             status=status.HTTP_401_UNAUTHORIZED)
-
-        # *** 403: request couldn't go through, bc request btwn these users already exists (or b/c blocked?)
-        # how to check for existence before the initial try?
-
         except User.DoesNotExist:
-            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(pk, pk)},
+            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(followee, follower)},
                             status=status.HTTP_404_NOT_FOUND)
+        # must test that there is a block or user already follows
+        except IntegrityError:
+            return Response(data={"message": "Cannot send request to user {} since {} request already exists".format(followee, follower)},
+                            status=status.HTTP_403_FORBIDDEN)
+        except not Block.DoesNotExist: # this must be tested
+            return Response(data={"message": "Blocked"},
+                            status=status.HTTP_403_FORBIDDEN)
         except:
             return Response(
                 data={"message": "Internal server error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        # must add in case for blocked user
 
-    # LOGIN IS REQUIRED
     # pk is of the user to reject the follow request from
     def delete(self, request, pk):
         User = get_user_model()
@@ -231,8 +227,6 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
             f_request = FollowRequest.objects.get(from_user=follower, to_user=request.user)
             f_request.reject()
             return Response(status=status.HTTP_204_NO_CONTENT)
-
-        # *** check if correct
         except request.user.DoesNotExist:
             return Response(data={"message": "Cannot reject follow request since {} does not exist".format(request.user)},
                     status=status.HTTP_401_UNAUTHORIZED)
@@ -265,7 +259,6 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
             f_request = FollowRequest.objects.get(from_user=from_user, to_user=to_user)
             f_request.cancel()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        # *** check if correct
         except request.user.DoesNotExist:
             return Response(data={"message": "Cannot cancel follow request to {} since {} does not exist".format(pk, request.user)},
                             status=status.HTTP_401_UNAUTHORIZED)
@@ -320,6 +313,9 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
         except User.DoesNotExist:
             return Response(data={"message": "User {} not found".format(pk)},
                             status=status.HTTP_404_NOT_FOUND)
+        except IntegrityError: # must be tested
+            return Response(data={"message": "Block already exists"},
+                            status=status.HTTP_403_FORBIDDEN)
         except:
             return Response(
                 data={"message": "Internal server error"},
