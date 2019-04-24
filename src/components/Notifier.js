@@ -1,7 +1,7 @@
 import React from 'react';
 import Snackbar from 'material-ui/Snackbar';
 
-let openSnackbarFn = function(){};
+let openSnackbarFn;
 
 class Notifier extends React.Component {
   state = {
@@ -47,7 +47,6 @@ return (
 }
 
 export function openSnackbar({ message }) {
-    console.log('here')
   openSnackbarFn({ message });
 }
 

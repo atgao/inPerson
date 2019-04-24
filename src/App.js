@@ -133,16 +133,21 @@ class App extends Component {
     acceptFollowRequest = async (userid) => {
         await axios.post(`/api/user/request/${userid}`, {user: {userid: this.state.userid}})
         .then(console.log)
-        .catch(console.log)
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
 
         this.removeFollowRequest(userid)
 
     };
 
     deleteFollowRequest = async (userid) => {
-        await axios.delete(`/api/follow/${userid}`, {user: {userid: this.state.userid}})
+        await axios.delete(`/api/follow/${userid}`,
+          {user: {userid: this.state.userid}})
         .then(console.log)
-        .catch(console.log)
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
 
         this.removeFollowRequest(userid)
     }
@@ -160,7 +165,9 @@ class App extends Component {
     removeFollower = async (userid) => {
         await axios.delete(`/api/remove/${userid}`, {user: {userid: this.state.userid}})
         .then(console.log)
-        .catch(console.log)
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
 
         let user = this.state.user
         user.connections.followers = user.connections.followers.filter((user) => user.id !== userid)
@@ -170,7 +177,9 @@ class App extends Component {
     removeFollowing = async (userid) => {
         await axios.delete(`/api/unfollow/${userid}`, {user: {userid: this.state.userid}})
         .then(console.log)
-        .catch(console.log)
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
 
         let user = this.state.user
         user.connections.following = user.connections.following.filter((user) => user.id !== userid)
@@ -205,8 +214,8 @@ class App extends Component {
         <Notifier />
         </MuiThemeProvider>
       </div>
-      
-        
+
+
     );
   }
 }
