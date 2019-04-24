@@ -17,10 +17,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import axios from 'axios';
-import MySnackbarContent from './../Snackbar'
 
-// test
-// axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
+// for csrf token
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.withCredentials = true
@@ -93,7 +91,6 @@ class SearchBar extends React.Component {
         // axios.defaults.xsrfHeaderName = 'X-CSRFToken'
         // axios.defaults.withCredentials = true
         console.log(this.props.csrf_token)
-        const self = this;
         await axios.put(`/api/follow/${userid}/`, {
             user: {userid: this.state.userid},
             // csrfmiddlewaretoken: this.props.csrf_token // this didn't work
@@ -104,12 +101,7 @@ class SearchBar extends React.Component {
         },
         )
         .then((res) => console.log(res))
-        .catch((err) => {
-          self.setState({didErr: true});
-
-
-
-        })
+        .catch((err) => console.log(err))
     }
 
     getName = (student) => {
@@ -206,7 +198,6 @@ class SearchBar extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <MySnackbarContent/>
         </div>
         );
     }

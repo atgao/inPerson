@@ -8,6 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Calendar from './components/Calendar'
 import Navbar from "./components/Navbar";
 import Menu from "./components/Menu";
+import MySnackbarContent from "./components/Snackbar";
 
 import { drawerWidth } from './consts/ui'
 import axios from "axios";
@@ -84,14 +85,14 @@ class App extends Component {
             .then(async (res) => {
                 Object.assign(user, res.data)
                 await axios.get("/api/user/followers", {user:{ userid: userid }})
-                .then((res) => 
+                .then((res) =>
                 {
                     user['connections']['followers'] = res.data
                 })
                 .catch((err) => console.log(err))
 
                 await axios.get("/api/user/following", {user:{ userid: userid }})
-                .then((res) => 
+                .then((res) =>
                 {
                     user['connections']['following'] = res.data
                     user['connections']['following'].push({
@@ -103,7 +104,7 @@ class App extends Component {
                 })
                 .catch((err) => console.log(err))
 
-                return user; 
+                return user;
             })
             .then((user) => {
                 console.log("Updating user")
@@ -117,7 +118,7 @@ class App extends Component {
                     console.log("follow requests set")
                 })
                 .catch((err) => console.log(err))
-                
+
             })
             .catch((err) => console.log(err))
         }
@@ -133,7 +134,7 @@ class App extends Component {
         .catch(console.log)
 
         this.removeFollowRequest(userid)
-        
+
     };
 
     deleteFollowRequest = async (userid) => {
@@ -149,7 +150,7 @@ class App extends Component {
         this.setState({ openDrawer: true })
     };
 
-    
+
     handleDrawerClose = () => {
         this.setState({ openDrawer: false })
     };
@@ -180,19 +181,19 @@ class App extends Component {
         this.setState({followRequests: arr})
     }
 
-    
+
 
   render() {
     return (
       <div className="App">
         <CssBaseline />
-        <Navbar user={this.state.user} 
-                handleDrawerOpen={this.handleDrawerOpen} 
+        <Navbar user={this.state.user}
+                handleDrawerOpen={this.handleDrawerOpen}
                 open={this.state.openDrawer}
                 followRequests={this.state.followRequests}
                 csrf_token={this.state.csrf_token} />
-        <Menu user={this.state.user} 
-                handleDrawerClose={this.handleDrawerClose} 
+        <Menu user={this.state.user}
+                handleDrawerClose={this.handleDrawerClose}
                 open={this.state.openDrawer}/>
         <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
             <div style={styles.drawerHeader} />
