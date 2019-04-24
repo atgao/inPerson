@@ -18,6 +18,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import axios from 'axios';
 
+// test
+// axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
+
 
 const styles = theme => ({
   search: {
@@ -72,21 +78,26 @@ class SearchBar extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.userid !== this.userid) {
+        if (prevProps.userid !== this.props.userid) {
             this.setState({userid: this.props.userid})
         }
     }
 
-    
+
 
     followUser = async (userid) => {
-        axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
-        axios.defaults.xsrfCookieName = 'csrftoken'
-        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-        axios.defaults.withCredentials = true
+        // axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
+        // axios.defaults.xsrfCookieName = 'csrftoken'
+        // axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+        // axios.defaults.withCredentials = true
+        console.log(this.props.csrf_token)
         await axios.put(`/api/follow/${userid}/`, {
             user: {userid: this.state.userid},
             // csrfmiddlewaretoken: this.props.csrf_token // this didn't work
+            // 'X-CSRFToken': this.props.csrf_token
+            headers: {
+              'X-CSRFToken': this.props.csrf_token
+            }
         },
         )
         .then((res) => console.log(res))
@@ -111,7 +122,7 @@ class SearchBar extends React.Component {
         this.setState({ open: true });
         console.log(this.state.searchResults)
     };
-    
+
     handleClose = () => {
         this.setState({ open: false });
     };
@@ -122,7 +133,7 @@ class SearchBar extends React.Component {
         .catch((err) => console.log(err))
     }
 
-    renderResults = () => 
+    renderResults = () =>
     {
         return(
             <List>
@@ -139,7 +150,7 @@ class SearchBar extends React.Component {
             </List>
         )
     }
-    
+
     render() {
         const { classes } = this.props;
         return (
@@ -173,13 +184,13 @@ class SearchBar extends React.Component {
         >
           <DialogTitle id="scroll-dialog-title">Search Results</DialogTitle>
           <DialogContent>
-            
-                {this.state.searchResults.length === 0? 
+
+                {this.state.searchResults.length === 0?
                     <DialogContentText> No results found.</DialogContentText>
                 :
                     this.renderResults()
                 }
-                
+
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} variant="outlined" color="secondary">

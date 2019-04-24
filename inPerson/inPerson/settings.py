@@ -29,8 +29,6 @@ SECRET_KEY = '6l)tm(+9my#y0=t7v3+8_%1p%yhu*-8i00zh6)gu+2@w2ec(6x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -70,6 +68,13 @@ UNIAUTH_LOGOUT_CAS_COMPLETELY = True
 UNIAUTH_LOGIN_REDIRECT_URL = 'home'
 UNIAUTH_LOGOUT_REDIRECT_URL = 'home'
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CSRF_COOKIE_NAME = "XSRF-TOKEN" #TEST
+
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_SECURE = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -101,7 +106,6 @@ TEMPLATES = [
     },
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 # CORS_ORIGIN_WHITELIST = (
 #        'localhost:3000',

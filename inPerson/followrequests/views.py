@@ -9,6 +9,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import status
 from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt # test
 
 # third-party apps
 from friendship.models import Follow, Block
@@ -185,10 +186,14 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
     User = get_user_model()
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
+    print("===CALLING FOLLOWER REQUESTS VIEW===")
 
     # TO DO: MUST VALIDATE THIS DATA
     # LOGIN IS REQUIRED
+    @csrf_exempt
     def put(self, request, pk):
+        print("TRYING TO PRINT OUT REQUEST")
+        print(request)
         User = get_user_model()
         follower = request.user
         followee = User.objects.get(pk=pk)
@@ -201,9 +206,9 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
                             status=status.HTTP_200_OK)
         # *** check if correct
         except follower.DoesNotExist:
-            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(pk, request.user)}, 
+            return Response(data={"message": "Cannot follow user {} since {} does not exist".format(pk, request.user)},
                             status=status.HTTP_401_UNAUTHORIZED)
-        
+
         # *** 403: request couldn't go through, bc request btwn these users already exists (or b/c blocked?)
         # how to check for existence before the initial try?
 
@@ -232,7 +237,7 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(data={"message": "Cannot reject follow request since {} does not exist".format(request.user)},
                     status=status.HTTP_401_UNAUTHORIZED)
         except FollowRequest.DoesNotExist:
-            return Response(data={"message": "No follow request from {} to {} exists".format(pk, request.user)}, 
+            return Response(data={"message": "No follow request from {} to {} exists".format(pk, request.user)},
                             status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist:
             return Response(data={"message": "Cannot reject follow request since {} does not exist".format(pk)},
@@ -262,7 +267,7 @@ class FollowerRequestsCancelView(generics.CreateAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         # *** check if correct
         except request.user.DoesNotExist:
-            return Response(data={"message": "Cannot cancel follow request to {} since {} does not exist".format(pk, request.user)}, 
+            return Response(data={"message": "Cannot cancel follow request to {} since {} does not exist".format(pk, request.user)},
                             status=status.HTTP_401_UNAUTHORIZED)
         except FollowRequest.DoesNotExist:
             return Response(data={"message": "Follow request to {} does not exist".format(pk)},
@@ -313,7 +318,7 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
             return Response(data={"message": "{} has blocked user {}".format(pk, request.user)},
                             status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response(data={"message": "User {} not found".format(pk)}, 
+            return Response(data={"message": "User {} not found".format(pk)},
                             status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(
@@ -329,7 +334,7 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
             return Response(data={"message": "{} is blocked by {}".format(request.user, pk)},
                             status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response(data={"message": "User {} not found".format(pk)}, 
+            return Response(data={"message": "User {} not found".format(pk)},
                             status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(
@@ -344,10 +349,10 @@ class BlocksCreateGetDeleteView(generics.RetrieveUpdateDestroyAPIView):
             Block.objects.remove_block(request.user, blocked)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Block.DoesNotExist:
-            return Response(data={"message": "Block does not exist"}, 
+            return Response(data={"message": "Block does not exist"},
                             status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist:
-            return Response(data={"message": "User {} not found".format(pk)}, 
+            return Response(data={"message": "User {} not found".format(pk)},
                             status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(
