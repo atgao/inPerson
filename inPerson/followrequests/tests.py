@@ -233,3 +233,11 @@ class BlocksTest(APITestCase):
         response = self.client.get(reverse("blocked-users-list"))
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_follow_blocked_user(self):
+        self.client.login(username='rsedgewick', password='password')
+        al14 = User.objects.get(username="al14")
+        response = self.client.put(reverse("send-delete-follow-request",
+                                   kwargs={"pk": al14.pk}))
+        print("attempting TO FOLLOW BLOCKED USER")
+        print(response.status_code)
