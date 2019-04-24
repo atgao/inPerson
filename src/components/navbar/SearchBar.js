@@ -17,7 +17,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import axios from 'axios';
-import AlertDialog from './../ErrorMessage'
+import MySnackbarContent from './../Snackbar'
 
 // test
 // axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
@@ -206,7 +206,7 @@ class SearchBar extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <AlertDialog/>
+        <MySnackbarContent/>
         </div>
         );
     }
