@@ -6,6 +6,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import status
 from rest_framework.filters import SearchFilter
+from django.contrib.auth import get_user_model
 
 from .models import Section, RecurrentEvent, Schedule
 from .serializers import SectionsSerializer, RecurrentEventsSerializer, SchedulesSerializer
@@ -60,6 +61,73 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
                             status=status.HTTP_404_NOT_FOUND)
         except:
             return Response(data={"message": Error},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ListOtherUserScheduleView(generics.ListAPIView):
+    """
+    GET schedule/:userid    GETS all recurrent events of a user's current schedule
+    """
+
+    queryset = RecurrentEvent.objects.all()
+    serializer_class = RecurrentEventsSerializer
+
+    def list(self, request, pk):
+        try:
+            User = get_user_model()
+            other_user = User.objects.get(pk=pk)
+            schedule = Schedule.objects.get_current_schedule_for_user(other_user)
+            events = RecurrentEvent.objects.filter(schedule=schedule)
+            serializer = RecurrentEventsSerializer(events, many=True)
+            return Response(data=serializer.data,
+                            status=status.HTTP_200_OK)
+        except request.user.DoesNotExist or User.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class CreateScheduleView(generics.CreateAPIView):
+    """
+    POST schedule/user         CREATE new schedule
+    """
+
+    queryset = Schedule.objects.all()
+    serializer_class = SchedulesSerializer
+
+    def post(self, request, *args, **kwargs):
+        try:
+            s = Schedule.objects.create(request.data, owner=request.user)
+            serializer = SchedulesSerializer(s)
+            return Response(data=serializer.data,
+                            status=status.HTTP_200_OK)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response(data={"message": "Error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DeleteScheduleView(generics.DestroyAPIView):
+    """
+    DELETE schedule/user
+    """
+    queryset = Schedule.objects.all()
+    serializer_class = SchedulesSerializer
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            schedule = self.queryset.get(owner=request.user)
+            schedule.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Schedule.DoesNotExist:
+            return Response(data={"message": "Schedule not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        except request.user.DoesNotExist:
+            return Response(data={"message": "User does not exist"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response(data={"message": "Error"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
