@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -160,7 +161,7 @@ class Navbar extends React.Component {
             open={isMenuOpen}
             onClose={this.handleMenuClose}
         >
-            <MenuItem onClick={this.handleMenuClose}>{this.state.user.first_name} {this.state.user.last_name} '{(''+this.state.user.class_year).slice(2)}</MenuItem>
+            {/* <MenuItem onClick={this.handleMenuClose}>{this.state.user.first_name} {this.state.user.last_name} '{(''+this.state.user.class_year).slice(2)}</MenuItem> */}
             <MenuItem onClick={() => window.location.pathname = '/accounts/logout'}>Logout</MenuItem>
         </Menu>
         );
@@ -229,14 +230,14 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     </Badge>
                 </IconButton>
-                <IconButton
+                <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
                     onClick={this.handleProfileMenuOpen}
                     color="inherit"
                 >
-                    <AccountCircle />
-                </IconButton>
+                    {this.state.user.first_name}
+                </Button>
                 </div>
                 <div className={classes.sectionMobile}>
                 <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">

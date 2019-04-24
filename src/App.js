@@ -3,6 +3,7 @@ import './App.css';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 
 import Calendar from './components/Calendar'
@@ -187,7 +188,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <CssBaseline />
+      <MuiThemeProvider>
+      <CssBaseline />
         <Navbar user={this.state.user}
                 handleDrawerOpen={this.handleDrawerOpen}
                 open={this.state.openDrawer}
@@ -200,7 +202,11 @@ class App extends Component {
             <div style={styles.drawerHeader} />
             <Calendar/>
         </main>
+        <Notifier />
+        </MuiThemeProvider>
       </div>
+      
+        
     );
   }
 }
