@@ -47,7 +47,6 @@ return (
 }
 
 export function openSnackbar({ message }) {
-    console.log('here')
   openSnackbarFn({ message });
 }
 

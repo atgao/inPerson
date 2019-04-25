@@ -15,6 +15,11 @@ import {openSnackbar} from "./components/Notifier";
 import { drawerWidth } from './consts/ui'
 import axios from "axios";
 
+// for csrf token
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
+
 const styles = theme => ({
     root: {
       display: 'flex',
@@ -110,7 +115,11 @@ class App extends Component {
             })
             .then((user) => {
                 console.log("Updating user")
-                this.setState({user:user, userid: userid, csrf_token: csrf_token})
+                this.setState({
+                    user:user, 
+                    userid: userid, 
+                    csrf_token: csrf_token
+                })
                 console.log("user updated")
             })
             .then(async () => {
@@ -131,7 +140,12 @@ class App extends Component {
 
 
     acceptFollowRequest = async (userid) => {
-        await axios.post(`/api/user/request/${userid}`, {user: {userid: this.state.userid}})
+        await axios.post(`/api/user/request/${userid}`, 
+            {user: {userid: this.state.userid},
+            headers: {
+                'X-CSRFToken': this.state.csrf_token
+            }
+        })
         .then(console.log)
         .catch(console.log)
 
@@ -140,7 +154,12 @@ class App extends Component {
     };
 
     deleteFollowRequest = async (userid) => {
-        await axios.delete(`/api/follow/${userid}`, {user: {userid: this.state.userid}})
+        await axios.delete(`/api/follow/${userid}`, {
+            user: {userid: this.state.userid},
+            headers: {
+                'X-CSRFToken': this.state.csrf_token
+            }
+        })
         .then(console.log)
         .catch(console.log)
 
@@ -158,7 +177,12 @@ class App extends Component {
     };
 
     removeFollower = async (userid) => {
-        await axios.delete(`/api/remove/${userid}`, {user: {userid: this.state.userid}})
+        await axios.delete(`/api/remove/${userid}`, {
+            user: {userid: this.state.userid},
+            headers: {
+                'X-CSRFToken': this.state.csrf_token
+            }
+        })
         .then(console.log)
         .catch(console.log)
 
@@ -168,7 +192,12 @@ class App extends Component {
     }
 
     removeFollowing = async (userid) => {
-        await axios.delete(`/api/unfollow/${userid}`, {user: {userid: this.state.userid}})
+        await axios.delete(`/api/unfollow/${userid}`, {
+            user: {userid: this.state.userid},
+            headers: {
+                'X-CSRFToken': this.state.csrf_token
+              }
+        })
         .then(console.log)
         .catch(console.log)
 
@@ -189,20 +218,25 @@ class App extends Component {
     return (
       <div className="App">
       <MuiThemeProvider>
-      <CssBaseline />
-        <Navbar user={this.state.user}
-                handleDrawerOpen={this.handleDrawerOpen}
-                open={this.state.openDrawer}
-                followRequests={this.state.followRequests}
-                csrf_token={this.state.csrf_token} />
-        <Menu user={this.state.user}
-                handleDrawerClose={this.handleDrawerClose}
-                open={this.state.openDrawer}/>
-        <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
-            <div style={styles.drawerHeader} />
-            <Calendar/>
-        </main>
-        <Notifier />
+        <CssBaseline />
+            <Navbar user={this.state.user}
+                    userid={this.state.userid}
+                    handleDrawerOpen={this.handleDrawerOpen}
+                    open={this.state.openDrawer}
+                    followRequests={this.state.followRequests}
+                    csrf_token={this.state.csrf_token} />
+            <Menu user={this.state.user}
+                    userid={this.state.userid}
+                    handleDrawerClose={this.handleDrawerClose}
+                    csrf_token={this.state.csrf_token}
+                    open={this.state.openDrawer}
+                    removeFollower={this.removeFollower}
+                    removeFollowing={this.removeFollowing}/>
+            <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
+                <div style={styles.drawerHeader} />
+                <Calendar/>
+            </main>
+            <Notifier />
         </MuiThemeProvider>
       </div>
       

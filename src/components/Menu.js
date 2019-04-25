@@ -12,8 +12,10 @@ import IconButton from '@material-ui/core/IconButton';
 // import EventsDisplay from './menu/EventsDisplay'
 import FollowerDisplay from './menu/FollowerDisplay'
 import FollowingDisplay from './menu/FollowingDisplay'
+import ClassesDisplay from "./menu/ClassesDisplay";
 
 import { drawerWidth } from '../consts/ui'
+
 
 const styles = theme => ({
     root: {
@@ -40,18 +42,26 @@ class Menu extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            csrf_token: '',
             open: props.open,
-            user: props.user
+            user: props.user, 
+            userid: props.userid
         };
     }
     
     componentDidUpdate(prevProps) {
-        if (prevProps.user !== this.props.user || prevProps.open !== this.props.open) {
-            this.setState({user: this.props.user, open: this.props.open})
+        if (prevProps.user !== this.props.user || 
+            prevProps.open !== this.props.open || 
+            prevProps.userid !== this.props.userid ||
+            prevProps.csrf_token !== this.props.csrf_token) {
+            this.setState({
+                csrf_token: this.props.csrf_token,
+                user: this.props.user, 
+                open: this.props.open, 
+                userid: this.props.userid
+            })
         }
     }
-
-    componentWillMount
 
     render() {
         const { classes, theme } = this.props;
@@ -79,8 +89,9 @@ class Menu extends React.Component {
                                 first_name={this.state.user['first_name']}
                                 last_name={this.state.user['last_name']}
                                 class_year={this.state.user['class_year']}/> */}
-                <FollowerDisplay user={this.state.user}/>
-                <FollowingDisplay user={this.state.user}/>
+                <FollowerDisplay user={this.state.user} removeFollower={this.props.removeFollower}/>
+                <FollowingDisplay user={this.state.user} removeFollowing={this.props.removeFollowing}/>
+                <ClassesDisplay user={this.state.user} userid={this.state.userid}/>
             </Drawer>
         );
     }

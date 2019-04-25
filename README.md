@@ -47,10 +47,10 @@ To run the project initially locally run in the base folder:
     * UI - display schedule
 
 6. Classes menu
-    * request - search for classes
-    * UI - add in sidebar classes menu
-        * search bar
-        * display list results
+    * ~request - search for classes~
+    * ~UI - add in sidebar classes menu~ --> not tested
+        * ~search bar~
+        * ~display list results~ --> not tested
     * ->-> Later Later: advanced search
 
 
@@ -59,10 +59,10 @@ To run the project initially locally run in the base folder:
 7. All the things marked with /Later/
     * follow request already sent/ following
 
-8. Fix UI/ Make UI prettier
+8. ~Fix UI/ Make UI prettier~   -> <3 Alice working on it
 9. Testing
 10. Deploy
-11. Handle errors -> can someone else do this?
+11. ~Handle errors~             -> <3 Alice working on it
 
 -- If there's time until Thursday --
 
