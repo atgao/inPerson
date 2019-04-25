@@ -150,6 +150,7 @@ class FollowerRequestsCreateView(generics.CreateAPIView):
     User = get_user_model()
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
+
     # TODO: LOGIN IS REQUIRED
     # pk is the db id from the user to accept the request from
     def post(self, request, pk):

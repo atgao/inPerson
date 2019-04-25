@@ -17,6 +17,9 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
+    class Meta:
+        ordering = ['class_year']
+
     def __str__(self):
         return "{}".format(self.username)
 
