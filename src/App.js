@@ -154,7 +154,10 @@ class App extends Component {
         await axios.get("/api/user/followers", {user:{ userid: userid }})
         .then((res) =>
         {
-            user['connections']['followers'] = res.data
+            res.data.forEach(async (req) => {
+                let follower = await this.getUser(req.follower)
+                user['connections']['followers'].push(follower)
+            })
         })
         .catch((err) => console.log(err))
     }
@@ -163,15 +166,28 @@ class App extends Component {
         await axios.get("/api/user/following", {user:{ userid: userid }})
         .then((res) =>
         {
-            user['connections']['following'] = res.data
-            user['connections']['following'].push({
-                netid: user['netid'],
-                first_name: user['first_name'],
-                last_name: user['last_name'],
-                class_year: user['class_year']
+            res.data.forEach(async (req) => {
+                let followee = await this.getUser(req.followee)
+                user['connections']['following'].push(followee)
             })
+            // user['connections']['following'].push({
+            //     netid: user['netid'],
+            //     first_name: user['first_name'],
+            //     last_name: user['last_name'],
+            //     class_year: user['class_year']
+            // })
         })
         .catch((err) => console.log(err))
+    }
+
+    getUser = async (userid) => {
+        let user = {}
+        await axios.get(`/api/user/${userid}`, {user:{userid: this.state.userid}})
+        .then ((res) => {
+            user = res.data
+        })
+        .catch((err) => console.log("OH NO ERROR ERROR WTF WENT WRONG"))
+        return user
     }
 
 

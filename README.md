@@ -18,12 +18,12 @@ To run the project initially locally run in the base folder:
     * -> Later: follow request already sent/ following
     * ->-> Later Later: advanced search
 
-2. Follow Requests menu
+2. ~Follow Requests menu~
     * ~request - get follow requests~
-    * UI - accept, ignore
-    * ~request - accept follow request~       --> not tested
-    * ~request - delete follow request~       --> not tested
-    * ~request - ignore follow request~       --> not tested
+    * ~UI - accept, ignore~
+    * ~request - accept follow request~
+    * ~request - delete follow request~ 
+    * ~request - ignore follow request~
 
 3. Account menu
     * ~UI - display name~

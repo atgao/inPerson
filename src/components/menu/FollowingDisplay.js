@@ -94,7 +94,7 @@ class FollowingDisplay extends React.Component {
     }
 
     handleRemove = (index) => {
-        this.props.removeFollowing(this.props.user['connections']['following'][index])
+        this.props.removeFollowing(this.props.user['connections']['following'][index].id)
         this.handleClose(index)
     }
 
@@ -118,8 +118,6 @@ class FollowingDisplay extends React.Component {
     userDisplay = (connection, index) => (
         <div>
             <ListItem key={connection['netid']} divider={true}>
-            {console.log('connection')}
-            {console.log(connection)}
                 <ListItemText primary={this.getName(connection)} secondary={connection['netid']}/>
                 <Dialog
                     open={this.state.openAlert[index]}
