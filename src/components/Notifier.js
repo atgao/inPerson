@@ -3,10 +3,20 @@ import Snackbar from 'material-ui/Snackbar';
 
 let openSnackbarFn;
 
+const styles = theme => ({
+  root: {
+    position: 'absolute',
+    right: '100px'
+  },
+  snackbar: {
+    position: 'absolute',
+  }
+});
+
 class Notifier extends React.Component {
   state = {
     open: false,
-    message: '',
+    message: ''
   };
 
   componentDidMount() {
