@@ -223,10 +223,6 @@ class ClassesDisplay extends React.Component {
 
                             <SearchIcon  fontSize = {'small'}/>
                             <InputBase
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
                                 placeholder="Search for classes…"
                                 // classes={{
                                 //     root: classes.inputRoot,
