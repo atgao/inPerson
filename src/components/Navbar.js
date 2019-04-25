@@ -15,11 +15,15 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuIcon from '@material-ui/icons/Menu';
+import DoneIcon from '@material-ui/icons/Done'
+import ClearIcon from '@material-ui/icons/Clear'
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import SearchBar from './navbar/SearchBar';
 
 import { drawerWidth } from '../consts/ui'
 import axios from 'axios';
+import { Icon } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -108,14 +112,26 @@ const styles = theme => ({
 class Navbar extends React.Component {
     state = {
         anchorEl: null,
+        anchorElFR: null,
         mobileMoreAnchorEl: null,
+        mobileMoreAnchorElFR: null,
         open: this.props.open,
         user: this.props.user,
         csrf_token: this.props.csrf_token,
-        followRequests: [],
+        followRequests: this.props.followRequests,
         followRequestsUsers: [],
         noFollowReqs: 0
     };
+
+    async componentDidMount () {
+        const arr = await this.populateReqsUsers(this.props.followRequests)
+        this.setState({
+            followRequests: this.props.followRequests,
+            noFollowReqs: this.props.followRequests.length,
+            followRequestsUsers: arr
+        })
+
+    }
     
     async componentDidUpdate (prevProps) {
         if (prevProps.open !== this.props.open || 
@@ -123,7 +139,7 @@ class Navbar extends React.Component {
             prevProps.csrf_token !== this.props.csrf_token ||
             prevProps.followRequests !== this.props.followRequests) {
                 if (prevProps.followRequests !== this.props.followRequests) {
-                    const arr = this.populateReqsUsers()
+                    const arr = await this.populateReqsUsers(this.props.followRequests)
                     this.setState({
                         open: this.props.open, 
                         user: this.props.user, 
@@ -143,8 +159,25 @@ class Navbar extends React.Component {
         }
     }
 
+    getName = (student) => {
+        let sign = ""
+        if (student['netid'] === this.props.netid) sign += "You"
+        else {
+            sign += student["first_name"]
+            sign += " "
+            sign += student["last_name"]
+            sign += " '"
+            sign += (student["class_year"] % 100)
+        }
+        return sign
+    }
+
     handleProfileMenuOpen = event => {
         this.setState({ anchorEl: event.currentTarget });
+    };
+
+    handleFRMenuOpen = event => {
+        this.setState({ anchorElFR: event.currentTarget });
     };
 
     handleMenuClose = () => {
@@ -152,38 +185,59 @@ class Navbar extends React.Component {
         this.handleMobileMenuClose();
     };
 
+    handleFRMenuClose = () => {
+        this.setState({ anchorElFR: null });
+        this.handleMobileMenuClose();
+    };
+
+
     handleMobileMenuOpen = event => {
         this.setState({ mobileMoreAnchorEl: event.currentTarget });
     };
 
     handleMobileMenuClose = () => {
-        this.setState({ mobileMoreAnchorEl: null });
+        this.setState({ mobileMoreAnchorEl: null});
     };
 
-    populateReqsUsers = async () => {
+    populateReqsUsers = async (reqs) => {
         let arr = []
-        await this.state.followRequests.forEach(async (req, index) => {
+        await reqs.forEach(async (req, index) => {
             console.assert((req.to_user+'') === (this.props.userid+''))
             await axios.get(`/api/user/${req.from_user}`, {user:{userid: this.props.userid}})
-            .then ((res) => arr.push({
-                user: res.data,
-                index: index
-            }))
+            .then ((res) => {
+                arr.push({
+                    user: res.data,
+                    index: index
+                })
+            })
+            .catch((err) => console.log("OH NO ERROR ERROR WTF WENT WRONG"))
         })
         return arr 
     }
 
     renderFollowReq = (req) =>{
-
         return (
-            <MenuItem></MenuItem>
+            <MenuItem>
+                <Typography>{this.getName(req.user)}</Typography>
+                <ListItemIcon>
+                    <IconButton onClick={() => {console.log("yes")}}>
+                        <DoneIcon />
+                    </IconButton>
+                </ListItemIcon>
+                <ListItemIcon>
+                    <IconButton onClick={() => {console.log("no")}}>
+                        <ClearIcon />
+                    </IconButton>
+                </ListItemIcon>
+            </MenuItem>
         )
     }
 
     render() {
-        const { anchorEl, mobileMoreAnchorEl } = this.state;
+        const { anchorEl, anchorElFR, mobileMoreAnchorEl } = this.state;
         const { classes } = this.props;
         const isMenuOpen = Boolean(anchorEl);
+        const isFRMenuOpen = Boolean(anchorElFR);
         const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
         const renderMenu = (
@@ -198,6 +252,18 @@ class Navbar extends React.Component {
             <MenuItem onClick={() => window.location.pathname = '/accounts/logout'}>Logout</MenuItem>
         </Menu>
         );
+
+        const renderFRMenu = (
+            <Menu
+                anchorEl={anchorElFR}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={isFRMenuOpen}
+                onClose={this.handleFRMenuClose}
+            >
+                {this.state.followRequestsUsers.map(this.renderFollowReq)}
+            </Menu>
+            );
 
         const renderMobileMenu = (
         <Menu
@@ -215,7 +281,7 @@ class Navbar extends React.Component {
             </IconButton>
             <p>Messages</p>
             </MenuItem> */}
-            <MenuItem onClick={this.handleMobileMenuClose}>
+            <MenuItem onClick={this.handleFRMenuOpen}>
                 <IconButton color="inherit">
                     {this.noFollowReqs === 0?
                     <Badge badgeContent={this.noFollowReqs} color="secondary">
@@ -262,7 +328,7 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                <IconButton color="inherit" onClick={this.handleProfileMenuOpen}>
+                <IconButton color="inherit" onClick={this.handleFRMenuOpen}>
                     {this.state.noFollowReqs !== 0?
                     <Badge badgeContent={this.state.noFollowReqs} color="secondary">
                         <NotificationsIcon />
@@ -288,6 +354,7 @@ class Navbar extends React.Component {
             </Toolbar>
             </AppBar>
             {renderMenu}
+            {renderFRMenu}
             {renderMobileMenu}
         </div>
         );

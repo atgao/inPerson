@@ -105,7 +105,7 @@ const styles = theme => ({
     },
 });
 
-class AccountManu extends React.Component {
+class AccountMenu extends React.Component {
     state = {
         anchorEl: null,
         open: this.props.open,
@@ -187,4 +187,4 @@ class AccountManu extends React.Component {
 }
 
 
-export default withStyles(styles, { withTheme: true })(AccountManu);
+export default withStyles(styles, { withTheme: true })(AccountMenu);

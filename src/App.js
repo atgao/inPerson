@@ -224,6 +224,8 @@ class App extends Component {
                     handleDrawerOpen={this.handleDrawerOpen}
                     open={this.state.openDrawer}
                     followRequests={this.state.followRequests}
+                    acceptFollowRequest={this.acceptFollowRequest}
+                    deleteFollowRequest={this.deleteFollowRequest}
                     csrf_token={this.state.csrf_token} />
             <Menu user={this.state.user}
                     userid={this.state.userid}
