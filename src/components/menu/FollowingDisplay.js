@@ -107,20 +107,19 @@ class FollowingDisplay extends React.Component {
 
     getName = (student) => {
         let sign = ""
-        if (student['netid'] === this.props.netid) sign += "You"
-        else {
-            sign += student["first_name"]
-            sign += " "
-            sign += student["last_name"]
-            sign += " '"
-            sign += (student["class_year"] % 100)
-        }
+        sign += student["first_name"]
+        sign += " "
+        sign += student["last_name"]
+        sign += " '"
+        sign += (student["class_year"] % 100)
         return sign
     }
 
     userDisplay = (connection, index) => (
         <div>
             <ListItem key={connection['netid']} divider={true}>
+            {console.log('connection')}
+            {console.log(connection)}
                 <ListItemText primary={this.getName(connection)} secondary={connection['netid']}/>
                 <Dialog
                     open={this.state.openAlert[index]}

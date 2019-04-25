@@ -161,14 +161,11 @@ class Navbar extends React.Component {
 
     getName = (student) => {
         let sign = ""
-        if (student['netid'] === this.props.netid) sign += "You"
-        else {
             sign += student["first_name"]
             sign += " "
             sign += student["last_name"]
             sign += " '"
             sign += (student["class_year"] % 100)
-        }
         return sign
     }
 

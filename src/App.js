@@ -91,25 +91,9 @@ class App extends Component {
             axios.get(`/api/user/${userid}`,)
             .then(async (res) => {
                 Object.assign(user, res.data)
-                await axios.get("/api/user/followers", {user:{ userid: userid }})
-                .then((res) =>
-                {
-                    user['connections']['followers'] = res.data
-                })
-                .catch((err) => console.log(err))
+                await this.getFollower(user, userid)
 
-                await axios.get("/api/user/following", {user:{ userid: userid }})
-                .then((res) =>
-                {
-                    user['connections']['following'] = res.data
-                    user['connections']['following'].push({
-                        netid: user['netid'],
-                        first_name: user['first_name'],
-                        last_name: user['last_name'],
-                        class_year: user['class_year']
-                    })
-                })
-                .catch((err) => console.log(err))
+                await this.getFollowing(user, userid)
 
                 return user;
             })
@@ -164,6 +148,30 @@ class App extends Component {
         .catch(console.log)
 
         this.removeFollowRequest(userid)
+    }
+
+    getFollower = async (user, userid) => {
+        await axios.get("/api/user/followers", {user:{ userid: userid }})
+        .then((res) =>
+        {
+            user['connections']['followers'] = res.data
+        })
+        .catch((err) => console.log(err))
+    }
+
+    getFollowing = async (user, userid) => {
+        await axios.get("/api/user/following", {user:{ userid: userid }})
+        .then((res) =>
+        {
+            user['connections']['following'] = res.data
+            user['connections']['following'].push({
+                netid: user['netid'],
+                first_name: user['first_name'],
+                last_name: user['last_name'],
+                class_year: user['class_year']
+            })
+        })
+        .catch((err) => console.log(err))
     }
 
 
