@@ -15,6 +15,7 @@ import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
 
 import axios from 'axios';
 
@@ -214,16 +215,15 @@ class ClassesDisplay extends React.Component {
                                     }
                                 }}
                             />
+                            <List>
+                                {this.state.searchResults.map(this.classDisplay)}
+                            </List>
 
                         </div>
-                        <CssBaseline />
-                        <List>
-                            {this.state.searchResults.map(this.classDisplay)}
-                        </List>
-                        <CssBaseline />
-                        <List>
-                            {this.state.addedClasses.map(this.classDisplay)}
-                        </List>
+                        <div>
+
+
+                        </div>
 
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
