@@ -42,10 +42,8 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
     """
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
-    print("===CALLING POST METHOD===")
 
     def post(self, request, *args, **kwargs):
-        print("==INSIDE POST METHOD===")
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
         a_class = request.data["body"]["class"]
 
