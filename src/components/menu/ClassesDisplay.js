@@ -15,7 +15,13 @@ import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+
 import axios from 'axios';
+
+// for csrf token
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
 
 const ExpansionPanel = withStyles({
 root: {
@@ -72,7 +78,7 @@ class ClassesDisplay extends React.Component {
         };
 
     }
-    
+
 
     componentDidUpdate(prevProps) {
         if (prevProps.user !== this.props.user || prevProps.userid !== this.props.userid) {
@@ -82,9 +88,12 @@ class ClassesDisplay extends React.Component {
 
     addClassToSchedule = async (cls) => {
         if (this.isClassInSchedule(cls)) return
-        await axios.post('/api/classes', {
+        await axios.post('/api/user/schedule/classes/', {
             user: {user: this.state.userid},
-            body: {class: cls}
+            body: {class: cls},
+            headers: {
+              'X-CSRFToken': this.props.csrf_token
+            }
         })
         .then(console.log)
         .catch(console.log)
@@ -108,7 +117,7 @@ class ClassesDisplay extends React.Component {
         let days = ''
         cls.days.forEach((day) => days += day)
         if (days.length  === 0) return ''
-        
+
         return `${days} ${cls.start_time.slice(0, 5)} - ${cls.end_time.slice(0, 5)}`
     }
 
@@ -146,8 +155,8 @@ class ClassesDisplay extends React.Component {
     classDisplay = (cls) => (
         <div>
             <ListItem key={this.className(cls)} divider={true}>
-                <ListItemText 
-                    primary={this.classCode(cls)} 
+                <ListItemText
+                    primary={this.classCode(cls)}
                     secondary={
                         <React.Fragment>
                           <Typography component="span" style={{display: 'inline'}} color="textPrimary">
@@ -156,7 +165,7 @@ class ClassesDisplay extends React.Component {
                           {this.classTime(cls)}
                         </React.Fragment>
                     } />
-                
+
                 <ListItemSecondaryAction>
                     {this.isClassInSchedule(cls)?
                     <IconButton aria-label="delete" onClick={()=>console.log(cls)}>
@@ -171,7 +180,7 @@ class ClassesDisplay extends React.Component {
             </ListItem>
         </div>
     )
- 
+
     render() {
         const { classes } = this.props
         return (
@@ -205,7 +214,7 @@ class ClassesDisplay extends React.Component {
                                     }
                                 }}
                             />
-                    
+
                         </div>
                         <CssBaseline />
                         <List>
@@ -215,7 +224,7 @@ class ClassesDisplay extends React.Component {
                         <List>
                             {this.state.addedClasses.map(this.classDisplay)}
                         </List>
-                            
+
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>

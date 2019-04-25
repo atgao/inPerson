@@ -38,14 +38,17 @@ class ListSectionsView(generics.ListAPIView):
 
 class CreateSectionstoScheduleView(generics.ListCreateAPIView):
     """
-    POST classes/
+    POST user/schedule/classes/
     """
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
+    print("===CALLING POST METHOD===")
 
     def post(self, request, *args, **kwargs):
+        print("==INSIDE POST METHOD===")
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
-        a_class = request.data
+        a_class = request.data["body"]["class"]
+
         if a_class["term"] != schedule.term: # can't add section when its not same term
             return Response(data={"message": "Class is not in same term"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
