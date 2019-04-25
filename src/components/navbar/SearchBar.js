@@ -76,7 +76,6 @@ class SearchBar extends React.Component {
             searchResults: [],
             query: '',
             userid: props.userid,
-            didErr: false,
         }
     }
 
@@ -93,7 +92,6 @@ class SearchBar extends React.Component {
         // axios.defaults.xsrfCookieName = 'csrftoken'
         // axios.defaults.xsrfHeaderName = 'X-CSRFToken'
         // axios.defaults.withCredentials = true
-        console.log(this.props.csrf_token)
         await axios.put(`/api/follow/${userid}/`, {
             user: {userid: this.state.userid},
             // csrfmiddlewaretoken: this.props.csrf_token // this didn't work
@@ -103,7 +101,9 @@ class SearchBar extends React.Component {
             }
         },
         )
-        .then((res) => console.log(res))
+        .then((res) => {
+          openSnackbar({ message: 'Request Sent!' });
+        })
         .catch((err) => {
           openSnackbar({ message: 'Error' });
         })

@@ -63,6 +63,31 @@ const ExpansionPanelDetails = withStyles(theme => ({
     root: {
         padding: 20,
     },
+    searchIcon: {
+      width: theme.spacing.unit * 9,
+      height: '100%',
+      position: 'absolute',
+      pointerEvents: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 'small',
+    },
+    inputRoot: {
+      color: 'inherit',
+      width: '100%',
+    },
+    inputInput: {
+      paddingTop: theme.spacing.unit,
+      paddingRight: theme.spacing.unit,
+      paddingBottom: theme.spacing.unit*.5,
+      paddingLeft: theme.spacing.unit * 10,
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('md')]: {
+        width: 200,
+      },
+    }
 }))(MuiExpansionPanelDetails);
 
 class ClassesDisplay extends React.Component {
@@ -195,10 +220,13 @@ class ClassesDisplay extends React.Component {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <div>
-                            {/* <div className={classes.searchIcon}> */}
-                                <SearchIcon />
-                            {/* </div> */}
+
+                            <SearchIcon  fontSize = {'small'}/>
                             <InputBase
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
                                 placeholder="Search for classes…"
                                 // classes={{
                                 //     root: classes.inputRoot,
@@ -214,16 +242,15 @@ class ClassesDisplay extends React.Component {
                                     }
                                 }}
                             />
+                            <List>
+                                {this.state.searchResults.map(this.classDisplay)}
+                            </List>
 
                         </div>
-                        <CssBaseline />
-                        <List>
-                            {this.state.searchResults.map(this.classDisplay)}
-                        </List>
-                        <CssBaseline />
-                        <List>
-                            {this.state.addedClasses.map(this.classDisplay)}
-                        </List>
+                        <div>
+
+
+                        </div>
 
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

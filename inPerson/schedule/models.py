@@ -33,6 +33,9 @@ class Section(models.Model):
     days = ArrayField(models.CharField(max_length=10,blank=True, null=True))
     location = models.CharField(max_length=200, blank=True, null=True)
 
+    class Meta:
+        ordering = ['code', 'catalog_number', 'section', 'title', 'start_time']
+
     def __str__(self):
         return "{}{} - {}".format(self.code, self.catalog_number, self.section)
 
