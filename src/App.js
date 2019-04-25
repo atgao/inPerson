@@ -116,8 +116,8 @@ class App extends Component {
             .then((user) => {
                 console.log("Updating user")
                 this.setState({
-                    user:user, 
-                    userid: userid, 
+                    user:user,
+                    userid: userid,
                     csrf_token: csrf_token
                 })
                 console.log("user updated")
@@ -140,7 +140,7 @@ class App extends Component {
 
 
     acceptFollowRequest = async (userid) => {
-        await axios.post(`/api/user/requests/${userid}`, 
+        await axios.post(`/api/user/requests/${userid}/`, 
             {user: {userid: this.state.userid},
             headers: {
                 'X-CSRFToken': this.state.csrf_token
@@ -241,8 +241,8 @@ class App extends Component {
             <Notifier />
         </MuiThemeProvider>
       </div>
-      
-        
+
+
     );
   }
 }
