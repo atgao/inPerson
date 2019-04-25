@@ -140,7 +140,7 @@ class App extends Component {
 
 
     acceptFollowRequest = async (userid) => {
-        await axios.post(`/api/user/request/${userid}`, 
+        await axios.post(`/api/user/requests/${userid}`, 
             {user: {userid: this.state.userid},
             headers: {
                 'X-CSRFToken': this.state.csrf_token

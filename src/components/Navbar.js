@@ -220,12 +220,12 @@ class Navbar extends React.Component {
             <MenuItem>
                 <Typography>{this.getName(req.user)}</Typography>
                 <ListItemIcon>
-                    <IconButton onClick={() => {console.log("yes")}}>
+                    <IconButton onClick={() => {this.props.acceptFollowRequest(req.user.id)}}>
                         <DoneIcon />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemIcon>
-                    <IconButton onClick={() => {console.log("no")}}>
+                    <IconButton onClick={() => {this.props.deleteFollowRequest(req.user.id)}}>
                         <ClearIcon />
                     </IconButton>
                 </ListItemIcon>
