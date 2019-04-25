@@ -164,7 +164,7 @@ class SearchBar extends React.Component {
                     <SearchIcon />
                 </div>
                 <InputBase
-                    placeholder="Search…"
+                    placeholder="Search for users…"
                     classes={{
                         root: classes.inputRoot,
                         input: classes.inputInput,

@@ -10,7 +10,6 @@ To run the project initially locally run in the base folder:
     ./runserver.sh
 
 ## Frontend TODOS (for Ioana)
---- By Tuesday ---
 1. Search bar
     * ~UI - popup~
     * ~request - search~
@@ -19,52 +18,44 @@ To run the project initially locally run in the base folder:
     * -> Later: follow request already sent/ following
     * ->-> Later Later: advanced search
 
-
---- Tuesday Morning ---
-
 2. Follow Requests menu
     * ~request - get follow requests~
     * UI - accept, ignore
-    * ~request - accept follow request~ --> not tested
-    * ~request - delete follow request~ --> not tested
-    * ~request - ignore follow request~ --> not tested
+    * ~request - accept follow request~       --> not tested
+    * ~request - delete follow request~       --> not tested
+    * ~request - ignore follow request~       --> not tested
 
 3. Account menu
     * ~UI - display name~
     * ->-> Later Later: UI - display blocked users
     * ->-> Later Later: request - get blocked users
 
-4. Followers/Following menu
-    * ~request - remove follower~   --> not tested
-    * ~request - remove following~  --> not tested
-    * UI - add buttons with requests to UI
-
-
---- By Wednesday ---
+4. ~Followers/Following menu~
+    * ~request - remove follower~              --> not tested
+    * ~request - remove following~             --> not tested
+    * ~UI - add buttons with requests to UI~   --> not tested
 
 5. Display Schedules
     * request - get followers schedule
     * UI - display schedule
 
 6. Classes menu
-    * request - search for classes
-    * UI - add in sidebar classes menu
-        * search bar
-        * display list results
+    * ~request - search for classes~
+    * ~UI - add in sidebar classes menu~        --> not tested
+        * ~search bar~
+        * ~display list results~                --> not tested
     * ->-> Later Later: advanced search
-
-
---- By Thursday ---
 
 7. All the things marked with /Later/
     * follow request already sent/ following
 
-8. Fix UI/ Make UI prettier
-9. Testing
-10. Deploy
-11. Handle errors -> can someone else do this?
+8. ~Fix UI/ Make UI prettier~   -> <3 Alice working on it
 
--- If there's time until Thursday --
+9. Testing
+
+10. Deploy
+
+11. ~Handle errors~             -> <3 Alice working on it
 
 12. Later Later -- in order: 
     * classes advanced search
