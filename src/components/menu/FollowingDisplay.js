@@ -94,6 +94,7 @@ class FollowingDisplay extends React.Component {
     }
 
     handleRemove = (index) => {
+        this.props.removeFollowing(this.props.user['connections']['following'][index])
         this.handleClose(index)
     }
 

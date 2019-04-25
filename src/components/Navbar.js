@@ -19,6 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchBar from './navbar/SearchBar';
 
 import { drawerWidth } from '../consts/ui'
+import axios from 'axios';
 
 const styles = theme => ({
     root: {
@@ -112,21 +113,33 @@ class Navbar extends React.Component {
         user: this.props.user,
         csrf_token: this.props.csrf_token,
         followRequests: [],
+        followRequestsUsers: [],
         noFollowReqs: 0
     };
     
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate (prevProps) {
         if (prevProps.open !== this.props.open || 
             prevProps.user !== this.props.user || 
             prevProps.csrf_token !== this.props.csrf_token ||
             prevProps.followRequests !== this.props.followRequests) {
-            this.setState({
-                open: this.props.open, 
-                user: this.props.user, 
-                csrf_token: this.props.csrf_token,
-                followRequests: this.props.followRequests,
-                noFollowReqs: this.props.followRequests.length
-            })
+                if (prevProps.followRequests !== this.props.followRequests) {
+                    const arr = this.populateReqsUsers()
+                    this.setState({
+                        open: this.props.open, 
+                        user: this.props.user, 
+                        csrf_token: this.props.csrf_token,
+                        followRequests: this.props.followRequests,
+                        noFollowReqs: this.props.followRequests.length,
+                        followRequestsUsers: arr
+                    })
+
+                    return
+                }
+                this.setState({
+                    open: this.props.open, 
+                    user: this.props.user, 
+                    csrf_token: this.props.csrf_token,
+                })
         }
     }
 
@@ -146,6 +159,26 @@ class Navbar extends React.Component {
     handleMobileMenuClose = () => {
         this.setState({ mobileMoreAnchorEl: null });
     };
+
+    populateReqsUsers = async () => {
+        let arr = []
+        await this.state.followRequests.forEach(async (req, index) => {
+            console.assert((req.to_user+'') === (this.props.userid+''))
+            await axios.get(`/api/user/${req.from_user}`, {user:{userid: this.props.userid}})
+            .then ((res) => arr.push({
+                user: res.data,
+                index: index
+            }))
+        })
+        return arr 
+    }
+
+    renderFollowReq = (req) =>{
+
+        return (
+            <MenuItem></MenuItem>
+        )
+    }
 
     render() {
         const { anchorEl, mobileMoreAnchorEl } = this.state;
@@ -182,19 +215,23 @@ class Navbar extends React.Component {
             </IconButton>
             <p>Messages</p>
             </MenuItem> */}
-            {/* <MenuItem onClick={this.handleMobileMenuClose}>
-            <IconButton color="inherit">
-                <Badge badgeContent={11} color="secondary">
-                <NotificationsIcon />
-                </Badge>
-            </IconButton>
-            <p>Notifications</p>
-            </MenuItem> */}
+            <MenuItem onClick={this.handleMobileMenuClose}>
+                <IconButton color="inherit">
+                    {this.noFollowReqs === 0?
+                    <Badge badgeContent={this.noFollowReqs} color="secondary">
+                        <NotificationsIcon />
+                    </Badge>
+                    :
+                    <NotificationsIcon />
+                    }
+                </IconButton>
+                <p>Folllow Requests</p>
+            </MenuItem>
             <MenuItem onClick={this.handleProfileMenuOpen}>
-            <IconButton color="inherit">
-                <AccountCircle />
-            </IconButton>
-            <p>Follow requests</p>
+                <IconButton color="inherit">
+                    <AccountCircle />
+                </IconButton>
+                <p>{this.state.user.first_name}</p>
             </MenuItem>
         </Menu>
         );
@@ -225,10 +262,14 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                <IconButton color="inherit">
-                    <Badge badgeContent={17} color="secondary">
-                    <NotificationsIcon />
+                <IconButton color="inherit" onClick={this.handleProfileMenuOpen}>
+                    {this.state.noFollowReqs !== 0?
+                    <Badge badgeContent={this.state.noFollowReqs} color="secondary">
+                        <NotificationsIcon />
                     </Badge>
+                    :
+                    <NotificationsIcon />
+                    }
                 </IconButton>
                 <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
