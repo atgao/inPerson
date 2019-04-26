@@ -135,6 +135,12 @@ class App extends Component {
 
         this.removeFollowRequest(userid)
 
+        let user = this.state.user
+        // await this.getFollower(user, this.state.userid)
+        let follower = await this.getUser(userid)
+        user['connections']['followers'].push(follower)
+        this.setState({user})
+
     };
 
     deleteFollowRequest = async (userid) => {
@@ -155,10 +161,12 @@ class App extends Component {
         await axios.get("/api/user/followers", {user:{ userid: userid }})
         .then((res) =>
         {
+            let arr = []
             res.data.forEach(async (req) => {
                 let follower = await this.getUser(req.follower)
-                user['connections']['followers'].push(follower)
+                arr.push(follower)
             })
+            user['connections']['followers'] = arr
         })
         .catch((err) => console.log(err))
     }
@@ -167,16 +175,12 @@ class App extends Component {
         await axios.get("/api/user/following", {user:{ userid: userid }})
         .then((res) =>
         {
+            let arr = []
             res.data.forEach(async (req) => {
                 let followee = await this.getUser(req.followee)
-                user['connections']['following'].push(followee)
+                arr.push(followee)
             })
-            // user['connections']['following'].push({
-            //     netid: user['netid'],
-            //     first_name: user['first_name'],
-            //     last_name: user['last_name'],
-            //     class_year: user['class_year']
-            // })
+            user['connections']['following'] = arr
         })
         .catch((err) => console.log(err))
     }
