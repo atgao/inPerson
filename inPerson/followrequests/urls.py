@@ -19,6 +19,8 @@ urlpatterns = [
     path('remove/<int:pk>/', login_required(views.FollowersRemoveDetailView.as_view()), name="remove-follower"),
 
     # requests
+    path('user/requests/sent/', login_required(views.FollowerRequestsSentListView.as_view()),
+          name="list-sent-follow-requests"),
     path('user/requests/', login_required(views.FollowerRequestsListView.as_view()),
           name="list-follow-requests"),
     path('user/requests/<int:pk>/', login_required(views.FollowerRequestsCreateView.as_view()),
