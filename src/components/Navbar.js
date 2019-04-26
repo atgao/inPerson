@@ -139,7 +139,6 @@ class Navbar extends React.Component {
             prevProps.csrf_token !== this.props.csrf_token ||
             prevProps.followRequests !== this.props.followRequests) {
                 if (prevProps.followRequests !== this.props.followRequests) {
-                    console.log(this.props.followRequests)
                     const arr = await this.populateReqsUsers(this.props.followRequests)
                     this.setState({
                         open: this.props.open, 

@@ -87,7 +87,6 @@ class App extends Component {
             const userid = document.getElementById("userid").textContent
             let user = this.state.user
             const csrf_token = document.getElementById("csrf_token").textContent
-            console.log(userid)
             axios.get(`/api/user/${userid}`,)
             .then(async (res) => {
                 Object.assign(user, res.data)
@@ -98,19 +97,16 @@ class App extends Component {
                 return user;
             })
             .then((user) => {
-                console.log("Updating user")
                 this.setState({
                     user:user,
                     userid: userid,
                     csrf_token: csrf_token
                 })
-                console.log("user updated")
             })
             .then(async () => {
                 await axios.get('/api/user/requests', {user: {userid:userid}})
                 .then((res) => {
                     this.setState({followRequests: res.data})
-                    console.log("follow requests set")
                 })
                 .catch((err) => console.log(err))
 
@@ -144,7 +140,6 @@ class App extends Component {
     };
 
     deleteFollowRequest = async (userid) => {
-        console.log(this.state.csrf_token)
         await axios.delete(`/api/follow/${userid}`, {
             user: {userid: this.state.userid},
             headers: {
