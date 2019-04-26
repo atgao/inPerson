@@ -53,7 +53,7 @@ To run the project initially locally run in the base folder:
 
 9. Testing
 
-10. Deploy
+10. ~Deploy~
 
 11. ~Handle errors~             -> <3 Alice working on it
 
