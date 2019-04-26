@@ -72,8 +72,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # CSRF_COOKIE_NAME = "XSRF-TOKEN" #TEST
 
-CSRF_COOKIE_NAME = "csrftoken"
-CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_NAME = "csrftoken"
+# CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['nperson.herokuapp.com', '127.0.0.1:8000']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

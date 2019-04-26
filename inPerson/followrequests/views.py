@@ -10,6 +10,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import status
 from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt
 
 # third-party apps
 from friendship.models import Follow, Block
@@ -46,7 +47,9 @@ class FollowsDestroyView(generics.DestroyAPIView):
     serializer_class = FollowsSerializer
 
     # unfollow user with id=pk
+    @csrf_exempt
     def delete(self, request, pk):
+        print(request)
         User = get_user_model()
         followee = User.objects.get(pk=pk)
         try:
@@ -217,6 +220,7 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
             )
 
     # pk is of the user to reject the follow request from
+    @csrf_exempt
     def delete(self, request, pk):
         User = get_user_model()
         follower = User.objects.get(pk=pk)

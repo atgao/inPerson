@@ -87,7 +87,7 @@ class App extends Component {
             const userid = document.getElementById("userid").textContent
             let user = this.state.user
             const csrf_token = document.getElementById("csrf_token").textContent
-
+            console.log(userid)
             axios.get(`/api/user/${userid}`,)
             .then(async (res) => {
                 Object.assign(user, res.data)
@@ -124,7 +124,7 @@ class App extends Component {
 
 
     acceptFollowRequest = async (userid) => {
-        await axios.post(`/api/user/requests/${userid}/`, 
+        await axios.post(`/api/user/requests/${userid}/`,
             {user: {userid: this.state.userid},
             headers: {
                 'X-CSRFToken': this.state.csrf_token
@@ -138,6 +138,7 @@ class App extends Component {
     };
 
     deleteFollowRequest = async (userid) => {
+        console.log(this.state.csrf_token)
         await axios.delete(`/api/follow/${userid}`, {
             user: {userid: this.state.userid},
             headers: {
