@@ -10,13 +10,12 @@ To run the project initially locally run in the base folder:
     ./runserver.sh
 
 ## Frontend TODOS (for Ioana)
-1. Search bar
+1. ~Search bar~
     * ~UI - popup~
     * ~request - search~
     * ~UI - follow button~
     * ~request - follow user~
-    * -> Later: follow request already sent/ following
-    * ->-> Later Later: advanced search
+    * ~-> Later: follow request already sent/ following~
 
 2. ~Follow Requests menu~
     * ~request - get follow requests~
@@ -31,9 +30,9 @@ To run the project initially locally run in the base folder:
     * ->-> Later Later: request - get blocked users
 
 4. ~Followers/Following menu~
-    * ~request - remove follower~              --> not tested
-    * ~request - remove following~             --> not tested
-    * ~UI - add buttons with requests to UI~   --> not tested
+    * ~request - remove follower~ 
+    * ~request - remove following~  
+    * ~UI - add buttons with requests to UI~
 
 5. Display Schedules
     * request - get followers schedule
@@ -43,25 +42,26 @@ To run the project initially locally run in the base folder:
     * ~request - search for classes~
     * ~UI - add in sidebar classes menu~        --> not tested
         * ~search bar~
-        * ~display list results~                --> not tested
+        * ~display list results~ 
     * ->-> Later Later: advanced search
 
-7. All the things marked with /Later/
+7. ~All the things marked with /Later/~
     * ~follow request already sent/ following~
 
-8. ~Fix UI/ Make UI prettier~   -> <3 Alice working on it
+8. Handle errors             -> <3 Alice working on it
 
 9. Testing
 
 10. ~Deploy~
 
-11. ~Handle errors~             -> <3 Alice working on it
-
-12. Later Later -- in order: 
+11. Later Later -- in order: 
     * classes advanced search
     * request - block users
     * request - get blocked user
     * UI - display blocked users
 
-
+## UI -- B I G problems (how did it even end up like this wtfff)
+* Navbar: Make *Account menu* (and Follow requests) displayed vertically not horizontally
+* Calendar form display weirddd
+* Content shift on opening menu
 
