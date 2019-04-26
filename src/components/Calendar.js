@@ -1,21 +1,25 @@
 import React from "react";
 import Paper from "@material-ui/core/Paper";
-import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
-import {
-  Scheduler,
-  DayView,
-  WeekView,
-  Appointments,
-  AppointmentForm,
-  AppointmentTooltip,
-  Toolbar,
-  ViewSwitcher,
-  DateNavigator,
-  MonthView
-} from "@devexpress/dx-react-scheduler-material-ui";
+// import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
+// import {
+//   Scheduler,
+//   DayView,
+//   WeekView,
+//   Appointments,
+//   AppointmentForm,
+//   AppointmentTooltip,
+//   Toolbar,
+//   ViewSwitcher,
+//   DateNavigator,
+//   MonthView
+// } from "@devexpress/dx-react-scheduler-material-ui";
+import Scheduler from 'devextreme-react/scheduler';
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
 import { appointments } from "../consts/dummydata/events";
+
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.material.blue.light.css';
 
 const theme = createMuiTheme({ palette: { type: "light", primary: blue } });
 
@@ -39,10 +43,11 @@ export default class Calendar extends React.PureComponent {
 
   render() {
     const { data } = this.state;
+    const views = ['day', 'week', 'workWeek', 'month'];
     return (
       <MuiThemeProvider theme={theme}>
-        <Paper>
-            <Scheduler data={data}>
+        <Paper style = {{margin: '100 auto', width:'100%'}}>
+            {/* <Scheduler data={data}>
                 <ViewState defaultCurrentViewName="Week"/>
                 <EditingState  onCommitChanges={this.commitChanges}/>
 
@@ -61,7 +66,14 @@ export default class Calendar extends React.PureComponent {
                 />
                 <AppointmentForm />
                 
-            </Scheduler>
+            </Scheduler> */}
+            <Scheduler
+                dataSource={data}
+                views={views}
+                defaultCurrentView={'week'}
+                showCurrentTimeIndicator={true}
+                height={'80%'}
+                startDayHour={0} />
         </Paper>
       </MuiThemeProvider>
     );
