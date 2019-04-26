@@ -237,7 +237,7 @@ class App extends Component {
 
     removeFollowRequest = (userid) => {
         let arr = this.state.followRequests
-        arr = arr.filter(e => e.from_user === userid)
+        arr = arr.filter(e => e.from_user !== userid)
         this.setState({followRequests: arr})
     }
 
