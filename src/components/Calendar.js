@@ -46,7 +46,7 @@ export default class Calendar extends React.PureComponent {
     const views = ['day', 'week', 'workWeek', 'month'];
     return (
       <MuiThemeProvider theme={theme}>
-        <Paper style = {{margin: '100 auto', width:'100%'}}>
+        <Paper style = {{paddingTop: 55, width:'100%'}}>
             {/* <Scheduler data={data}>
                 <ViewState defaultCurrentViewName="Week"/>
                 <EditingState  onCommitChanges={this.commitChanges}/>

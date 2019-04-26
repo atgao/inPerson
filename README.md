@@ -62,7 +62,7 @@ To run the project initially locally run in the base folder:
 
 ## UI -- B I G problems (how did it even end up like this wtfff)
 * Navbar: Make *Follow requests* (and Account Menu) displayed vertically not horizontally
-* Calendar form display weirddd
+* ~Calendar form display weirddd~
 * Content shift on opening menu
-* Make it not look horrendous on mobile (will prob just make an app for it tho over the summer)
+* ~Make it not look horrendous on mobile (will prob just make an app for it tho over the summer)~
 
