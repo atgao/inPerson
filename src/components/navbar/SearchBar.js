@@ -85,22 +85,14 @@ class SearchBar extends React.Component {
         }
     }
 
+    getButtonName = (user) => {
+        const ret = this.props.cantFollow(user.id)
+        if (ret === 0) return "Follow"
+        if (ret === 1) return "Follow request sent"
+        if (ret === 2) return "Following"
 
-
-    followUser = async (userid) => {
-        await axios.put(`/api/follow/${userid}/`, {
-            user: {userid: this.state.userid},
-            headers: {
-              'X-CSRFToken': this.props.csrf_token
-            }
-        },
-        )
-        .then((res) => {
-          openSnackbar({ message: 'Request Sent!' });
-        })
-        .catch((err) => {
-          openSnackbar({ message: 'Error' });
-        })
+        console.log("SOMETHING WENT TERRIBLY WRONG")
+        return undefined
     }
 
     getName = (student) => {
@@ -119,7 +111,6 @@ class SearchBar extends React.Component {
     handleClickOpen = async () => {
         await this.onSearch()
         this.setState({ open: true });
-        console.log(this.state.searchResults)
     };
 
     handleClose = () => {
@@ -140,8 +131,12 @@ class SearchBar extends React.Component {
                     <ListItem key={user.id}>
                         <ListItemText>{this.getName(user)}</ListItemText>
                         <ListItemSecondaryAction>
-                            <Button variant="contained" color="primary" onClick={()=>this.followUser(user.id)}>
-                                Follow
+                            <Button variant="contained" disabled={this.props.cantFollow(user.id) !== 0} 
+                                    color="primary" onClick={async ()=>{
+                                        await this.props.followUser(user.id)
+                                        this.forceUpdate()
+                                    }}>
+                                {this.getButtonName(user)}
                             </Button>
                         </ListItemSecondaryAction>
                     </ListItem>
@@ -178,7 +173,7 @@ class SearchBar extends React.Component {
           onClose={this.handleClose}
           scroll="paper"
           aria-labelledby="scroll-dialog-title"
-          maxWidth='xs'
+          maxWidth='sm'
           fullWidth={true}
         >
           <DialogTitle id="scroll-dialog-title">Search Results</DialogTitle>

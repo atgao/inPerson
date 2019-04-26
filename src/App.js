@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import classNames from 'classnames';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
@@ -48,14 +49,14 @@ const styles = theme => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      marginLeft: -drawerWidth,
+      marginLeft: 0,
     },
     contentShift: {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
+      marginLeft: drawerWidth,
     },
     toolbar: theme.mixins.toolbar,
   });
@@ -78,6 +79,7 @@ class App extends Component {
             user: emptyUser,
             csrf_token: null,
             followRequests: [],
+            frSent: [],
             openDrawer: false
         }
     }
@@ -87,7 +89,6 @@ class App extends Component {
             const userid = document.getElementById("userid").textContent
             let user = this.state.user
             const csrf_token = document.getElementById("csrf_token").textContent
-            console.log(userid)
             axios.get(`/api/user/${userid}`,)
             .then(async (res) => {
                 Object.assign(user, res.data)
@@ -98,19 +99,26 @@ class App extends Component {
                 return user;
             })
             .then((user) => {
-                console.log("Updating user")
                 this.setState({
                     user:user,
                     userid: userid,
                     csrf_token: csrf_token
                 })
-                console.log("user updated")
             })
             .then(async () => {
                 await axios.get('/api/user/requests', {user: {userid:userid}})
                 .then((res) => {
                     this.setState({followRequests: res.data})
-                    console.log("follow requests set")
+                })
+                .catch((err) => console.log(err))
+
+            })
+            .then(async () => {
+                await axios.get('/api/user/requests/sent', {user: {userid:userid}})
+                .then((res) => {
+                    let arr = []
+                    res.data.forEach((req) => arr.push(req.to_user))
+                    this.setState({frSent: arr})
                 })
                 .catch((err) => console.log(err))
 
@@ -135,7 +143,24 @@ class App extends Component {
 
         this.removeFollowRequest(userid)
 
+        let user = this.state.user
+        // await this.getFollower(user, this.state.userid)
+        let follower = await this.getUser(userid)
+        user['connections']['followers'].push(follower)
+        this.setState({user})
+
     };
+
+    cantFollow = (userid) => { // returns 0 if can follow, 2 if following, 1 if follow request sent
+
+        for (let i = 0; i < this.state.user.connections.following.length; i++) {
+            if((userid+'') === (this.state.user.connections.following[i].id+'')) return 2
+        }
+        for (let i = 0; i < this.state.frSent.length; i++) {
+            if((userid+'') === (this.state.frSent[i]+'')) return 1
+        }
+        return 0
+    }
 
     deleteFollowRequest = async (userid) => {
         await axios.delete(`/api/follow/${userid}`, {
@@ -150,14 +175,35 @@ class App extends Component {
         this.removeFollowRequest(userid)
     }
 
+    followUser = async (userid) => {
+        await axios.put(`/api/follow/${userid}/`, {
+            user: {userid: this.state.userid},
+            headers: {
+              'X-CSRFToken': this.props.csrf_token
+            }
+        },
+        )
+        .then((res) => {
+            let arr = this.state.frSent;
+            arr.push(userid)
+            this.setState({frSent: arr})
+          openSnackbar({ message: 'Request Sent!' });
+        })
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
+    }
+
     getFollower = async (user, userid) => {
         await axios.get("/api/user/followers", {user:{ userid: userid }})
         .then((res) =>
         {
+            let arr = []
             res.data.forEach(async (req) => {
                 let follower = await this.getUser(req.follower)
-                user['connections']['followers'].push(follower)
+                arr.push(follower)
             })
+            user['connections']['followers'] = arr
         })
         .catch((err) => console.log(err))
     }
@@ -166,16 +212,12 @@ class App extends Component {
         await axios.get("/api/user/following", {user:{ userid: userid }})
         .then((res) =>
         {
+            let arr = []
             res.data.forEach(async (req) => {
                 let followee = await this.getUser(req.followee)
-                user['connections']['following'].push(followee)
+                arr.push(followee)
             })
-            // user['connections']['following'].push({
-            //     netid: user['netid'],
-            //     first_name: user['first_name'],
-            //     last_name: user['last_name'],
-            //     class_year: user['class_year']
-            // })
+            user['connections']['following'] = arr
         })
         .catch((err) => console.log(err))
     }
@@ -232,13 +274,14 @@ class App extends Component {
 
     removeFollowRequest = (userid) => {
         let arr = this.state.followRequests
-        arr = arr.filter(e => e.from_user === userid)
+        arr = arr.filter(e => e.from_user !== userid)
         this.setState({followRequests: arr})
     }
 
 
 
   render() {
+    const { classes, theme } = this.props;
     return (
       <div className="App">
       <MuiThemeProvider>
@@ -250,6 +293,8 @@ class App extends Component {
                     followRequests={this.state.followRequests}
                     acceptFollowRequest={this.acceptFollowRequest}
                     deleteFollowRequest={this.deleteFollowRequest}
+                    followUser={this.followUser}
+                    cantFollow={this.cantFollow}
                     csrf_token={this.state.csrf_token} />
             <Menu user={this.state.user}
                     userid={this.state.userid}
@@ -258,10 +303,14 @@ class App extends Component {
                     open={this.state.openDrawer}
                     removeFollower={this.removeFollower}
                     removeFollowing={this.removeFollowing}/>
-            {/*<main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> */}{/* this doesn't work :( */}
+
+            {/*<main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> */}
+            <main className={classNames(classes.content, {
+            [classes.contentShift]: this.state.openDrawer,
+          })}>
                 <div style={styles.drawerHeader} />
                 <Calendar/>
-            {/*</main> */}
+            </main>
             <Notifier />
         </MuiThemeProvider>
       </div>

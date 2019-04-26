@@ -320,7 +320,10 @@ class Navbar extends React.Component {
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                 inPerson
                 </Typography>
-                <SearchBar classes = {classes} csrf_token={this.state.csrf_token}/>
+                <SearchBar classes = {classes} 
+                            csrf_token={this.state.csrf_token} 
+                            cantFollow={this.props.cantFollow}
+                            followUser={this.props.followUser}/>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
                 {/* <IconButton color="inherit">
