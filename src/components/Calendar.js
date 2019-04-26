@@ -50,17 +50,17 @@ export default class Calendar extends React.PureComponent {
                 <WeekView startDayHour={7} endDayHour={24} />
                 <MonthView />
 
-                <Toolbar />  
+                <Toolbar />
                 <DateNavigator />
                 <ViewSwitcher />
-                
+
                 <Appointments />
                 <AppointmentTooltip
                     showOpenButton
                     showDeleteButton
                 />
                 <AppointmentForm />
-                
+
             </Scheduler>
         </Paper>
       </MuiThemeProvider>

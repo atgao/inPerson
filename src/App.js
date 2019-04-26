@@ -138,7 +138,6 @@ class App extends Component {
     };
 
     deleteFollowRequest = async (userid) => {
-        console.log(this.state.csrf_token)
         await axios.delete(`/api/follow/${userid}`, {
             user: {userid: this.state.userid},
             headers: {
@@ -259,10 +258,10 @@ class App extends Component {
                     open={this.state.openDrawer}
                     removeFollower={this.removeFollower}
                     removeFollowing={this.removeFollowing}/>
-            <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
+            {/*<main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> */}{/* this doesn't work :( */}
                 <div style={styles.drawerHeader} />
                 <Calendar/>
-            </main>
+            {/*</main> */}
             <Notifier />
         </MuiThemeProvider>
       </div>

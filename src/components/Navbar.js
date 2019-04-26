@@ -50,6 +50,9 @@ const styles = theme => ({
         marginLeft: -12,
         marginRight: 20,
     },
+    hide: {
+      display: 'none',
+    },
     title: {
         display: 'none',
         [theme.breakpoints.up('sm')]: {
@@ -132,17 +135,17 @@ class Navbar extends React.Component {
         })
 
     }
-    
+
     async componentDidUpdate (prevProps) {
-        if (prevProps.open !== this.props.open || 
-            prevProps.user !== this.props.user || 
+        if (prevProps.open !== this.props.open ||
+            prevProps.user !== this.props.user ||
             prevProps.csrf_token !== this.props.csrf_token ||
             prevProps.followRequests !== this.props.followRequests) {
                 if (prevProps.followRequests !== this.props.followRequests) {
                     const arr = await this.populateReqsUsers(this.props.followRequests)
                     this.setState({
-                        open: this.props.open, 
-                        user: this.props.user, 
+                        open: this.props.open,
+                        user: this.props.user,
                         csrf_token: this.props.csrf_token,
                         followRequests: this.props.followRequests,
                         noFollowReqs: this.props.followRequests.length,
@@ -152,8 +155,8 @@ class Navbar extends React.Component {
                     return
                 }
                 this.setState({
-                    open: this.props.open, 
-                    user: this.props.user, 
+                    open: this.props.open,
+                    user: this.props.user,
                     csrf_token: this.props.csrf_token,
                 })
         }
@@ -209,7 +212,7 @@ class Navbar extends React.Component {
             })
             .catch((err) => console.log("OH NO ERROR ERROR WTF WENT WRONG"))
         })
-        return arr 
+        return arr
     }
 
     renderFollowReq = (req) =>{
@@ -301,7 +304,7 @@ class Navbar extends React.Component {
 
         return (
         <div className={classes.appBar}>
-            <AppBar position="fixed" 
+            <AppBar position="fixed"
                 className={classNames(classes.appBar, {
                     [classes.appBarShift]: this.state.open,
                 })}>

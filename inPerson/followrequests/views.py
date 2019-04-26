@@ -132,7 +132,6 @@ class FollowerRequestsSentListView(generics.ListAPIView):
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
 
-    # TODO : LOGIN IS REQUIRED
     def list(self, request):
         try:
             queryset = FollowRequest.objects.filter(from_user=request.user)
@@ -153,7 +152,6 @@ class FollowerRequestsListView(generics.ListAPIView):
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
 
-    # TODO : LOGIN IS REQUIRED
     def list(self, request):
         try:
             queryset = FollowRequest.objects.filter(to_user=request.user)
@@ -174,7 +172,6 @@ class FollowerRequestsCreateView(generics.CreateAPIView):
     queryset = FollowRequest.objects.all()
     serializer_class = FollowRequestsSerializer
 
-    # TODO: LOGIN IS REQUIRED
     # pk is the db id from the user to accept the request from
     def post(self, request, pk):
         User = get_user_model()
