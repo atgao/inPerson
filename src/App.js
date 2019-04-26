@@ -78,6 +78,7 @@ class App extends Component {
             user: emptyUser,
             csrf_token: null,
             followRequests: [],
+            frSent: [],
             openDrawer: false
         }
     }
@@ -111,6 +112,16 @@ class App extends Component {
                 .catch((err) => console.log(err))
 
             })
+            .then(async () => {
+                await axios.get('/api/user/requests/sent', {user: {userid:userid}})
+                .then((res) => {
+                    let arr = []
+                    res.data.forEach((req) => arr.push(req.to_user))
+                    this.setState({frSent: arr})
+                })
+                .catch((err) => console.log(err))
+
+            })
             .catch((err) => console.log(err))
         }
         else {
@@ -139,6 +150,17 @@ class App extends Component {
 
     };
 
+    cantFollow = (userid) => { // returns 0 if can follow, 2 if following, 1 if follow request sent
+
+        for (let i = 0; i < this.state.user.connections.following.length; i++) {
+            if((userid+'') === (this.state.user.connections.following[i].id+'')) return 2
+        }
+        for (let i = 0; i < this.state.frSent.length; i++) {
+            if((userid+'') === (this.state.frSent[i]+'')) return 1
+        }
+        return 0
+    }
+
     deleteFollowRequest = async (userid) => {
         await axios.delete(`/api/follow/${userid}`, {
             user: {userid: this.state.userid},
@@ -150,6 +172,25 @@ class App extends Component {
         .catch(console.log)
 
         this.removeFollowRequest(userid)
+    }
+
+    followUser = async (userid) => {
+        await axios.put(`/api/follow/${userid}/`, {
+            user: {userid: this.state.userid},
+            headers: {
+              'X-CSRFToken': this.props.csrf_token
+            }
+        },
+        )
+        .then((res) => {
+            let arr = this.state.frSent;
+            arr.push(userid)
+            this.setState({frSent: arr})
+          openSnackbar({ message: 'Request Sent!' });
+        })
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
     }
 
     getFollower = async (user, userid) => {
@@ -250,6 +291,8 @@ class App extends Component {
                     followRequests={this.state.followRequests}
                     acceptFollowRequest={this.acceptFollowRequest}
                     deleteFollowRequest={this.deleteFollowRequest}
+                    followUser={this.followUser}
+                    cantFollow={this.cantFollow}
                     csrf_token={this.state.csrf_token} />
             <Menu user={this.state.user}
                     userid={this.state.userid}

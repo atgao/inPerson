@@ -47,7 +47,7 @@ To run the project initially locally run in the base folder:
     * ->-> Later Later: advanced search
 
 7. All the things marked with /Later/
-    * follow request already sent/ following
+    * ~follow request already sent/ following~
 
 8. ~Fix UI/ Make UI prettier~   -> <3 Alice working on it
 
