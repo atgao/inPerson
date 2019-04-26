@@ -88,14 +88,8 @@ class SearchBar extends React.Component {
 
 
     followUser = async (userid) => {
-        // axios.defaults.headers['X-CSRFTOKEN'] = this.props.csrf_token;
-        // axios.defaults.xsrfCookieName = 'csrftoken'
-        // axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-        // axios.defaults.withCredentials = true
         await axios.put(`/api/follow/${userid}/`, {
             user: {userid: this.state.userid},
-            // csrfmiddlewaretoken: this.props.csrf_token // this didn't work
-            // 'X-CSRFToken': this.props.csrf_token
             headers: {
               'X-CSRFToken': this.props.csrf_token
             }
@@ -199,7 +193,7 @@ class SearchBar extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} variant="outlined" color="secondary">
-              Cancel
+              Close
             </Button>
           </DialogActions>
         </Dialog>

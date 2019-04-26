@@ -123,6 +123,27 @@ class FollowersRemoveDetailView(generics.DestroyAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+class FollowerRequestsSentListView(generics.ListAPIView):
+    """
+    GET user/requests/sent
+    """
+
+    User = get_user_model()
+    queryset = FollowRequest.objects.all()
+    serializer_class = FollowRequestsSerializer
+
+    # TODO : LOGIN IS REQUIRED
+    def list(self, request):
+        try:
+            queryset = FollowRequest.objects.filter(from_user=request.user)
+            serializer = FollowRequestsSerializer(queryset, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(
+                data={"message": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 class FollowerRequestsListView(generics.ListAPIView):
     """
     GET user/requests                   retrieves list of user's follower requests
