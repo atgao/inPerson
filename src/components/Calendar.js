@@ -19,7 +19,7 @@ import { blue } from "@material-ui/core/colors";
 import { appointments } from "../consts/dummydata/events";
 
 import 'devextreme/dist/css/dx.common.css';
-import 'devextreme/dist/css/dx.material.blue.light.css';
+import 'devextreme/dist/css/dx.material.teal.light.css';
 
 const theme = createMuiTheme({ palette: { type: "light", primary: blue } });
 

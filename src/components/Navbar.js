@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 import Menu from '@material-ui/core/Menu';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
@@ -217,6 +218,7 @@ class Navbar extends React.Component {
 
     renderFollowReq = (req) =>{
         return (
+          <MenuList>
             <MenuItem>
                 <Typography>{this.getName(req.user)}</Typography>
                 <ListItemIcon>
@@ -230,6 +232,7 @@ class Navbar extends React.Component {
                     </IconButton>
                 </ListItemIcon>
             </MenuItem>
+          </MenuList>
         )
     }
 
@@ -256,12 +259,10 @@ class Navbar extends React.Component {
         const renderFRMenu = (
             <Menu
                 anchorEl={anchorElFR}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={isFRMenuOpen}
                 onClose={this.handleFRMenuClose}
             >
-                {this.state.followRequestsUsers.map(this.renderFollowReq)}
+              {this.state.followRequestsUsers.map(this.renderFollowReq)}
             </Menu>
             );
 
