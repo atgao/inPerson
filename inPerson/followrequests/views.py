@@ -47,7 +47,6 @@ class FollowsDestroyView(generics.DestroyAPIView):
     serializer_class = FollowsSerializer
 
     # unfollow user with id=pk
-    @csrf_exempt
     def delete(self, request, pk):
         print(request)
         User = get_user_model()
@@ -220,7 +219,6 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
             )
 
     # pk is of the user to reject the follow request from
-    @csrf_exempt
     def delete(self, request, pk):
         User = get_user_model()
         follower = User.objects.get(pk=pk)
