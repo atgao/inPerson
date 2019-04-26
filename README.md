@@ -61,7 +61,8 @@ To run the project initially locally run in the base folder:
     * UI - display blocked users
 
 ## UI -- B I G problems (how did it even end up like this wtfff)
-* Navbar: Make *Account menu* (and Follow requests) displayed vertically not horizontally
+* Navbar: Make *Follow requests* (and Account Menu) displayed vertically not horizontally
 * Calendar form display weirddd
 * Content shift on opening menu
+* Make it not look horrendous on mobile (will prob just make an app for it thp over the summer)
 
