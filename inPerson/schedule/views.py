@@ -16,10 +16,6 @@ from .filters import SectionFilter
 # TODO: THIS STUFF IS ALL FOR RETURN THE CURRENT START/END DATE OF A SEMESTER
 from datetime import datetime
 import json
-import re
-import string
-import sqlite3
-import sys
 import requests
 
 TERM_CODE = 1194  # spring 2019
