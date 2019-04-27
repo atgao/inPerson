@@ -13,6 +13,35 @@ from .serializers import SectionsSerializer, RecurrentEventsSerializer, Schedule
 
 from .filters import SectionFilter
 
+# TODO: THIS STUFF IS ALL FOR RETURN THE CURRENT START/END DATE OF A SEMESTER
+from datetime import datetime
+import json
+import re
+import string
+import sqlite3
+import sys
+import requests
+
+TERM_CODE = 1194  # spring 2019
+URL_PREFIX = "http://etcweb.princeton.edu/webfeeds/courseofferings/"
+LIST_URL = URL_PREFIX + "?fmt=json&term={term}&subject=all"
+DEFAULT_TIME = "00:00"
+
+class RetrieveSemesterDetailView(generics.RetrieveAPIView):
+    """
+    GET semester            returns start and end date of semester
+    """
+
+    def get(self, request):
+        try:
+            WEBFEED_URL = LIST_URL.format(term=TERM_CODE)
+            data = requests.get(WEBFEED_URL).json()['term'][0]
+            semester = {"start_date": data["start_date"], "end_date": data["end_date"]}
+            return Response(data=semester, status=status.HTTP_200_OK)
+        except:
+            return Response(data={"message": Error},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class ListSectionsView(generics.ListAPIView):
     """
     GET classes/?search=....
