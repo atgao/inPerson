@@ -10,7 +10,7 @@ class SectionsSerializer(serializers.ModelSerializer):
 class RecurrentEventsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecurrentEvent
-        fields = ("title", "start_time", "end_time", "days", "location")
+        fields = ("id","title", "start_time", "end_time", "days", "location")
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get("title", instance.title)
