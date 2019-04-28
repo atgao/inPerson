@@ -83,15 +83,14 @@ class Menu extends React.Component {
                     </IconButton>
                 </div>
                 <Divider />
-                {/* <EventsDisplay user={this.state.user}/> */}
                 {/* <GroupsDisplay groups={this.state.user['groups']} 
                                 netid={this.state.user['netid']}
                                 first_name={this.state.user['first_name']}
                                 last_name={this.state.user['last_name']}
                                 class_year={this.state.user['class_year']}/> */}
-                <FollowerDisplay user={this.state.user} removeFollower={this.props.removeFollower}/>
-                <FollowingDisplay user={this.state.user} removeFollowing={this.props.removeFollowing}/>
-                <ClassesDisplay user={this.state.user} userid={this.state.userid}/>
+                <FollowerDisplay user={this.state.user} refresh={this.props.refresh} removeFollower={this.props.removeFollower}/>
+                <FollowingDisplay user={this.state.user} refresh={this.props.refresh} removeFollowing={this.props.removeFollowing}/>
+                <ClassesDisplay refresh={this.props.refresh} user={this.state.user} userid={this.state.userid}/>
             </Drawer>
         );
     }

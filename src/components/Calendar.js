@@ -4,9 +4,8 @@ import Paper from "@material-ui/core/Paper";
 import axios from 'axios'
 
 import Scheduler, { Resource } from 'devextreme-react/scheduler';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import { appointments } from "../consts/dummydata/events";
 
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.teal.light.css';
@@ -16,7 +15,6 @@ export default class Calendar extends React.PureComponent {
     super(props);
 
     this.state = {
-      data: appointments,
       user: this.props.user,
       userid: this.props.userid,
       allApptsToBeRendered: [],
@@ -80,7 +78,6 @@ export default class Calendar extends React.PureComponent {
         appt.days.forEach((day) => st+=(this.formatApiDayToScheduler(day) +","))
         st = st.slice(0, st.length-1)
         fm['recurrenceRule'] = `FREQ=WEEKLY;BYDAY=${st};UNTIL=${this.state.endSemDate}`
-        console.log(fm)
         return fm
 
     }
@@ -100,7 +97,6 @@ export default class Calendar extends React.PureComponent {
         })
 
         this.setState({allApptsToBeRendered: all})
-        // console.log(this.state)
     }
 
     setSemesterDates = async () => {
@@ -126,8 +122,6 @@ export default class Calendar extends React.PureComponent {
     // const data = this.state.data;
     const data = this.state.allApptsToBeRendered;
     const views = ['day', 'week', 'month'];
-    console.log(data)
-    console.log(this.state.data)
     return (
         <MuiThemeProvider>
         <Paper style = {{paddingTop: 55, width:'100%'}}>

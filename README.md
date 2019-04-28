@@ -38,7 +38,7 @@ To run the project initially locally run in the base folder:
     * ~request - get followers schedule~
     * ~UI - display schedule~
     * actual schedule displaying (with overlaying and everything)
-        * display own schedule
+        * ~display own schedule~
         * display others' schedules
         * UI - display/ remove following's schedule
 

@@ -125,7 +125,7 @@ class ClassesDisplay extends React.Component {
         let arr = this.state.addedClasses
         arr.push(cls)
         this.setState({addedClasses: arr})
-
+        this.props.refresh()
     }
 
     removeClassFromSchedule = async (cls) => {
