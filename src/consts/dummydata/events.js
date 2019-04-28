@@ -250,7 +250,7 @@ export const appointments = [
       endDate: new Date(2019, 3, 9, 14, 30),
       id: 33,
       location: "Room 1",
-      recurrenceRule: "FREQ=WEEKLY;BYDAY=MO,TH;COUNT=10"
+      recurrenceRule: "FREQ=WEEKLY;BYDAY=MO,TH"
     },
     {
       text: "Google AdWords Strategy",

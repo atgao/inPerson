@@ -4,16 +4,14 @@ import Paper from "@material-ui/core/Paper";
 import axios from 'axios'
 
 import Scheduler, { Resource } from 'devextreme-react/scheduler';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { teal } from "@material-ui/core/colors";
 import { appointments } from "../consts/dummydata/events";
 
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.teal.light.css';
-import { ContentBackspace } from "material-ui/svg-icons";
 
-const theme = createMuiTheme({ palette: { type: "light", primary: teal } });
+
 
 /* 
 FORMAT OF EVENTS
@@ -37,8 +35,8 @@ export default class Calendar extends React.PureComponent {
       userid: this.props.userid,
       allApptsToBeRendered: [],
       followingUsersToBeRendered: [],
-      startSemDate: null,
-      endSemDate: null
+      startSemDate: {},
+      endSemDate: {}
     };
   }
   
@@ -53,7 +51,7 @@ export default class Calendar extends React.PureComponent {
     ]
 
     componentDidUpdate(prevProps) {
-        if (prevProps.user !== this.props.user, prevProps.userid !== this.props.userid) {
+        if (prevProps.user !== this.props.user || prevProps.userid !== this.props.userid) {
             this.setState({user: this.props.user, userid: this.props.userid})
             this.setAppointments()
         }
@@ -80,9 +78,17 @@ export default class Calendar extends React.PureComponent {
     formatApptApiToScheduler = (appt) => {
         let fm = {}
         fm['text'] = appt['title']
-        fm['startDate'] = appt['start_date']
-        fm['endDate'] = appt['end_date']
-        fm['id'] = 0 ///// do something
+        fm['startDate'] =  new Date(this.state.startSemDate.year, 
+                                    this.state.startSemDate.month,
+                                    this.state.startSemDate.date,
+                                    parseInt(appt.start_time.slice(0, 2)),
+                                    parseInt(appt.start_time.slice(3, 5)))
+        fm['endDate'] =new Date(this.state.startSemDate.year, 
+                                this.state.startSemDate.month,
+                                this.state.startSemDate.date,
+                                parseInt(appt.end_time.slice(0, 2)),
+                                parseInt(appt.end_time.slice(3, 5)))
+        fm['id'] = appt['id']
 
         let st = ""
         appt.days.forEach((day) => st+=(this.formatApiDayToScheduler(day) +","))
@@ -91,7 +97,6 @@ export default class Calendar extends React.PureComponent {
         return fm
 
     }
-    
 
     setAppointments = async () => {
         await this.setSemesterDates()
@@ -106,25 +111,45 @@ export default class Calendar extends React.PureComponent {
                 all.push(this)
             })
         })
-        return all
+
+        this.setState({allApptsToBeRendered: all})
+        // console.log(this.state)
     }
 
     setSemesterDates = async () => {
         await axios.get("/api/events/semester/")
         .then((res) => {
             console.log(res)
+            const startYear = parseInt(res.data.start_date.slice(0, 4))
+            const endYear = parseInt(res.data.end_date.slice(0, 4))
+            const startMon = parseInt(res.data.start_date.slice(5, 7)) - 1
+            const endMon = parseInt(res.data.end_date.slice(5, 7)) - 1
+            const startDate = parseInt(res.data.start_date.slice(8, 10))
+            const endDate = parseInt(res.data.end_date.slice(8, 10))
+
             this.setState({
-                startSemDate: res.data.start_date,
-                endSemDate: res.data.end_date
+                startSemDate: {
+                    date: startDate,
+                    month: startMon,
+                    year: startYear
+                },
+                endSemDate: {
+                    date: endDate, 
+                    month: endMon, 
+                    year: endYear
+                }
             })
         })
     }
 
   render() {
-    const { data } = this.state;
-    const views = ['day', 'week', 'workWeek', 'month'];
+    // const data = this.state.data;
+    const data = this.state.allApptsToBeRendered;
+    const views = ['day', 'week', 'month'];
+    console.log(data)
+    console.log(this.state.data)
     return (
-      <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider>
         <Paper style = {{paddingTop: 55, width:'100%'}}>
             <Scheduler
                 dataSource={data}
@@ -157,7 +182,7 @@ export default class Calendar extends React.PureComponent {
                         />
                 </Scheduler>
         </Paper>
-      </MuiThemeProvider>
+        </MuiThemeProvider>
     );
   }
 }

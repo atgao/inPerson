@@ -4,7 +4,9 @@ import classNames from 'classnames';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
+import { createMuiTheme } from "@material-ui/core/styles";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import { teal } from "@material-ui/core/colors";
 
 
 import Calendar from './components/Calendar'
@@ -20,6 +22,8 @@ import axios from "axios";
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.withCredentials = true
+
+const theme = createMuiTheme({ palette: { type: "light", primary: teal } }); // this don't work rip
 
 const styles = theme => ({
     root: {
@@ -298,10 +302,10 @@ class App extends Component {
 
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     return (
       <div className="App">
-      <MuiThemeProvider>
+      <MuiThemeProvider theme={theme}>
         <CssBaseline />
             <Navbar user={this.state.user}
                     userid={this.state.userid}
