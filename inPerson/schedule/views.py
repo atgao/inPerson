@@ -8,9 +8,12 @@ from rest_framework.views import status
 from rest_framework.filters import SearchFilter
 from django.contrib.auth import get_user_model
 
+# models and serializers
 from .models import Section, RecurrentEvent, Schedule
 from .serializers import SectionsSerializer, RecurrentEventsSerializer, SchedulesSerializer
+from friendship.models import Follow
 
+# filters
 from .filters import SectionFilter
 
 # TODO: THIS STUFF IS ALL FOR RETURN THE CURRENT START/END DATE OF A SEMESTER
@@ -99,16 +102,25 @@ class ListOtherUserScheduleView(generics.ListAPIView):
 
     def list(self, request, pk):
         try:
+            # get the other user
             User = get_user_model()
             other_user = User.objects.get(pk=pk)
+
+            # get requesting user's following
+            following = Follow.objects.get(follower=request.user,
+                                             followee=other_user)
+            # get the most recent schedule
             schedule = Schedule.objects.get_current_schedule_for_user(other_user)
             events = RecurrentEvent.objects.filter(schedule=schedule)
             serializer = RecurrentEventsSerializer(events, many=True)
             return Response(data=serializer.data,
                             status=status.HTTP_200_OK)
-        except request.user.DoesNotExist or User.DoesNotExist:
+        except User.DoesNotExist:
             return Response(data={"message": "User does not exist"},
                             status=status.HTTP_404_NOT_FOUND)
+        except Follow.DoesNotExist:
+            return Response(data={"message": "Not following user"},
+                            status=status.HTTP_401_UNAUTHORIZED)
         except:
             return Response(data={"message": "Error"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
