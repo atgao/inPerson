@@ -97,6 +97,10 @@ class App extends Component {
 
                 await this.getFollowing(user, userid)
 
+                user['schedule'] = await this.getSchedule(userid)
+
+                console.log(user)
+
                 return user;
             })
             .then((user) => {
@@ -322,7 +326,9 @@ class App extends Component {
             [classes.contentShift]: this.state.openDrawer,
           })}>
                 <div style={styles.drawerHeader} />
-                <Calendar/>
+                <Calendar   user={this.state.user}
+                            userid={this.state.userid}
+                            getSchedule={this.getSchedule}/>
             </main>
             <Notifier />
         </MuiThemeProvider>

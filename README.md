@@ -24,10 +24,10 @@ To run the project initially locally run in the base folder:
     * ~request - delete follow request~ 
     * ~request - ignore follow request~
 
-3. Account menu
+3. ~Account menu~
     * ~UI - display name~
-    * ->-> Later Later: UI - display blocked users
-    * ->-> Later Later: request - get blocked users
+    * ~UI - Logout~
+    * ~redirect - Logout~
 
 4. ~Followers/Following menu~
     * ~request - remove follower~ 
@@ -35,12 +35,13 @@ To run the project initially locally run in the base folder:
     * ~UI - add buttons with requests to UI~
 
 5. Display Schedules
-    * request - get followers schedule
+    * ~request - get followers schedule~
     * ~UI - display schedule~
+    * actual schedule displaying (with overlaying and everything)
 
 6. Classes menu
     * ~request - search for classes~
-    * ~UI - add in sidebar classes menu~        --> not tested
+    * ~UI - add in sidebar classes menu~ 
         * ~search bar~
         * ~display list results~ 
     * ->-> Later Later: advanced search
@@ -54,15 +55,22 @@ To run the project initially locally run in the base folder:
 
 10. ~Deploy~
 
-11. Later Later -- in order: 
+## Others - not urgent, probably not in MVP
+11. Later Later -- in order:
     * classes advanced search
+
+12. Not as important imo but can do:
     * request - block users
     * request - get blocked user
     * UI - display blocked users
 
-## UI -- B I G problems (how did it even end up like this wtfff)
-* Navbar: Make *Follow requests* (and Account Menu) displayed vertically not horizontally
+13. After one time events are implemented on backend:
+    * add custom one time events (remove part where i remove the option in Calendar.js)
+    * import google cal
+
+## UI -- B I G problems (how did it even end up like this wtfff) ->  nvm we GUCCI
+* ~Navbar: Make *Follow requests* (and Account Menu) displayed vertically not horizontally~
 * ~Calendar form display weirddd~
-* Content shift on opening menu
+* ~Content shift on opening menu~
 * ~Make it not look horrendous on mobile (will prob just make an app for it tho over the summer)~
 
