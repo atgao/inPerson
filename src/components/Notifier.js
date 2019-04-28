@@ -46,7 +46,7 @@ return (
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         message={message}
         autoHideDuration={3000}
-        onClose={this.handleSnackbarClose}
+        onRequestClose={this.handleSnackbarClose}
         open={this.state.open}
         SnackbarContentProps={{
           'aria-describedby': 'snackbar-message-id',

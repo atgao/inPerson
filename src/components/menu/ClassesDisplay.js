@@ -201,7 +201,6 @@ class ClassesDisplay extends React.Component {
                 <ListItemSecondaryAction>
                     {this.isClassInSchedule(cls)?
                     <IconButton aria-label="delete" onClick={()=>console.log(cls)}>
-                        <DeleteIcon />
                     </IconButton>
                     :
                     <IconButton aria-label="add" onClick={()=>this.addClassToSchedule(cls)}>
@@ -254,7 +253,6 @@ class ClassesDisplay extends React.Component {
 
 
                         </div>
-                        <Notifier />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>
