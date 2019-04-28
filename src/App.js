@@ -196,7 +196,6 @@ class App extends Component {
             let arr = this.state.frSent;
             arr.push(userid)
             this.setState({frSent: arr})
-          openSnackbar({ message: 'Request Sent!' });
         })
         .catch((err) => {
           openSnackbar({ message: 'Error' });
@@ -316,7 +315,7 @@ class App extends Component {
         <CssBaseline />
             <Navbar acceptFollowRequest={this.acceptFollowRequest}
                     cantFollow={this.cantFollow}
-                    csrf_token={this.state.csrf_token} 
+                    csrf_token={this.state.csrf_token}
                     deleteFollowRequest={this.deleteFollowRequest}
                     followRequests={this.state.followRequests}
                     followUser={this.followUser}

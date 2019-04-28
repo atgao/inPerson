@@ -107,8 +107,9 @@ class ListOtherUserScheduleView(generics.ListAPIView):
             other_user = User.objects.get(pk=pk)
 
             # get requesting user's following
-            following = Follow.objects.get(follower=request.user,
-                                             followee=other_user)
+            if request.user != other_user:
+                following = Follow.objects.get(follower=request.user,
+                                                 followee=other_user)
             # get the most recent schedule
             schedule = Schedule.objects.get_current_schedule_for_user(other_user)
             events = RecurrentEvent.objects.filter(schedule=schedule)
