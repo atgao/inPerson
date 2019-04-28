@@ -11,20 +11,6 @@ import { appointments } from "../consts/dummydata/events";
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.teal.light.css';
 
-
-
-/* 
-FORMAT OF EVENTS
-
-{
-    text: "New Brochures",
-    startDate: new Date(2019, 6, 3, 14, 30),
-    endDate: new Date(2019, 6, 3, 13, 42),
-    id: 21,
-},
-
-*/
-
 export default class Calendar extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -93,7 +79,8 @@ export default class Calendar extends React.PureComponent {
         let st = ""
         appt.days.forEach((day) => st+=(this.formatApiDayToScheduler(day) +","))
         st = st.slice(0, st.length-1)
-        fm['reccurenceRule'] = `FREQ=WEEKLY;BYDAY=${st}`
+        fm['recurrenceRule'] = `FREQ=WEEKLY;BYDAY=${st};UNTIL=${this.state.endSemDate}`
+        console.log(fm)
         return fm
 
     }
@@ -121,11 +108,8 @@ export default class Calendar extends React.PureComponent {
         .then((res) => {
             console.log(res)
             const startYear = parseInt(res.data.start_date.slice(0, 4))
-            const endYear = parseInt(res.data.end_date.slice(0, 4))
             const startMon = parseInt(res.data.start_date.slice(5, 7)) - 1
-            const endMon = parseInt(res.data.end_date.slice(5, 7)) - 1
             const startDate = parseInt(res.data.start_date.slice(8, 10))
-            const endDate = parseInt(res.data.end_date.slice(8, 10))
 
             this.setState({
                 startSemDate: {
@@ -133,11 +117,7 @@ export default class Calendar extends React.PureComponent {
                     month: startMon,
                     year: startYear
                 },
-                endSemDate: {
-                    date: endDate, 
-                    month: endMon, 
-                    year: endYear
-                }
+                endSemDate: res.data.end_date.replace('-', '').replace('-', '')
             })
         })
     }
