@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 import Menu from '@material-ui/core/Menu';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
@@ -47,8 +48,11 @@ const styles = theme => ({
         flexGrow: 1,
     },
     menuButton: {
-        marginLeft: -12,
+        marginLeft: -5,
         marginRight: 20,
+    },
+    hide: {
+      display: 'none',
     },
     title: {
         display: 'none',
@@ -132,17 +136,17 @@ class Navbar extends React.Component {
         })
 
     }
-    
+
     async componentDidUpdate (prevProps) {
-        if (prevProps.open !== this.props.open || 
-            prevProps.user !== this.props.user || 
+        if (prevProps.open !== this.props.open ||
+            prevProps.user !== this.props.user ||
             prevProps.csrf_token !== this.props.csrf_token ||
             prevProps.followRequests !== this.props.followRequests) {
                 if (prevProps.followRequests !== this.props.followRequests) {
                     const arr = await this.populateReqsUsers(this.props.followRequests)
                     this.setState({
-                        open: this.props.open, 
-                        user: this.props.user, 
+                        open: this.props.open,
+                        user: this.props.user,
                         csrf_token: this.props.csrf_token,
                         followRequests: this.props.followRequests,
                         noFollowReqs: this.props.followRequests.length,
@@ -152,8 +156,8 @@ class Navbar extends React.Component {
                     return
                 }
                 this.setState({
-                    open: this.props.open, 
-                    user: this.props.user, 
+                    open: this.props.open,
+                    user: this.props.user,
                     csrf_token: this.props.csrf_token,
                 })
         }
@@ -209,11 +213,12 @@ class Navbar extends React.Component {
             })
             .catch((err) => console.log("OH NO ERROR ERROR WTF WENT WRONG"))
         })
-        return arr 
+        return arr
     }
 
     renderFollowReq = (req) =>{
         return (
+          <MenuList>
             <MenuItem>
                 <Typography>{this.getName(req.user)}</Typography>
                 <ListItemIcon>
@@ -227,6 +232,7 @@ class Navbar extends React.Component {
                     </IconButton>
                 </ListItemIcon>
             </MenuItem>
+          </MenuList>
         )
     }
 
@@ -253,12 +259,10 @@ class Navbar extends React.Component {
         const renderFRMenu = (
             <Menu
                 anchorEl={anchorElFR}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={isFRMenuOpen}
                 onClose={this.handleFRMenuClose}
             >
-                {this.state.followRequestsUsers.map(this.renderFollowReq)}
+              {this.state.followRequestsUsers.map(this.renderFollowReq)}
             </Menu>
             );
 
@@ -301,7 +305,7 @@ class Navbar extends React.Component {
 
         return (
         <div className={classes.appBar}>
-            <AppBar position="fixed" 
+            <AppBar position="fixed"
                 className={classNames(classes.appBar, {
                     [classes.appBarShift]: this.state.open,
                 })}>
@@ -317,8 +321,8 @@ class Navbar extends React.Component {
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                 inPerson
                 </Typography>
-                <SearchBar classes = {classes} 
-                            csrf_token={this.state.csrf_token} 
+                <SearchBar classes = {classes}
+                            csrf_token={this.state.csrf_token}
                             cantFollow={this.props.cantFollow}
                             followUser={this.props.followUser}/>
                 <div className={classes.grow} />

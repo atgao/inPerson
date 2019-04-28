@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import classNames from 'classnames';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
@@ -48,14 +49,14 @@ const styles = theme => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      marginLeft: -drawerWidth,
+      marginLeft: 0,
     },
     contentShift: {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
+      marginLeft: drawerWidth,
     },
     toolbar: theme.mixins.toolbar,
   });
@@ -224,7 +225,14 @@ class App extends Component {
 
     getSchedule = async (userid) => {
         let arr = []
-        await axios.get(`/api/schedule/${userid}/`)
+        await axios.get(`/api/schedule/${userid}/`, {user:{ userid: userid }})
+        .then((res) => {
+            console.log(res)
+            arr = res.data
+        })
+        .catch(console.log)
+
+        return arr
     }
 
     getUser = async (userid) => {
@@ -286,6 +294,7 @@ class App extends Component {
 
 
   render() {
+    const { classes, theme } = this.props;
     return (
       <div className="App">
       <MuiThemeProvider>
@@ -307,7 +316,11 @@ class App extends Component {
                     open={this.state.openDrawer}
                     removeFollower={this.removeFollower}
                     removeFollowing={this.removeFollowing}/>
-            <main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> {/* this doesn't work :( */}
+
+            {/*<main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> */}
+            <main className={classNames(classes.content, {
+            [classes.contentShift]: this.state.openDrawer,
+          })}>
                 <div style={styles.drawerHeader} />
                 <Calendar/>
             </main>

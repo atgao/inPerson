@@ -36,7 +36,7 @@ To run the project initially locally run in the base folder:
 
 5. Display Schedules
     * request - get followers schedule
-    * UI - display schedule
+    * ~UI - display schedule~
 
 6. Classes menu
     * ~request - search for classes~

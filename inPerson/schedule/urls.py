@@ -9,6 +9,8 @@ urlpatterns = [
         name='get-schedule-add-event'),
     path('<int:pk>/', login_required(views.RecurrentEventsDetailView.as_view()),
         name ='create-update-delete-recurrent-event'),
+    path('semester/', views.RetrieveSemesterDetailView.as_view(),
+        name='get-semester-start-end'),
 
 
 

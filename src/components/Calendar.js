@@ -12,17 +12,7 @@ import 'devextreme/dist/css/dx.material.teal.light.css';
 
 const theme = createMuiTheme({ palette: { type: "light", primary: blue } });
 
-const days = [
-    {id: 0, text: "Monday"},
-    {id: 1, text: "Tuesday"},
-    {id: 2, text: "Wednesday"},
-    {id: 3, text: "Thursday"},
-    {id: 4, text: "Friday"},
-    {id: 5, text: "Saturday"},
-    {id: 6, text: "Sunday"},
-]
 
-const daysArr = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 export default class Calendar extends React.PureComponent {
   constructor(props) {
@@ -32,6 +22,16 @@ export default class Calendar extends React.PureComponent {
       data: appointments
     };
   }
+  
+  days = [
+    {id: 0, text: "Monday"},
+    {id: 1, text: "Tuesday"},
+    {id: 2, text: "Wednesday"},
+    {id: 3, text: "Thursday"},
+    {id: 4, text: "Friday"},
+    {id: 5, text: "Saturday"},
+    {id: 6, text: "Sunday"},
+]
 
   render() {
     const { data } = this.state;
@@ -86,7 +86,7 @@ export default class Calendar extends React.PureComponent {
                     <Resource
                         label={'Days'}
                         fieldExpr={'day'}
-                        dataSource={days}
+                        dataSource={this.days}
                         allowMultiple={true}
                         />
                 </Scheduler>
