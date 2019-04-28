@@ -40,8 +40,8 @@ To run the project initially locally run in the base folder:
     * actual schedule displaying (with overlaying and everything)
         * ~display own schedule~
         * requests - add/remove events
-        * display others' schedules
-        * UI - display/ remove following's schedule
+        * ~display others' schedules~
+        * ~UI - display/ remove following's schedule~
 
 6. Classes menu
     * ~request - search for classes~
@@ -72,11 +72,12 @@ To run the project initially locally run in the base folder:
     * add custom one time events (remove part where i remove the option in Calendar.js)
     * import google cal
 
-## ~UI -- B I G problems (how did it even end up like this wtfff)~ ->  nvm we GUCCI
+## UI -- B I G problems (how did it even end up like this wtfff)
 * ~Navbar: Make *Follow requests* (and Account Menu) displayed vertically not horizontally~
 * ~Calendar form display weirddd~
 * ~Content shift on opening menu~
 * ~Make it not look horrendous on mobile (will prob just make an app for it tho over the summer)~
+* switch looking UGLY
 
 
 ## Backend TODOs - not for MVP but in order of importance (roughly)

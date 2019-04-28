@@ -47,10 +47,6 @@ export default class Calendar extends React.PureComponent {
         }
     }
 
-    makeAppt = (appt) => {
-
-    }
-
     formatApiDayToScheduler = (day) => {
         switch(day) {
             case 'M': return "MO"
@@ -86,6 +82,46 @@ export default class Calendar extends React.PureComponent {
         fm['recurrenceRule'] = `FREQ=WEEKLY;BYDAY=${st};UNTIL=${this.state.endSemDate}`
         return fm
 
+    }
+
+    formatApptSchedulerToApi = (appt) => {
+        let fm = {}
+        fm['title'] = appt['text']
+        fm['start_time'] = `${appt['startDate'].getHours()}:${appt['startDate'].getMinutes()}:00`
+        fm['end_time'] = `${appt['endDate'].getHours()}:${appt['endDate'].getMinutes()}:00`
+        fm['days'] = appt['day'].map(this.formatNumberDayToApi)
+
+        console.log(fm)
+
+        return fm
+    }
+
+    formatSchedulerDayToApi = (day) => {
+        switch(day) {
+            case 'MO': return 'M'
+            case 'TU': return 'T'
+            case 'WE': return 'W'
+            case 'TH': return 'Th'
+            case 'FR': return 'F'
+            case 'SA': return 'Sa'
+            case 'SU': return 'Su'
+            default: console.log(day);
+        }
+        console.log("Something went wrong when fetching days from the scheduler")
+    }
+
+    formatNumberDayToApi = (day) => {
+        switch(day) {
+            case 0: return 'M'
+            case 1: return 'T'
+            case 2: return 'W'
+            case 3: return 'Th'
+            case 4: return 'F'
+            case 5: return 'Sa'
+            case 6: return 'Su'
+            default: console.log(day);
+        }
+        console.log("Something went wrong when fetching days from the number")
     }
 
     setAppointments = async () => {
@@ -138,14 +174,29 @@ export default class Calendar extends React.PureComponent {
                 showCurrentTimeIndicator={true}
                 height={'80%'}
                 startDayHour={7} 
-                onAppointmentAdded={(e) => {
+                onAppointmentAdded={async (e) => {
                     console.log(e)
+                    await axios.post('/api/events/user/',
+                        this.formatApptSchedulerToApi(e.appointmentData),
+                        {user: {userid: this.state.userid},
+                        headers: {
+                            'X-CSRFToken': this.state.csrf_token
+                        }
+                    })
+                    .then(console.log)
+                    .catch(console.log)
+
+                    this.forceUpdate()
                 }}
-                onAppointmentUpdated={(e) => {
+                onAppointmentUpdated={async (e) => {
                     console.log(e)
+
+                    this.forceUpdate()
                 }}
-                onAppointmentDeleted={(e) => {
+                onAppointmentDeleted={async (e) => {
                     console.log(e)
+
+                    this.forceUpdate()
                 }}
                 onAppointmentFormOpening={(data) => {
                     let form = data.form;

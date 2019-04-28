@@ -81,7 +81,6 @@ class FollowingDisplay extends React.Component {
     
 
     componentDidUpdate(prevProps) {
-        // console.log(this.state)
         if (prevProps.user !== this.props.user) {
             let arr = []
             let arr2 = []
