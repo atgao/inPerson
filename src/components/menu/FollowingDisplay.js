@@ -16,6 +16,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Switch from '@material-ui/core/Switch';
 
 const ExpansionPanel = withStyles({
 root: {
@@ -63,21 +64,33 @@ class FollowingDisplay extends React.Component {
     constructor(props) {
         super(props)
         let arr = []
-        for (let i = 0; i < this.props.user['connections']['following'].length; i++) arr.push(false)
+        let arr2 = []
+        for (let i = 0; i < this.props.user['connections']['following'].length; i++){
+            arr.push(false)
+            arr2.push(false)
+        } 
         this.state = {
             expanded: false,
             user: this.props.user,
-            openAlert: arr
+            openAlert: arr,
+            checked: arr2
         };
+        console.log(this.state.checked)
 
     }
     
 
     componentDidUpdate(prevProps) {
+        // console.log(this.state)
         if (prevProps.user !== this.props.user) {
             let arr = []
-            for (let i = 0; i < this.props.user['connections']['following'].length; i++) arr.push(false)
-            this.setState({user: this.props.user, openAlert: arr})
+            let arr2 = []
+            for (let i = 0; i < this.props.user['connections']['following'].length; i++) {
+                arr.push(false)
+                arr2.push(false)
+            }
+            this.setState({user: this.props.user, openAlert: arr, checked: arr2})
+            console.log(this.state.checked)
         }
     }
 
@@ -96,6 +109,14 @@ class FollowingDisplay extends React.Component {
     handleRemove = (index) => {
         this.props.removeFollowing(this.props.user['connections']['following'][index].id)
         this.handleClose(index)
+    }
+    handleToggleSwitch =  (index) => {
+        let copy = JSON.parse(JSON.stringify(this.state.checked))
+        copy[index] = !copy[index];
+
+        this.props.toggleDisplayUser(this.props.user['connections']['following'][index].id)
+
+        this.setState({checked: copy})
     }
 
     getSignature = admin => {
@@ -142,6 +163,11 @@ class FollowingDisplay extends React.Component {
                     </DialogActions>
                 </Dialog>
                 <ListItemSecondaryAction>
+                    <Switch
+                    checked={this.state.checked[index]}
+                    onClick={() => this.handleToggleSwitch(index)}
+                    value={`checked-${index}`}
+                    />
                     <IconButton aria-label="info" onClick={()=>{
                         let copy = JSON.parse(JSON.stringify(this.state.openAlert))
                         copy[index] = true;

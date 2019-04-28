@@ -35,8 +35,14 @@ export default class Calendar extends React.PureComponent {
     ]
 
     componentDidUpdate(prevProps) {
-        if (prevProps.user !== this.props.user || prevProps.userid !== this.props.userid) {
-            this.setState({user: this.props.user, userid: this.props.userid})
+        if (prevProps.user !== this.props.user || 
+            prevProps.userid !== this.props.userid ||
+            prevProps.displayUsers !== this.props.displayUsers) {
+            this.setState({
+                user: this.props.user, 
+                userid: this.props.userid,
+                followingUsersToBeRendered: this.props.displayUsers
+            })
             this.setAppointments()
         }
     }

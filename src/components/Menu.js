@@ -89,7 +89,10 @@ class Menu extends React.Component {
                                 last_name={this.state.user['last_name']}
                                 class_year={this.state.user['class_year']}/> */}
                 <FollowerDisplay user={this.state.user} refresh={this.props.refresh} removeFollower={this.props.removeFollower}/>
-                <FollowingDisplay user={this.state.user} refresh={this.props.refresh} removeFollowing={this.props.removeFollowing}/>
+                <FollowingDisplay user={this.state.user} 
+                                    refresh={this.props.refresh} 
+                                    removeFollowing={this.props.removeFollowing}
+                                    toggleDisplayUser={this.props.toggleDisplayUser}/>
                 <ClassesDisplay refresh={this.props.refresh} user={this.state.user} userid={this.state.userid}/>
             </Drawer>
         );

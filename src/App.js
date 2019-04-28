@@ -86,6 +86,7 @@ class App extends Component {
             followRequests: [],
             frSent: [],
             openDrawer: false,
+            displayUsers: []
         }
     }
 
@@ -306,6 +307,21 @@ class App extends Component {
         this.setState({followRequests: arr})
     }
 
+    toggleDisplayUser = (userid) => {
+        let copy = JSON.parse(JSON.stringify(this.state.displayUsers))
+        let index = null
+        for (let i = 0; i < copy.length; i++) {
+            if (parseInt(copy[i]) === parseInt(userid)) {
+                index = i;
+                break;
+            }
+        }
+        if (index === null) copy.push(userid)
+        else copy.splice(index)
+
+        this.setState({displayUsers: copy})
+    }
+
 
 
   render() {
@@ -332,6 +348,7 @@ class App extends Component {
                     refresh={this.refresh}
                     removeFollower={this.removeFollower}
                     removeFollowing={this.removeFollowing}
+                    toggleDisplayUser={this.toggleDisplayUser}
                     user={this.state.user}
                     userid={this.state.userid}/>
 
@@ -340,7 +357,8 @@ class App extends Component {
             [classes.contentShift]: this.state.openDrawer,
           })}>
                 <div style={styles.drawerHeader} />
-                <Calendar   getSchedule={this.getSchedule}
+                <Calendar   displayUsers={this.state.displayUsers}
+                            getSchedule={this.getSchedule}
                             refresh={this.refresh}
                             user={this.state.user}
                             userid={this.state.userid} />
