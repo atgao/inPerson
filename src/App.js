@@ -4,7 +4,9 @@ import classNames from 'classnames';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
+import { createMuiTheme } from "@material-ui/core/styles";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import { teal } from "@material-ui/core/colors";
 
 
 import Calendar from './components/Calendar'
@@ -20,6 +22,8 @@ import axios from "axios";
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.withCredentials = true
+
+const theme = createMuiTheme({ palette: { type: "light", primary: teal } }); // this don't work rip
 
 const styles = theme => ({
     root: {
@@ -72,7 +76,8 @@ class App extends Component {
             connections: {
                 followers: [],
                 following: []
-            }
+            },
+            schedule: []
         }
         this.state = {
             userid: null,
@@ -80,7 +85,7 @@ class App extends Component {
             csrf_token: null,
             followRequests: [],
             frSent: [],
-            openDrawer: false
+            openDrawer: false,
         }
     }
 
@@ -95,6 +100,10 @@ class App extends Component {
                 await this.getFollower(user, userid)
 
                 await this.getFollowing(user, userid)
+
+                user['schedule'] = await this.getSchedule(userid)
+
+                console.log(user)
 
                 return user;
             })
@@ -222,6 +231,18 @@ class App extends Component {
         .catch((err) => console.log(err))
     }
 
+    getSchedule = async (userid) => {
+        let arr = []
+        await axios.get(`/api/schedule/${userid}/`, {user:{ userid: userid }})
+        .then((res) => {
+            console.log(res)
+            arr = res.data
+        })
+        .catch(console.log)
+
+        return arr
+    }
+
     getUser = async (userid) => {
         let user = {}
         await axios.get(`/api/user/${userid}`, {user:{userid: this.state.userid}})
@@ -241,6 +262,13 @@ class App extends Component {
     handleDrawerClose = () => {
         this.setState({ openDrawer: false })
     };
+
+    refresh = async() => {
+        let copy = JSON.parse(JSON.stringify(this.state.user))
+        copy['schedule'] = await this.getSchedule(this.state.userid)
+        this.setState({user: copy})
+        // this.forceUpdate()
+    }
 
     removeFollower = async (userid) => {
         await axios.delete(`/api/remove/${userid}`, {
@@ -281,35 +309,41 @@ class App extends Component {
 
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
     return (
       <div className="App">
-      <MuiThemeProvider>
+      <MuiThemeProvider theme={theme}>
         <CssBaseline />
-            <Navbar user={this.state.user}
-                    userid={this.state.userid}
+            <Navbar acceptFollowRequest={this.acceptFollowRequest}
+                    cantFollow={this.cantFollow}
+                    csrf_token={this.state.csrf_token} 
+                    deleteFollowRequest={this.deleteFollowRequest}
+                    followRequests={this.state.followRequests}
+                    followUser={this.followUser}
                     handleDrawerOpen={this.handleDrawerOpen}
                     open={this.state.openDrawer}
-                    followRequests={this.state.followRequests}
-                    acceptFollowRequest={this.acceptFollowRequest}
-                    deleteFollowRequest={this.deleteFollowRequest}
-                    followUser={this.followUser}
-                    cantFollow={this.cantFollow}
-                    csrf_token={this.state.csrf_token} />
-            <Menu user={this.state.user}
-                    userid={this.state.userid}
+                    refresh={this.refresh}
+                    user={this.state.user}
+                    userid={this.state.userid}/>
+
+            <Menu   csrf_token={this.state.csrf_token}
                     handleDrawerClose={this.handleDrawerClose}
-                    csrf_token={this.state.csrf_token}
                     open={this.state.openDrawer}
+                    refresh={this.refresh}
                     removeFollower={this.removeFollower}
-                    removeFollowing={this.removeFollowing}/>
+                    removeFollowing={this.removeFollowing}
+                    user={this.state.user}
+                    userid={this.state.userid}/>
 
             {/*<main style={Object.assign({}, styles.content, this.state.openDrawer? styles.contentShift: {})}> */}
             <main className={classNames(classes.content, {
             [classes.contentShift]: this.state.openDrawer,
           })}>
                 <div style={styles.drawerHeader} />
-                <Calendar/>
+                <Calendar   getSchedule={this.getSchedule}
+                            refresh={this.refresh}
+                            user={this.state.user}
+                            userid={this.state.userid} />
             </main>
             <Notifier />
         </MuiThemeProvider>
