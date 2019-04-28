@@ -39,6 +39,7 @@ To run the project initially locally run in the base folder:
     * ~UI - display schedule~
     * actual schedule displaying (with overlaying and everything)
         * ~display own schedule~
+        * requests - add/remove events
         * display others' schedules
         * UI - display/ remove following's schedule
 
@@ -76,4 +77,10 @@ To run the project initially locally run in the base folder:
 * ~Calendar form display weirddd~
 * ~Content shift on opening menu~
 * ~Make it not look horrendous on mobile (will prob just make an app for it tho over the summer)~
+
+
+## Backend TODOs - not for MVP but in order of importance (roughly)
+* one time events support
+* user groups
+* ....
 

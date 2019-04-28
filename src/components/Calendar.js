@@ -131,7 +131,7 @@ export default class Calendar extends React.PureComponent {
                 defaultCurrentView={'week'}
                 showCurrentTimeIndicator={true}
                 height={'80%'}
-                startDayHour={0} 
+                startDayHour={7} 
                 onAppointmentAdded={(e) => {
                     console.log(e)
                 }}
