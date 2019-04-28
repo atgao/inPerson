@@ -1,9 +1,7 @@
 import React from "react";
 import Paper from "@material-ui/core/Paper";
 
-import Scheduler from 'devextreme-react/scheduler';
-import DataSource from "devextreme/data/data_source";
-import ArrayStore from "devextreme/data/array_store";
+import Scheduler, { Resource } from 'devextreme-react/scheduler';
 
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
@@ -62,56 +60,36 @@ export default class Calendar extends React.PureComponent {
                     let opts = form.option("items")
                     console.log(form.option("items"))
                     opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") && (!e.label || e.label.text !== "Repeat")))
-                    // for (let i = 0; i < opts.length; i++) {
-                    //     let opt = opts[i]
-                    //     if (opt.dataField && opt.dataField === "recurrenceRule"){
-                    //         opt.label.visible= true
-                    //         opts[i] = opt
-                    //         break;
-                    //     }
-                    // }
-                    opts.push({
-                        label: {
-                            text:'Repeat weekly on'
-                        },
-                        editorType: 'dxTagBox',
-                        dataField: 'days',
-                        editorOptions: {
-                            items: days,
-                            value: [0, 1, 2, 3, 4, 5, 6],
-                            displayExpr: "text",
-                            valueExpr: "id",
-                            showSelectionControls: true,
-                            maxDisplayedTags: 3
-                        },
-                        validationRules: [{
-                            type: 'required'
-                        }]
-                    })
-                    console.log(opts)
-                    // form.option("items", [{
+                    // opts.push({
                     //     label: {
-                    //         text: "Movie"
+                    //         text:'Repeat weekly on'
                     //     },
-                    //     editorType: "dxSelectBox",
-                    //     dataField: "movieId",
+                    //     editorType: 'dxTagBox',
+                    //     dataField: 'days',
                     //     editorOptions: {
+                    //         items: days,
+                    //         value: [0, 1, 2, 3, 4, 5, 6],
                     //         displayExpr: "text",
                     //         valueExpr: "id",
-                    //         onValueChanged: function(args) {
-                    //             console.log(args)
-                    //             form.getEditor("director")
-                    //                 .option("value", '');
-                    //             form.getEditor("endDate")
-                    //                 .option("value", new Date (startDate.getTime() +
-                    //                     60 * 1000));
-                    //         }
+                    //         showSelectionControls: true,
+                    //         maxDisplayedTags: 3
                     //     },
+                    //     validationRules: [{
+                    //         type: 'required'
+                    //     }]
                     // })
+                    console.log(opts)
                     form.option("items", opts)
                     console.log(form.option("items"))
 
-                }}/>
+                }}>
+                    <Resource
+                        label={'Days'}
+                        fieldExpr={'day'}
+                        dataSource={days}
+                        allowMultiple={true}
+                        />
+                </Scheduler>
         </Paper>
       </MuiThemeProvider>
     );

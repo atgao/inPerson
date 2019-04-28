@@ -71,7 +71,8 @@ class App extends Component {
             connections: {
                 followers: [],
                 following: []
-            }
+            },
+            schedule: []
         }
         this.state = {
             userid: null,
@@ -79,7 +80,7 @@ class App extends Component {
             csrf_token: null,
             followRequests: [],
             frSent: [],
-            openDrawer: false
+            openDrawer: false,
         }
     }
 
@@ -219,6 +220,11 @@ class App extends Component {
             user['connections']['following'] = arr
         })
         .catch((err) => console.log(err))
+    }
+
+    getSchedule = async (userid) => {
+        let arr = []
+        await axios.get(`/api/schedule/${userid}/`)
     }
 
     getUser = async (userid) => {
