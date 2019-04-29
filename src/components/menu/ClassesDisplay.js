@@ -16,6 +16,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+import Notifier from "./../Notifier";
+import {openSnackbar} from "./../Notifier";
+
 import axios from 'axios';
 
 // for csrf token
@@ -120,8 +123,12 @@ class ClassesDisplay extends React.Component {
               'X-CSRFToken': this.props.csrf_token
             }
         })
-        .then(console.log)
-        .catch(console.log)
+        .then((res) => {
+            openSnackbar({ message: 'Class Added!' });
+        })
+        .catch((err) => {
+          openSnackbar({ message: 'Error' });
+        })
         let arr = this.state.addedClasses
         arr.push(cls)
         this.setState({addedClasses: arr})
@@ -194,7 +201,6 @@ class ClassesDisplay extends React.Component {
                 <ListItemSecondaryAction>
                     {this.isClassInSchedule(cls)?
                     <IconButton aria-label="delete" onClick={()=>console.log(cls)}>
-                        <DeleteIcon />
                     </IconButton>
                     :
                     <IconButton aria-label="add" onClick={()=>this.addClassToSchedule(cls)}>
@@ -247,7 +253,6 @@ class ClassesDisplay extends React.Component {
 
 
                         </div>
-
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>
