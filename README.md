@@ -9,6 +9,12 @@ To run the project initially locally run in the base folder:
     pip install -r requirements.txt
     ./runserver.sh
 
+## Current problems to fix real quick
+* DELETE NOT WORKING IDK WHY PLS HELP 
+* has to refresh to reload appts
+* switch on following lookin UGLY
+* update form has wrong stuff (disabled update for now)
+
 ## Frontend TODOS (for Ioana)
 1. ~Search bar~
     * ~UI - popup~
@@ -34,12 +40,12 @@ To run the project initially locally run in the base folder:
     * ~request - remove following~  
     * ~UI - add buttons with requests to UI~
 
-5. Display Schedules
+5. ~Display Schedules~
     * ~request - get followers schedule~
     * ~UI - display schedule~
-    * actual schedule displaying (with overlaying and everything)
+    * ~actual schedule displaying (with overlaying and everything)~
         * ~display own schedule~
-        * requests - add/remove events
+        * ~requests - add/remove events~
         * ~display others' schedules~
         * ~UI - display/ remove following's schedule~
 
@@ -78,7 +84,6 @@ To run the project initially locally run in the base folder:
 * ~Content shift on opening menu~
 * ~Make it not look horrendous on mobile (will prob just make an app for it tho over the summer)~
 * switch looking UGLY
-
 
 ## Backend TODOs - not for MVP but in order of importance (roughly)
 * one time events support

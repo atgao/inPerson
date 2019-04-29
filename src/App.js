@@ -161,6 +161,12 @@ class App extends Component {
 
     };
 
+    addToSchedule = (appt) => {
+        let copy = JSON.parse(JSON.stringify(this.state.schedule))
+        copy.push(appt)
+        this.setState({schedule: copy})
+    }
+
     cantFollow = (userid) => { // returns 0 if can follow, 2 if following, 1 if follow request sent
 
         for (let i = 0; i < this.state.user.connections.following.length; i++) {
@@ -307,6 +313,12 @@ class App extends Component {
         this.setState({followRequests: arr})
     }
 
+    removeFromSchedule = (eventid) => {
+        let copy = JSON.parse(JSON.stringify(this.state.schedule))
+        copy.filter((appt) => appt.id !== eventid)
+        this.setState({schedule: copy})
+    }
+
     toggleDisplayUser = (userid) => {
         let copy = JSON.parse(JSON.stringify(this.state.displayUsers))
         let index = null
@@ -357,9 +369,11 @@ class App extends Component {
             [classes.contentShift]: this.state.openDrawer,
           })}>
                 <div style={styles.drawerHeader} />
-                <Calendar   displayUsers={this.state.displayUsers}
+                <Calendar   addToSchedule={this.addToSchedule}
+                            displayUsers={this.state.displayUsers}
                             getSchedule={this.getSchedule}
                             refresh={this.refresh}
+                            removeFromSchedule={this.props.removeFromSchedule}
                             user={this.state.user}
                             userid={this.state.userid} />
             </main>

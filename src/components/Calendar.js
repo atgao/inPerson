@@ -87,8 +87,17 @@ export default class Calendar extends React.PureComponent {
     formatApptSchedulerToApi = (appt) => {
         let fm = {}
         fm['title'] = appt['text']
-        fm['start_time'] = `${appt['startDate'].getHours()}:${appt['startDate'].getMinutes()}:00`
-        fm['end_time'] = `${appt['endDate'].getHours()}:${appt['endDate'].getMinutes()}:00`
+        let startH = "" + appt['startDate'].getHours()
+        if (startH.length === 1) startH = '0' + startH
+        let startM = "" + appt['startDate'].getMinutes()
+        if (startM.length === 1) startM = '0' + startM
+        let endH = "" + appt['endDate'].getHours()
+        if (endH.length === 1) endH = '0' + endH
+        let endM = "" + appt['endDate'].getMinutes()
+        if (endM.length === 1) endM = '0' + endM
+
+        fm['start_time'] = `${startH}:${startM}:00`
+        fm['end_time'] = `${endH}:${endM}:00`
         fm['days'] = appt['day'].map(this.formatNumberDayToApi)
 
         console.log(fm)
@@ -169,6 +178,7 @@ export default class Calendar extends React.PureComponent {
         <Paper style = {{paddingTop: 55, width:'100%'}}>
             <Scheduler
                 dataSource={data}
+                editing={{allowUpdating: false}}
                 views={views}
                 defaultCurrentView={'week'}
                 showCurrentTimeIndicator={true}
@@ -183,25 +193,42 @@ export default class Calendar extends React.PureComponent {
                             'X-CSRFToken': this.state.csrf_token
                         }
                     })
-                    .then(console.log)
+                    .then((res) => {
+                        console.log(res)
+                        this.props.addToSchedule(res.data)
+                    })
                     .catch(console.log)
-
                     this.forceUpdate()
                 }}
                 onAppointmentUpdated={async (e) => {
                     console.log(e)
-
                     this.forceUpdate()
                 }}
                 onAppointmentDeleted={async (e) => {
                     console.log(e)
+
+                    await axios.delete(`/api/events/${e.appointmentData.id}/`,
+                        this.formatApptSchedulerToApi(e.appointmentData),
+                        {user: {userid: this.state.userid},
+                        headers: {
+                            'X-CSRFToken': this.state.csrf_token
+                        }
+                    })
+                    .then((res) => {
+                        console.log(res)
+                        this.props.removeFromSchedule(e.appointmentData.id)
+                    })
+                    .catch(console.log)
 
                     this.forceUpdate()
                 }}
                 onAppointmentFormOpening={(data) => {
                     let form = data.form;
                     let opts = form.option("items")
-                    opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") && (!e.label || e.label.text !== "Repeat")))
+                    opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") && 
+                                                (!e.label || e.label.text !== "Repeat") &&
+                                                (!e.dataField || e.dataField !== "description")))
+                    // console.log(opts)
                     form.option("items", opts)
 
                 }}>
@@ -210,6 +237,7 @@ export default class Calendar extends React.PureComponent {
                         fieldExpr={'day'}
                         dataSource={this.days}
                         allowMultiple={true}
+                        required={true}
                         />
                 </Scheduler>
         </Paper>
