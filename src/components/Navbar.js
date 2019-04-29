@@ -292,7 +292,7 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     }
                 </IconButton>
-                <p>Folllow Requests</p>
+                <p>Follow Requests</p>
             </MenuItem>
             <MenuItem onClick={this.handleProfileMenuOpen}>
                 <IconButton color="inherit">
