@@ -165,14 +165,17 @@ class ListCreateRecurrentEventsView(generics.ListCreateAPIView):
     queryset = RecurrentEvent.objects.all()
     serializer_class = RecurrentEventsSerializer
     # will need to add permissions class in future?? and decorators
-
     # add validate data
     def post(self, request, *args, **kwargs):
-        # TO DO: must add in check if class!!
-        # must also add in error responses
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
+        data = request.data
         try:
-            e = RecurrentEvent.objects.create(request.data, schedule=schedule)
+            location = ""
+            if data.get(location) != None:
+                location = data["location"]
+            e = RecurrentEvent.objects.create(title=data["title"], start_time=data["start_time"],
+                                              end_time=data["end_time"], days=data["days"],
+                                              location=data.get(location, ""), schedule=schedule)
             serializer = RecurrentEventsSerializer(e)
             return Response(data=serializer.data,
                             status=status.HTTP_200_OK)
