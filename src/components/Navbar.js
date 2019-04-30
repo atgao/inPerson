@@ -222,12 +222,16 @@ class Navbar extends React.Component {
             <MenuItem>
                 <Typography>{this.getName(req.user)}</Typography>
                 <ListItemIcon>
-                    <IconButton onClick={() => {this.props.acceptFollowRequest(req.user.id)}}>
+                    <IconButton onClick={() => {
+                      this.props.acceptFollowRequest(req.user.id);
+                      setInterval(this.handleFRMenuClose, 2000);}}>
                         <DoneIcon />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemIcon>
-                    <IconButton onClick={() => {this.props.deleteFollowRequest(req.user.id)}}>
+                    <IconButton onClick={() => {
+                      this.props.deleteFollowRequest(req.user.id);
+                      setInterval(this.handleFRMenuClose, 2000);}}>
                         <ClearIcon />
                     </IconButton>
                 </ListItemIcon>
@@ -282,7 +286,12 @@ class Navbar extends React.Component {
             </IconButton>
             <p>Messages</p>
             </MenuItem> */}
-            <MenuItem onClick={(event) => {if (this.state.noFollowReqs !== 0) this.handleFRMenuOpen(event)}}>
+            <MenuItem onClick={(event) => {
+              if (this.state.noFollowReqs !== 0) {
+                this.handleFRMenuOpen(event);
+                setInterval(this.handleFRMenuClose, 2000);
+              }
+            }}>
                 <IconButton color="inherit">
                     {this.noFollowReqs === 0?
                     <Badge badgeContent={this.noFollowReqs} color="secondary">
@@ -333,9 +342,11 @@ class Navbar extends React.Component {
                     </Badge>
                 </IconButton> */}
                 <IconButton color="inherit" onClick={(event) => {
-                  if (this.state.noFollowReqs !== 0)
-                    this.handleFRMenuOpen(event)
-                  }} >
+                  if (this.state.noFollowReqs !== 0) {
+                    this.handleFRMenuOpen(event);
+                    setInterval(this.handleFRMenuClose, 2000);
+                  }
+                }} >
                     {this.state.noFollowReqs !== 0?
                     <Badge badgeContent={this.state.noFollowReqs} color="secondary">
                         <NotificationsIcon />
