@@ -282,7 +282,7 @@ class Navbar extends React.Component {
             </IconButton>
             <p>Messages</p>
             </MenuItem> */}
-            <MenuItem onClick={this.handleFRMenuOpen}>
+            <MenuItem onClick={(event) => {if (this.state.noFollowReqs !== 0) this.handleFRMenuOpen(event)}}>
                 <IconButton color="inherit">
                     {this.noFollowReqs === 0?
                     <Badge badgeContent={this.noFollowReqs} color="secondary">
@@ -332,7 +332,10 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                <IconButton color="inherit" onClick={this.handleFRMenuOpen}>
+                <IconButton color="inherit" onClick={(event) => {
+                  if (this.state.noFollowReqs !== 0)
+                    this.handleFRMenuOpen(event)
+                  }} >
                     {this.state.noFollowReqs !== 0?
                     <Badge badgeContent={this.state.noFollowReqs} color="secondary">
                         <NotificationsIcon />
