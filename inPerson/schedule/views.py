@@ -73,6 +73,9 @@ class CreateSectionstoScheduleView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
+        if schedule.owner != request.user:
+            return Response(data={"message": "Not your schedule"},
+                            status=status.HTTP_403_FORBIDDEN)
         a_class = request.data["body"]["class"]
 
         if a_class["term"] != schedule.term: # can't add section when its not same term
@@ -181,6 +184,9 @@ class ListCreateRecurrentEventsView(generics.ListCreateAPIView):
     # add validate data
     def post(self, request, *args, **kwargs):
         schedule = Schedule.objects.get_current_schedule_for_user(request.user)
+        if schedule.owner != request.user:
+            return Response(data={"message": "Not your event"},
+                            status=status.HTTP_403_FORBIDDEN)
         data = request.data
         try:
             location = ""
@@ -242,10 +248,14 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         try:
             event = self.queryset.get(pk=kwargs["pk"])
-            serializer = RecurrentEventsSerializer()
-            updated_event = serializer.update(event, request.data)
-            return Response(data=RecurrentEventsSerializer(updated_event).data,
-                            status=status.HTTP_200_OK)
+            if event.schedule.owner == request.user:
+                serializer = RecurrentEventsSerializer()
+                updated_event = serializer.update(event, request.data)
+                return Response(data=RecurrentEventsSerializer(updated_event).data,
+                                status=status.HTTP_200_OK)
+            else:
+                return Response(data={"message": "Not your event"},
+                                status=status.HTTP_403_FORBIDDEN)
         except RecurrentEvent.DoesNotExist:
             return Response(data={"message": "Event not found"},
                             status=status.HTTP_404_NOT_FOUND)
@@ -259,9 +269,13 @@ class RecurrentEventsDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         try:
             event = self.queryset.get(pk=kwargs["pk"])
-            event.delete()
-            return Response(data={"message": "Success"},
-                            status=status.HTTP_200_OK)
+            if event.schedule.owner == request.user:
+                event.delete()
+                return Response(data={"message": "Success"},
+                                status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(data={"message": "Not your event"},
+                                status=status.HTTP_403_FORBIDDEN)
         except RecurrentEvent.DoesNotExist:
             return Response(data={"message": "Event not found"},
                             status=status.HTTP_404_NOT_FOUND)
