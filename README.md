@@ -10,7 +10,7 @@ To run the project initially locally run in the base folder:
     ./runserver.sh
 
 ## Current problems to fix real quick
-* DELETE NOT WORKING ~IDK WHY~ jk i know why PLS HELP 
+* ~DELETE NOT WORKING ~IDK WHY~ jk i know why PLS HELP~
 * has to refresh to reload appts
 * switch on following lookin UGLY
 * update form has wrong stuff (disabled update for now)
