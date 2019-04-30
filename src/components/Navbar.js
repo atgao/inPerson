@@ -224,14 +224,14 @@ class Navbar extends React.Component {
                 <ListItemIcon>
                     <IconButton onClick={() => {
                       this.props.acceptFollowRequest(req.user.id);
-                      setInterval(this.handleFRMenuClose, 2000);}}>
+                      setInterval(this.handleFRMenuClose, 2500);}}>
                         <DoneIcon />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemIcon>
                     <IconButton onClick={() => {
                       this.props.deleteFollowRequest(req.user.id);
-                      setInterval(this.handleFRMenuClose, 2000);}}>
+                      setInterval(this.handleFRMenuClose, 2500);}}>
                         <ClearIcon />
                     </IconButton>
                 </ListItemIcon>
@@ -289,7 +289,7 @@ class Navbar extends React.Component {
             <MenuItem onClick={(event) => {
               if (this.state.noFollowReqs !== 0) {
                 this.handleFRMenuOpen(event);
-                setInterval(this.handleFRMenuClose, 2000);
+                setInterval(this.handleFRMenuClose, 2500);
               }
             }}>
                 <IconButton color="inherit">
@@ -344,7 +344,7 @@ class Navbar extends React.Component {
                 <IconButton color="inherit" onClick={(event) => {
                   if (this.state.noFollowReqs !== 0) {
                     this.handleFRMenuOpen(event);
-                    setInterval(this.handleFRMenuClose, 2000);
+                    setInterval(this.handleFRMenuClose, 2500);
                   }
                 }} >
                     {this.state.noFollowReqs !== 0?
