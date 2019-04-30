@@ -372,7 +372,7 @@ class App extends Component {
                             displayUsers={this.state.displayUsers}
                             getSchedule={this.getSchedule}
                             refresh={this.refresh}
-                            removeFromSchedule={this.props.removeFromSchedule}
+                            removeFromSchedule={this.removeFromSchedule}
                             user={this.state.user}
                             userid={this.state.userid} />
             </main>

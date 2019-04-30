@@ -80,6 +80,7 @@ export default class Calendar extends React.PureComponent {
         appt.days.forEach((day) => st+=(this.formatApiDayToScheduler(day) +","))
         st = st.slice(0, st.length-1)
         fm['recurrenceRule'] = `FREQ=WEEKLY;BYDAY=${st};UNTIL=${this.state.endSemDate}`
+        fm['days'] = appt.days
         return fm
 
     }
@@ -98,7 +99,7 @@ export default class Calendar extends React.PureComponent {
 
         fm['start_time'] = `${startH}:${startM}:00`
         fm['end_time'] = `${endH}:${endM}:00`
-        fm['days'] = appt['day'].map(this.formatNumberDayToApi)
+        fm['days'] = this.recRuleToDays(appt['recurrenceRule'])
 
         console.log(fm)
 
@@ -131,6 +132,19 @@ export default class Calendar extends React.PureComponent {
             default: console.log(day);
         }
         console.log("Something went wrong when fetching days from the number")
+    }
+
+    recRuleToDays = (rule) => { // this won't work later
+        let copy = (' ' + rule).slice(1);
+        copy = copy.slice(5, -15)
+        if (copy.substr(0, 6) === "WEEKLY" && copy.substr(7, 5) === "BYDAY") {
+            copy = copy.slice(13)
+            let days = copy.split(',')
+            days = days.map(this.formatSchedulerDayToApi)
+
+            return days
+        }
+        return []
     }
 
     setAppointments = async () => {
