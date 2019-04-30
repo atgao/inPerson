@@ -88,7 +88,7 @@ class SearchBar extends React.Component {
     getButtonName = (user) => {
         const ret = this.props.cantFollow(user.id)
         if (ret === 0) return "Follow"
-        if (ret === 1) return "Follow request sent"
+        if (ret === 1) return "Requested"
         if (ret === 2) return "Following"
 
         console.log("SOMETHING WENT TERRIBLY WRONG")
@@ -131,8 +131,10 @@ class SearchBar extends React.Component {
                     <ListItem key={user.id}>
                         <ListItemText>{this.getName(user)}</ListItemText>
                         <ListItemSecondaryAction>
-                            <Button variant="contained" disabled={this.props.cantFollow(user.id) !== 0} 
-                                    color="primary" onClick={async ()=>{
+                            <Button variant="contained" disabled={this.props.cantFollow(user.id) !== 0}
+                                    color="primary"
+                                    style={{maxWidth:'100px', minWidth:'100px'}}
+                                    onClick={async ()=>{
                                         await this.props.followUser(user.id)
                                         this.forceUpdate()
                                     }}>
