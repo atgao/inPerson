@@ -17,6 +17,19 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Switch from '@material-ui/core/Switch';
+import Grid from '@material-ui/core/Grid';
+import classNames from 'classnames';
+
+const styles = theme => ({
+  root: {
+  flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
 
 const ExpansionPanel = withStyles({
 root: {
@@ -68,7 +81,7 @@ class FollowingDisplay extends React.Component {
         for (let i = 0; i < this.props.user['connections']['following'].length; i++){
             arr.push(false)
             arr2.push(false)
-        } 
+        }
         this.state = {
             expanded: false,
             user: this.props.user,
@@ -78,7 +91,7 @@ class FollowingDisplay extends React.Component {
         console.log(this.state.checked)
 
     }
-    
+
 
     componentDidUpdate(prevProps) {
         if (prevProps.user !== this.props.user) {
@@ -137,48 +150,57 @@ class FollowingDisplay extends React.Component {
 
     userDisplay = (connection, index) => (
         <div>
-            <ListItem key={connection['netid']} divider={true}>
-                <ListItemText primary={this.getName(connection)} secondary={connection['netid']}/>
-                <Dialog
-                    open={this.state.openAlert[index]}
-                    onClose={() => this.handleClose(index)}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id={`alert-dialog-title-${index}`}>{this.getName(connection)}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id={`alert-dialog-description-${index}`}>
-                            Are you sure you want to remove this user from your following list?
-                            You will have to request to see their schedule again.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => this.handleRemove(index)} color="secondary">
-                            Yes
-                        </Button>
-                        <Button onClick={() => this.handleClose(index)} color="primary">
-                            No
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                <ListItemSecondaryAction>
-                    <Switch
-                    checked={this.state.checked[index]}
-                    onClick={() => this.handleToggleSwitch(index)}
-                    value={`checked-${index}`}
-                    />
+          <ListItem key={connection['netid']} divider={true}>
+            {/*<Grid item xs={6}>*/}
+              <ListItemText primary={this.getName(connection)} secondary={connection['netid']}/>
+              {/*</Grid>*/}
+              <Dialog
+                  open={this.state.openAlert[index]}
+                  onClose={() => this.handleClose(index)}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+              >
+                  <DialogTitle id={`alert-dialog-title-${index}`}>{this.getName(connection)}</DialogTitle>
+                  <DialogContent>
+                      <DialogContentText id={`alert-dialog-description-${index}`}>
+                          Are you sure you want to remove this user from your following list?
+                          You will have to request to see their schedule again.
+                      </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                      <Button onClick={() => this.handleRemove(index)} color="secondary">
+                          Yes
+                      </Button>
+                      <Button onClick={() => this.handleClose(index)} color="primary">
+                          No
+                      </Button>
+                  </DialogActions>
+              </Dialog>
+                <Grid container spacing={8}>
+                  <ListItemSecondaryAction>
+                    <Grid item xs={3}>
+                      <Switch
+                      checked={this.state.checked[index]}
+                      onClick={() => this.handleToggleSwitch(index)}
+                      value={`checked-${index}`}
+                      color="primary"
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
                     <IconButton aria-label="info" onClick={()=>{
                         let copy = JSON.parse(JSON.stringify(this.state.openAlert))
                         copy[index] = true;
                         this.setState({openAlert: copy})
                     }}>
-                        <DeleteIcon />
-                    </IconButton>
+                      <DeleteIcon />
+                  </IconButton>
+                  </Grid>
                 </ListItemSecondaryAction>
-            </ListItem>
+              </Grid>
+          </ListItem>
         </div>
     )
- 
+
     render() {
         return (
             <div>
@@ -194,7 +216,7 @@ class FollowingDisplay extends React.Component {
                         <List>
                             {this.state.user['connections']['following'].map((connection, index) => this.userDisplay(connection, index))}
                         </List>
-                        
+
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>

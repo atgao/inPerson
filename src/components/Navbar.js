@@ -19,6 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import DoneIcon from '@material-ui/icons/Done'
 import ClearIcon from '@material-ui/icons/Clear'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Grid from '@material-ui/core/Grid';
 
 import SearchBar from './navbar/SearchBar';
 
@@ -217,21 +218,33 @@ class Navbar extends React.Component {
 
     renderFollowReq = (req) =>{
         return (
-          <MenuList>
-            <MenuItem>
-                <Typography>{this.getName(req.user)}</Typography>
-                <ListItemIcon>
-                    <IconButton onClick={() => {this.props.acceptFollowRequest(req.user.id)}}>
-                        <DoneIcon />
-                    </IconButton>
-                </ListItemIcon>
-                <ListItemIcon>
-                    <IconButton onClick={() => {this.props.deleteFollowRequest(req.user.id)}}>
-                        <ClearIcon />
-                    </IconButton>
-                </ListItemIcon>
-            </MenuItem>
-          </MenuList>
+          <Grid container spacing={8}>
+            <MenuList>
+              <MenuItem>
+                <Grid item xs={6}>
+                  <Typography>{this.getName(req.user)}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <ListItemIcon>
+                      <IconButton onClick={() => {
+                        this.props.acceptFollowRequest(req.user.id);
+                        if (this.state.noFollowReqs === 0) setInterval(this.handleFRMenuClose, 2500);}}>
+                          <DoneIcon />
+                      </IconButton>
+                  </ListItemIcon>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <ListItemIcon>
+                      <IconButton onClick={() => {
+                        this.props.deleteFollowRequest(req.user.id);
+                        if (this.state.noFollowReqs === 0) setInterval(this.handleFRMenuClose, 2500);}}>
+                          <ClearIcon />
+                      </IconButton>
+                    </ListItemIcon>
+                </Grid>
+              </MenuItem>
+            </MenuList>
+          </Grid>
         )
     }
 
@@ -281,7 +294,12 @@ class Navbar extends React.Component {
             </IconButton>
             <p>Messages</p>
             </MenuItem> */}
-            <MenuItem onClick={this.handleFRMenuOpen}>
+            <MenuItem onClick={(event) => {
+              if (this.state.noFollowReqs !== 0) {
+                this.handleFRMenuOpen(event);
+                setInterval(this.handleFRMenuClose, 5000);
+              }
+            }}>
                 <IconButton color="inherit">
                     {this.noFollowReqs === 0?
                     <Badge badgeContent={this.noFollowReqs} color="secondary">
@@ -331,7 +349,11 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                <IconButton color="inherit" onClick={this.handleFRMenuOpen}>
+                <IconButton color="inherit" onClick={(event) => {
+                  if (this.state.noFollowReqs !== 0) {
+                    this.handleFRMenuOpen(event);
+                  }
+                }} >
                     {this.state.noFollowReqs !== 0?
                     <Badge badgeContent={this.state.noFollowReqs} color="secondary">
                         <NotificationsIcon />
