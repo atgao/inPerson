@@ -9,10 +9,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.teal.light.css';
+import { RefreshIndicator } from "material-ui";
 
 export default class Calendar extends React.PureComponent {
   constructor(props) {
     super(props);
+    
+    this.schedulerRef = React.createRef()
 
     this.state = {
       user: this.props.user,
@@ -20,7 +23,7 @@ export default class Calendar extends React.PureComponent {
       allApptsToBeRendered: [],
       followingUsersToBeRendered: [],
       startSemDate: {},
-      endSemDate: {}
+      endSemDate: ''
     };
   }
   
@@ -34,7 +37,7 @@ export default class Calendar extends React.PureComponent {
         {id: 6, text: "Sunday"},
     ]
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.user !== this.props.user || 
             prevProps.userid !== this.props.userid ||
             prevProps.displayUsers !== this.props.displayUsers) {
@@ -162,6 +165,13 @@ export default class Calendar extends React.PureComponent {
         })
 
         this.setState({allApptsToBeRendered: all})
+        console.log('scheduler ref')
+        let view = this.scheduler.option('currentView')
+        this.scheduler.option('currentView', 'day')
+        this.scheduler.option('currentView', view)
+        console.log(this.scheduler)
+        console.log('done')
+        this.forceUpdate()
     }
 
     setSemesterDates = async () => {
@@ -183,15 +193,21 @@ export default class Calendar extends React.PureComponent {
         })
     }
 
+    get scheduler(){
+        return this.schedulerRef.current.instance
+    }
+
   render() {
     // const data = this.state.data;
-    const data = this.state.allApptsToBeRendered;
     const views = ['day', 'week', 'month'];
     return (
         <MuiThemeProvider>
         <Paper style = {{paddingTop: 55, width:'100%'}}>
             <Scheduler
-                dataSource={data}
+                ref = {this.schedulerRef}
+                dataSource={this.state.allApptsToBeRendered}
+                firstDayOfWeek={1}
+                showAllDayPanel={false}
                 editing={{allowUpdating: false}}
                 views={views}
                 defaultCurrentView={'week'}
@@ -236,7 +252,18 @@ export default class Calendar extends React.PureComponent {
 
                     this.forceUpdate()
                 }}
+
+                onAppointmentFormCreated={(e)=> {
+                    console.log('created')
+                    console.log(e)
+                }}
+                onAppointmentUpdating={(e)=>{
+                    console.log('updating')
+                    console.log(e)
+                }}
                 onAppointmentFormOpening={(data) => {
+                    console.log(this)
+                    console.log(data.form)
                     let form = data.form;
                     let opts = form.option("items")
                     opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") && 
