@@ -51,8 +51,11 @@ class ListSectionsView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, SearchFilter)
     filter_class = SectionFilter
     search_fields = ('code', 'catalog_number', 'title', 'term')
-    #
+    ordering = ('code', 'catalog_number')
+
     def list(self, request):
+        # print("PRINTING REQUEST")
+        print(request)
         queryset = self.filter_queryset(self.get_queryset())
         serializer = SectionsSerializer(queryset, many=True)
         try:

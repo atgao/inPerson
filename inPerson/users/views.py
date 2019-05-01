@@ -24,8 +24,8 @@ class UserListView(generics.ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend, SearchFilter)
     filter_class = UserFilter
     search_fields = ('first_name', 'last_name', 'netid', 'class_year')
-    ordering_fields = ('first_name', 'last_name', 'netid', 'class_year')
-    ordering = ('first_name', 'netid')
+    ordering_fields = ('id', 'first_name', 'last_name', 'netid', 'class_year')
+    ordering = ('netid')
 
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset())
