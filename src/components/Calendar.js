@@ -6,16 +6,22 @@ import axios from 'axios'
 import Scheduler, { Resource } from 'devextreme-react/scheduler';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import DataSource from 'devextreme/data/data_source';
 
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.teal.light.css';
-import { RefreshIndicator } from "material-ui";
 
 export default class Calendar extends React.PureComponent {
   constructor(props) {
     super(props);
     
-    this.schedulerRef = React.createRef()
+    // this.schedulerRef = React.createRef()
+
+    this.scheduler = null;
+
+      this.setScheduler = (ref) => {
+          this.scheduler = ref.instance;
+      };
 
     this.state = {
       user: this.props.user,
@@ -23,7 +29,19 @@ export default class Calendar extends React.PureComponent {
       allApptsToBeRendered: [],
       followingUsersToBeRendered: [],
       startSemDate: {},
-      endSemDate: ''
+      endSemDate: '',
+      owners: [
+        {
+            text: 'own',
+            id: 0, 
+            color: 'blue'
+        },
+        {
+            text: 'following',
+            id: 1,
+            color: 'red'
+        }
+    ]
     };
   }
   
@@ -36,6 +54,8 @@ export default class Calendar extends React.PureComponent {
         {id: 5, text: "Saturday"},
         {id: 6, text: "Sunday"},
     ]
+
+    
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.user !== this.props.user || 
@@ -64,7 +84,7 @@ export default class Calendar extends React.PureComponent {
         console.log("Something went wrong when fetching days from api")
     }
 
-    formatApptApiToScheduler = (appt) => {
+    formatApptApiToScheduler = (appt, id) => {
         let fm = {}
         fm['text'] = appt['title']
         fm['startDate'] =  new Date(this.state.startSemDate.year, 
@@ -84,6 +104,10 @@ export default class Calendar extends React.PureComponent {
         st = st.slice(0, st.length-1)
         fm['recurrenceRule'] = `FREQ=WEEKLY;BYDAY=${st};UNTIL=${this.state.endSemDate}`
         fm['days'] = appt.days
+        fm['ownerid'] = id
+
+        if (id === this.state.userid) fm['color'] = 'red'
+        else fm['color'] = 'grey'
         return fm
 
     }
@@ -158,22 +182,28 @@ export default class Calendar extends React.PureComponent {
         await this.setSemesterDates()
         // this user
         let all = []
-        this.state.user.schedule.forEach((appt) => all.push(this.formatApptApiToScheduler(appt)))
+        let owners = [{id: this.state.userid, color: 'red', text:'own'}]
+        this.state.user.schedule.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, this.state.userid)))
         await this.state.followingUsersToBeRendered.forEach(async (userid) => {
+            owners.push({id: userid, color: 'grey', text:'following'})
             await axios.get(`/api/schedule/${userid}/`, {user: {userid: this.state.userid}})
             .then((res)=> {
                 console.log(res)
-                res.data.forEach((appt) => all.push(this.formatApptApiToScheduler(appt)))
+                res.data.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, userid)))
                 all.push(this)
             })
         })
 
         this.setState({allApptsToBeRendered: all})
         console.log('scheduler ref')
-        let view = this.scheduler.option('currentView')
-        this.scheduler.option('currentView', 'day')
-        this.scheduler.option('currentView', view)
+        // let view = this.scheduler.option('currentView')
+        // this.scheduler.option('currentView', 'day')
+        // this.scheduler.option('currentView', view)
+        // this.scheduler.repaint()
+        // console.log(this.scheduler.reload)
         console.log(this.scheduler)
+        let ds = this.scheduler.option('dataSource')
+        ds.load()
         console.log('done')
         this.forceUpdate()
     }
@@ -197,9 +227,9 @@ export default class Calendar extends React.PureComponent {
         })
     }
 
-    get scheduler(){
-        return this.schedulerRef.current.instance
-    }
+    // get scheduler(){
+    //     return this.schedulerRef.current.instance
+    // }
 
   render() {
     // const data = this.state.data;
@@ -208,8 +238,17 @@ export default class Calendar extends React.PureComponent {
         <MuiThemeProvider>
         <Paper style = {{paddingTop: 55, width:'100%'}}>
             <Scheduler
-                ref = {this.schedulerRef}
-                dataSource={this.state.allApptsToBeRendered}
+                // ref = {this.schedulerRef}
+                ref={this.setScheduler}
+                dataSource={ new DataSource({
+                    store: {
+                        type: "array",
+                        key: "id",
+                        data: this.state.allApptsToBeRendered,
+                        // Other ArrayStore options go here
+                    },
+                    // Other DataSource options go here
+                })}
                 firstDayOfWeek={1}
                 showAllDayPanel={false}
                 editing={{allowUpdating: false}}
@@ -218,6 +257,8 @@ export default class Calendar extends React.PureComponent {
                 showCurrentTimeIndicator={true}
                 height={'80%'}
                 startDayHour={7} 
+                // colorExpr='color'
+                // useColorAsDefault={true}
                 onAppointmentAdded={async (e) => {
                     console.log(e)
                     await axios.post('/api/events/user/',
@@ -278,12 +319,19 @@ export default class Calendar extends React.PureComponent {
 
                 }}>
                     <Resource
+                        dataSource={this.state.owners}
+                        fieldExpr={'ownerid'}
+                        label={'Owner'}
+                        useColorAsDefault={true}
+                        />
+                    <Resource
                         label={'Days'}
                         fieldExpr={'day'}
                         dataSource={this.days}
                         allowMultiple={true}
                         required={true}
                         />
+                
                 </Scheduler>
         </Paper>
         </MuiThemeProvider>
