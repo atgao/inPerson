@@ -25,7 +25,6 @@ import SearchBar from './navbar/SearchBar';
 
 import { drawerWidth } from '../consts/ui'
 import axios from 'axios';
-import { Icon } from '@material-ui/core';
 
 const styles = theme => ({
     root: {

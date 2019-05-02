@@ -108,7 +108,12 @@ class ClassesDisplay extends React.Component {
     }
 
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.searchQuery !== this.state.searchQuery) {
+            if (this.state.searchQuery.length >= 3) {
+                this.getSearchResults()
+            }
+        }
         if (prevProps.user !== this.props.user || prevProps.userid !== this.props.userid) {
             this.setState({user: this.props.user, userid: this.props.userid})
         }
@@ -200,8 +205,7 @@ class ClassesDisplay extends React.Component {
 
                 <ListItemSecondaryAction>
                     {this.isClassInSchedule(cls)?
-                    <IconButton aria-label="delete" onClick={()=>console.log(cls)}>
-                    </IconButton>
+                    <div></div>
                     :
                     <IconButton aria-label="add" onClick={()=>this.addClassToSchedule(cls)}>
                         <AddIcon />
@@ -211,6 +215,15 @@ class ClassesDisplay extends React.Component {
             </ListItem>
         </div>
     )
+
+    splitIfNeeded = (str) => {
+        const regex = /^[a-zA-z]{3}[0-9]{3}[a-zA-Z]?$/
+        if (str.match(regex) !== null) {
+            let newStr = str.substr(0, 3) + ' ' + str.slice(3)
+            return newStr
+        }
+        return str
+    }
 
     render() {
         const { classes } = this.props
@@ -235,7 +248,7 @@ class ClassesDisplay extends React.Component {
                                 //     input: classes.inputInput,
                                 // }}
                                 onChange={(event)=>{
-                                    this.setState({searchQuery: event.target.value})
+                                    this.setState({searchQuery: this.splitIfNeeded(event.target.value)})
                                 }}
                                 onKeyPress= {(e) => {
                                     if (e.key === 'Enter') {
