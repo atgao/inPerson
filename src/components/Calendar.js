@@ -102,7 +102,8 @@ export default class Calendar extends React.PureComponent {
 
         fm['start_time'] = `${startH}:${startM}:00`
         fm['end_time'] = `${endH}:${endM}:00`
-        fm['days'] = this.recRuleToDays(appt['recurrenceRule'])
+        // fm['days'] = this.recRuleToDays(appt['recurrenceRule'])
+        fm['days'] = appt.day.map(this.formatNumberDayToApi)
 
         console.log(fm)
 
@@ -140,7 +141,9 @@ export default class Calendar extends React.PureComponent {
     recRuleToDays = (rule) => { // this won't work later
         let copy = (' ' + rule).slice(1);
         copy = copy.slice(5, -15)
+        console.log(copy)
         if (copy.substr(0, 6) === "WEEKLY" && copy.substr(7, 5) === "BYDAY") {
+            console.log("recRule if")
             copy = copy.slice(13)
             let days = copy.split(',')
             days = days.map(this.formatSchedulerDayToApi)
@@ -253,14 +256,14 @@ export default class Calendar extends React.PureComponent {
                     this.forceUpdate()
                 }}
 
-                onAppointmentFormCreated={(e)=> {
-                    console.log('created')
-                    console.log(e)
-                }}
-                onAppointmentUpdating={(e)=>{
-                    console.log('updating')
-                    console.log(e)
-                }}
+                // onAppointmentFormCreated={(e)=> {
+                //     console.log('created')
+                //     console.log(e)
+                // }}
+                // onAppointmentUpdating={(e)=>{
+                //     console.log('updating')
+                //     console.log(e)
+                // }}
                 onAppointmentFormOpening={(data) => {
                     console.log(this)
                     console.log(data.form)
