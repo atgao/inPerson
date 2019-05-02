@@ -103,7 +103,8 @@ export default class Calendar extends React.PureComponent {
         fm['start_time'] = `${startH}:${startM}:00`
         fm['end_time'] = `${endH}:${endM}:00`
         // fm['days'] = this.recRuleToDays(appt['recurrenceRule'])
-        fm['days'] = appt.day.map(this.formatNumberDayToApi)
+        if (appt.day)
+            fm['days'] = appt.day.map(this.formatNumberDayToApi)
 
         console.log(fm)
 
