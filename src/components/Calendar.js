@@ -39,7 +39,7 @@ export default class Calendar extends React.PureComponent {
         {
             text: 'following',
             id: 1,
-            color: '#aaf7e5'
+            color: '#91b9f2'
         }
     ]
     };
