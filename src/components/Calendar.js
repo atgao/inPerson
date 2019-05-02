@@ -106,7 +106,7 @@ export default class Calendar extends React.PureComponent {
         fm['days'] = appt.days
         fm['ownerid'] = id
 
-        if (id === this.state.userid) fm['color'] = 'red'
+        if (id === this.state.userid) fm['color'] = 'teal'
         else fm['color'] = 'grey'
         return fm
 
@@ -182,7 +182,7 @@ export default class Calendar extends React.PureComponent {
         await this.setSemesterDates()
         // this user
         let all = []
-        let owners = [{id: 0, color: 'red', text:'own'}]
+        let owners = [{id: 0, color: 'teal', text:'own'}]
         this.state.user.schedule.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, 0)))
         await this.state.followingUsersToBeRendered.forEach(async (userid) => {
             owners.push({id: 1, color: 'grey', text:'following'})
@@ -194,7 +194,7 @@ export default class Calendar extends React.PureComponent {
             })
         })
 
-        this.setState({allApptsToBeRendered: all})
+        this.setState({allApptsToBeRendered: all, owners: owners})
         console.log('scheduler ref')
         // let view = this.scheduler.option('currentView')
         // this.scheduler.option('currentView', 'day')
@@ -313,7 +313,8 @@ export default class Calendar extends React.PureComponent {
                     let opts = form.option("items")
                     opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") &&
                                                 (!e.label || e.label.text !== "Repeat") &&
-                                                (!e.dataField || e.dataField !== "description")))
+                                                (!e.dataField || e.dataField !== "description") &&
+                                                (!e.dataField || e.dataField !== "ownerid")))
                     // console.log(opts)
                     form.option("items", opts)
 
