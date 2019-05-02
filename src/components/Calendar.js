@@ -14,7 +14,7 @@ import 'devextreme/dist/css/dx.material.teal.light.css';
 export default class Calendar extends React.PureComponent {
   constructor(props) {
     super(props);
-    
+
     // this.schedulerRef = React.createRef()
 
     this.scheduler = null;
@@ -33,18 +33,18 @@ export default class Calendar extends React.PureComponent {
       owners: [
         {
             text: 'own',
-            id: 0, 
-            color: 'blue'
+            id: 0,
+            color: 'teal'
         },
         {
             text: 'following',
             id: 1,
-            color: 'red'
+            color: '#aaf7e5'
         }
     ]
     };
   }
-  
+
     days = [
         {id: 0, text: "Monday"},
         {id: 1, text: "Tuesday"},
@@ -55,14 +55,14 @@ export default class Calendar extends React.PureComponent {
         {id: 6, text: "Sunday"},
     ]
 
-    
+
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.user !== this.props.user || 
+        if (prevProps.user !== this.props.user ||
             prevProps.userid !== this.props.userid ||
             prevProps.displayUsers !== this.props.displayUsers) {
             this.setState({
-                user: this.props.user, 
+                user: this.props.user,
                 userid: this.props.userid,
                 followingUsersToBeRendered: this.props.displayUsers
             })
@@ -87,12 +87,12 @@ export default class Calendar extends React.PureComponent {
     formatApptApiToScheduler = (appt, id) => {
         let fm = {}
         fm['text'] = appt['title']
-        fm['startDate'] =  new Date(this.state.startSemDate.year, 
+        fm['startDate'] =  new Date(this.state.startSemDate.year,
                                     this.state.startSemDate.month,
                                     this.state.startSemDate.date,
                                     parseInt(appt.start_time.slice(0, 2)),
                                     parseInt(appt.start_time.slice(3, 5)))
-        fm['endDate'] =new Date(this.state.startSemDate.year, 
+        fm['endDate'] =new Date(this.state.startSemDate.year,
                                 this.state.startSemDate.month,
                                 this.state.startSemDate.date,
                                 parseInt(appt.end_time.slice(0, 2)),
@@ -182,14 +182,14 @@ export default class Calendar extends React.PureComponent {
         await this.setSemesterDates()
         // this user
         let all = []
-        let owners = [{id: this.state.userid, color: 'red', text:'own'}]
-        this.state.user.schedule.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, this.state.userid)))
+        let owners = [{id: 0, color: 'red', text:'own'}]
+        this.state.user.schedule.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, 0)))
         await this.state.followingUsersToBeRendered.forEach(async (userid) => {
-            owners.push({id: userid, color: 'grey', text:'following'})
+            owners.push({id: 1, color: 'grey', text:'following'})
             await axios.get(`/api/schedule/${userid}/`, {user: {userid: this.state.userid}})
             .then((res)=> {
                 console.log(res)
-                res.data.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, userid)))
+                res.data.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, 1)))
                 all.push(this)
             })
         })
@@ -256,7 +256,7 @@ export default class Calendar extends React.PureComponent {
                 defaultCurrentView={'week'}
                 showCurrentTimeIndicator={true}
                 height={'80%'}
-                startDayHour={7} 
+                startDayHour={7}
                 // colorExpr='color'
                 // useColorAsDefault={true}
                 onAppointmentAdded={async (e) => {
@@ -311,7 +311,7 @@ export default class Calendar extends React.PureComponent {
                     console.log(data.form)
                     let form = data.form;
                     let opts = form.option("items")
-                    opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") && 
+                    opts = opts.filter((e) => ((!e.dataField || e.dataField !== "allDay") &&
                                                 (!e.label || e.label.text !== "Repeat") &&
                                                 (!e.dataField || e.dataField !== "description")))
                     // console.log(opts)
@@ -323,6 +323,7 @@ export default class Calendar extends React.PureComponent {
                         fieldExpr={'ownerid'}
                         label={'Owner'}
                         useColorAsDefault={true}
+                        allowMultiple={true}
                         />
                     <Resource
                         label={'Days'}
@@ -331,7 +332,7 @@ export default class Calendar extends React.PureComponent {
                         allowMultiple={true}
                         required={true}
                         />
-                
+
                 </Scheduler>
         </Paper>
         </MuiThemeProvider>
