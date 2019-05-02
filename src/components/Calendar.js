@@ -182,10 +182,11 @@ export default class Calendar extends React.PureComponent {
         await this.setSemesterDates()
         // this user
         let all = []
-        let owners = [{id: 0, color: 'red', text:'own'}]
+        let owners = [{id: 0, color: 'red', text:'own'}] // this needs to modify the state one 
         this.state.user.schedule.forEach((appt) => all.push(this.formatApptApiToScheduler(appt, 0)))
         await this.state.followingUsersToBeRendered.forEach(async (userid) => {
             owners.push({id: 1, color: 'grey', text:'following'})
+            console.log(owners)
             await axios.get(`/api/schedule/${userid}/`, {user: {userid: this.state.userid}})
             .then((res)=> {
                 console.log(res)
