@@ -364,7 +364,10 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     }
                 </IconButton>
-                <Button color="inherit">
+                <Button 
+                    color="inherit"
+                    onClick={() => window.open('https://docs.google.com/forms/d/19eHAVHMvXscD5Fzr-qt9uUQ6yiDN8HlaNhGvbAhi3js')}
+                >
                   <FeedbackIcon />
                 </Button>
                 <Button color="inherit">
