@@ -364,15 +364,17 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     }
                 </IconButton>
-                <Button 
+                <IconButton 
                     color="inherit"
                     onClick={() => window.open('https://docs.google.com/forms/d/19eHAVHMvXscD5Fzr-qt9uUQ6yiDN8HlaNhGvbAhi3js')}
                 >
                   <FeedbackIcon />
-                </Button>
-                <Button color="inherit">
+                </IconButton>
+                <IconButton 
+                    color="inherit"
+                >
                   <InfoIcon />
-                </Button>
+                </IconButton>
                 <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
