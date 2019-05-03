@@ -14,6 +14,8 @@ import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import FeedbackIcon from '@material-ui/icons/Feedback';
+import InfoIcon from '@material-ui/icons/Info';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuIcon from '@material-ui/icons/Menu';
 import DoneIcon from '@material-ui/icons/Done'
@@ -362,6 +364,12 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     }
                 </IconButton>
+                <Button color="inherit">
+                  <FeedbackIcon />
+                </Button>
+                <Button color="inherit">
+                  <InfoIcon />
+                </Button>
                 <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
