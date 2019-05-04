@@ -28,6 +28,9 @@ import SearchBar from './navbar/SearchBar';
 import { drawerWidth } from '../consts/ui'
 import axios from 'axios';
 
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
+
 const styles = theme => ({
     root: {
         width: '100%',
@@ -130,6 +133,7 @@ class Navbar extends React.Component {
     };
 
     async componentDidMount () {
+        introJs().start()
         const arr = await this.populateReqsUsers(this.props.followRequests)
         this.setState({
             followRequests: this.props.followRequests,
@@ -335,15 +339,19 @@ class Navbar extends React.Component {
                     onClick={this.props.handleDrawerOpen}
                     className={classNames(classes.menuButton, this.state.open && classes.hide)}
                     >
-                    <MenuIcon />
+                    <div data-step="4" data-intro="Open the menu to add classes to your schedule, see your followers, and view your friend's schedule.">
+                      <MenuIcon />
+                    </div>
                 </IconButton>
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                 inPerson
                 </Typography>
-                <SearchBar classes = {classes}
-                            csrf_token={this.state.csrf_token}
-                            cantFollow={this.props.cantFollow}
-                            followUser={this.props.followUser}/>
+                <div data-step="2" data-intro="Search for friends here and send them a follow request. You can look for them with their netid or names.">
+                  <SearchBar classes = {classes}
+                              csrf_token={this.state.csrf_token}
+                              cantFollow={this.props.cantFollow}
+                              followUser={this.props.followUser}/>
+                </div>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
                 {/* <IconButton color="inherit">
@@ -351,6 +359,7 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
+                <div data-step="3" data-intro="Accept follow requests here">
                 <IconButton color="inherit" onClick={(event) => {
                   if (this.state.noFollowReqs !== 0) {
                     this.handleFRMenuOpen(event);
@@ -364,7 +373,8 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     }
                 </IconButton>
-                <Button 
+                </div>
+                <Button
                     color="inherit"
                     onClick={() => window.open('https://docs.google.com/forms/d/19eHAVHMvXscD5Fzr-qt9uUQ6yiDN8HlaNhGvbAhi3js')}
                 >

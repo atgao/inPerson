@@ -18,6 +18,9 @@ import {openSnackbar} from "./components/Notifier";
 import { drawerWidth } from './consts/ui'
 import axios from "axios";
 
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
+
 // for csrf token
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -91,6 +94,7 @@ class App extends Component {
     }
 
     componentDidMount() {
+        introJs().start()
         if (this.state.userid === null || this.state.user.netid.length === 0 || this.state.csrf_token === null) {
             const userid = document.getElementById("userid").textContent
             let user = this.state.user
@@ -341,6 +345,7 @@ class App extends Component {
       <div className="App">
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
+          <div data-step="1" data-intro="Welcome to inPerson!"></div>
             <Navbar acceptFollowRequest={this.acceptFollowRequest}
                     cantFollow={this.cantFollow}
                     csrf_token={this.state.csrf_token}
@@ -368,6 +373,7 @@ class App extends Component {
             [classes.contentShift]: this.state.openDrawer,
           })}>
                 <div style={styles.drawerHeader} />
+                <div data-step="5" data-intro="You can also add custom events to your schedule by double clicking on the calendar.">
                 <Calendar   addToSchedule={this.addToSchedule}
                             displayUsers={this.state.displayUsers}
                             getSchedule={this.getSchedule}
@@ -375,6 +381,7 @@ class App extends Component {
                             removeFromSchedule={this.removeFromSchedule}
                             user={this.state.user}
                             userid={this.state.userid} />
+                </div>
             </main>
             <Notifier />
         </MuiThemeProvider>
