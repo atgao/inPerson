@@ -134,7 +134,6 @@ class Navbar extends React.Component {
     };
 
     async componentDidMount () {
-        introJs().start()
         const arr = await this.populateReqsUsers(this.props.followRequests)
         this.setState({
             followRequests: this.props.followRequests,
@@ -382,7 +381,7 @@ class Navbar extends React.Component {
                   <FeedbackIcon />
                 </Button>
                 <Button color="inherit">
-                  <InfoIcon onClick={() => introJs().start()}/>
+                  <InfoIcon />
                 </Button>
                 <Button color="inherit">
                   <HelpIcon onClick={() => introJs().start()}/>
