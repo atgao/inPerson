@@ -213,6 +213,9 @@ class FollowerRequestsDetailView(generics.RetrieveUpdateDestroyAPIView):
         follower = request.user
         followee = User.objects.get(pk=pk)
         created = datetime.now()
+        if follower == followee:
+            return Response(data={"message": "Sent follow request to self"},
+                            status=status.HTTP_403_FORBIDDEN)
 
         try:
             # must get message for follow request somehow??
