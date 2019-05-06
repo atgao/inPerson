@@ -372,6 +372,7 @@ class Navbar extends React.Component {
                 </IconButton>
                 <IconButton 
                     color="inherit"
+                    onClick={() => window.location.href='/about'}
                 >
                   <InfoIcon />
                 </IconButton>
