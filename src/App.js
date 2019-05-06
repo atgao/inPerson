@@ -94,10 +94,10 @@ class App extends Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem("wasAccessed") === undefined)
+        if (!localStorage.getItem("wasAccessed")) {
           introJs().start()
-        else
           localStorage.setItem("wasAccessed", true)
+        }
         console.log(window)
         if (this.state.userid === null || this.state.user.netid.length === 0 || this.state.csrf_token === null) {
             const userid = document.getElementById("userid").textContent
