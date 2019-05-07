@@ -374,18 +374,22 @@ class Navbar extends React.Component {
                     }
                 </IconButton>
                 </div>
-                <Button
+                <IconButton
+
                     color="inherit"
                     onClick={() => window.open('https://docs.google.com/forms/d/19eHAVHMvXscD5Fzr-qt9uUQ6yiDN8HlaNhGvbAhi3js')}
                 >
                   <FeedbackIcon />
-                </Button>
-                <Button color="inherit">
+                </IconButton>
+                <IconButton
+                    color="inherit"
+                    onClick={() => window.location.href='/about'}
+                >
                   <InfoIcon />
-                </Button>
-                <Button color="inherit">
+                </IconButton>
+                <IconButton color="inherit">
                   <HelpIcon onClick={() => introJs().start()}/>
-                </Button>
+                </IconButton>
                 <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
