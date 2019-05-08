@@ -22,6 +22,7 @@ import DoneIcon from '@material-ui/icons/Done'
 import ClearIcon from '@material-ui/icons/Clear'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import SearchBar from './navbar/SearchBar';
 
@@ -351,19 +352,21 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                <IconButton color="inherit" onClick={(event) => {
-                  if (this.state.noFollowReqs !== 0) {
-                    this.handleFRMenuOpen(event);
-                  }
-                }} >
-                    {this.state.noFollowReqs !== 0?
-                    <Badge badgeContent={this.state.noFollowReqs} color="secondary">
-                        <NotificationsIcon />
-                    </Badge>
-                    :
-                    <NotificationsIcon />
+                <Tooltip title="Notifications" aria-label="Notifications">
+                    <IconButton color="inherit" onClick={(event) => {
+                    if (this.state.noFollowReqs !== 0) {
+                        this.handleFRMenuOpen(event);
                     }
-                </IconButton>
+                    }} >
+                        {this.state.noFollowReqs !== 0?
+                        <Badge badgeContent={this.state.noFollowReqs} color="secondary">
+                            <NotificationsIcon />
+                        </Badge>
+                        :
+                        <NotificationsIcon />
+                        }
+                    </IconButton>
+                </Tooltip>
                 <IconButton 
                     color="inherit"
                     onClick={() => window.open('https://docs.google.com/forms/d/19eHAVHMvXscD5Fzr-qt9uUQ6yiDN8HlaNhGvbAhi3js')}
