@@ -334,6 +334,7 @@ class Navbar extends React.Component {
                     [classes.appBarShift]: this.state.open,
                 })}>
             <Toolbar disableGutters={!this.state.open}>
+                <Tooltip title="Menu" aria-label="Menu">
                 <IconButton
                     color="inherit"
                     aria-label="Open drawer"
@@ -344,9 +345,12 @@ class Navbar extends React.Component {
                       <MenuIcon />
                     </div>
                 </IconButton>
+                </Tooltip>
+
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                 inPerson
                 </Typography>
+
                 <div data-step="2" data-intro="Search for friends here and send them a follow request. You can look for them with their netid or names.">
                   <SearchBar classes = {classes}
                               csrf_token={this.state.csrf_token}
@@ -360,7 +364,9 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
+                
                 <div data-step="3" data-intro="Accept follow requests here">
+                <Tooltip title="Notifications" aria-label="Notifications">
                 <IconButton color="inherit" onClick={(event) => {
                   if (this.state.noFollowReqs !== 0) {
                     this.handleFRMenuOpen(event);
@@ -374,7 +380,10 @@ class Navbar extends React.Component {
                     <NotificationsIcon />
                     }
                 </IconButton>
+                </Tooltip>
                 </div>
+
+                <Tooltip title="Feedback" aria-label="Feedback">
                 <IconButton
 
                     color="inherit"
@@ -382,15 +391,23 @@ class Navbar extends React.Component {
                 >
                   <FeedbackIcon />
                 </IconButton>
+                </Tooltip>
+
+                <Tooltip title="About" aria-label="About">
                 <IconButton
                     color="inherit"
                     onClick={() => window.location.href='/about'}
                 >
                   <InfoIcon />
                 </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Help" aria-label="Help">
                 <IconButton color="inherit">
                   <HelpIcon onClick={() => introJs().start()}/>
                 </IconButton>
+                </Tooltip>
+
                 <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                     aria-haspopup="true"
