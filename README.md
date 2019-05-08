@@ -11,14 +11,14 @@ To run the project initially locally run in the base folder:
 
 ## Current problems to fix real quick
 * ~DELETE NOT WORKING ~IDK WHY~ jk i know why PLS HELP~
-* has to refresh to reload appts ----?
+* has to refresh to reload appts
 * update form has wrong stuff (disabled update for now)
 * ~switch on following lookin UGLY~
 
 ## TODO for tonight
 * ~be able to add custom events on other days~
 * ~get a drop down list as you search (classes)~
-* make a following's schedule a different color 
+* ~make a following's schedule a different color~ 
 * ~edit search request so we can search cos333 and cos 333 (but the rule for putting a space would be if smth was sent as "COS333" --> "COS 333" or "ELE435" --> "ELE 435" but "Advanced Programming Techniques" should still be sent by ?search=Advanced+Programming+Techniques)~
 
 

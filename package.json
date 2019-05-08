@@ -12,6 +12,7 @@
     "devextreme": "^18.2.8",
     "devextreme-react": "^18.2.8",
     "hastur": "git://github.com/Frojd/Hastur.git",
+    "intro.js": "^2.9.3",
     "material-ui": "^0.20.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

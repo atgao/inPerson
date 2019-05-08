@@ -16,6 +16,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import InfoIcon from '@material-ui/icons/Info';
+import HelpIcon from '@material-ui/icons/Help';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuIcon from '@material-ui/icons/Menu';
 import DoneIcon from '@material-ui/icons/Done'
@@ -28,6 +29,9 @@ import SearchBar from './navbar/SearchBar';
 
 import { drawerWidth } from '../consts/ui'
 import axios from 'axios';
+
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
 
 const styles = theme => ({
     root: {
@@ -336,15 +340,19 @@ class Navbar extends React.Component {
                     onClick={this.props.handleDrawerOpen}
                     className={classNames(classes.menuButton, this.state.open && classes.hide)}
                     >
-                    <MenuIcon />
+                    <div data-step="4" data-intro="Open the menu to add classes to your schedule, see your followers, and view your friend's schedule.">
+                      <MenuIcon />
+                    </div>
                 </IconButton>
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                 inPerson
                 </Typography>
-                <SearchBar classes = {classes}
-                            csrf_token={this.state.csrf_token}
-                            cantFollow={this.props.cantFollow}
-                            followUser={this.props.followUser}/>
+                <div data-step="2" data-intro="Search for friends here and send them a follow request. You can look for them with their netid or names.">
+                  <SearchBar classes = {classes}
+                              csrf_token={this.state.csrf_token}
+                              cantFollow={this.props.cantFollow}
+                              followUser={this.props.followUser}/>
+                </div>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
                 {/* <IconButton color="inherit">
@@ -352,32 +360,36 @@ class Navbar extends React.Component {
                     <MailIcon />
                     </Badge>
                 </IconButton> */}
-                <Tooltip title="Notifications" aria-label="Notifications">
-                    <IconButton color="inherit" onClick={(event) => {
-                    if (this.state.noFollowReqs !== 0) {
-                        this.handleFRMenuOpen(event);
-                    }
-                    }} >
-                        {this.state.noFollowReqs !== 0?
-                        <Badge badgeContent={this.state.noFollowReqs} color="secondary">
-                            <NotificationsIcon />
-                        </Badge>
-                        :
+                <div data-step="3" data-intro="Accept follow requests here">
+                <IconButton color="inherit" onClick={(event) => {
+                  if (this.state.noFollowReqs !== 0) {
+                    this.handleFRMenuOpen(event);
+                  }
+                }} >
+                    {this.state.noFollowReqs !== 0?
+                    <Badge badgeContent={this.state.noFollowReqs} color="secondary">
                         <NotificationsIcon />
-                        }
-                    </IconButton>
-                </Tooltip>
-                <IconButton 
+                    </Badge>
+                    :
+                    <NotificationsIcon />
+                    }
+                </IconButton>
+                </div>
+                <IconButton
+
                     color="inherit"
                     onClick={() => window.open('https://docs.google.com/forms/d/19eHAVHMvXscD5Fzr-qt9uUQ6yiDN8HlaNhGvbAhi3js')}
                 >
                   <FeedbackIcon />
                 </IconButton>
-                <IconButton 
+                <IconButton
                     color="inherit"
                     onClick={() => window.location.href='/about'}
                 >
                   <InfoIcon />
+                </IconButton>
+                <IconButton color="inherit">
+                  <HelpIcon onClick={() => introJs().start()}/>
                 </IconButton>
                 <Button
                     aria-owns={isMenuOpen ? 'material-appbar' : undefined}
