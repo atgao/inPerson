@@ -6,7 +6,7 @@ from django.conf import settings
 from . managers import CustomUserManager
 
 class User(AbstractUser):
-    netid = models.CharField(max_length=15, unique=True, default="", null=False)
+    netid = models.CharField(max_length=15, default="", null=True)
     class_year = models.IntegerField(blank=False, default=2022)
     email = models.CharField(max_length=15, default=None, null=True)
     university = models.CharField(max_length=20, default="", null=False)
