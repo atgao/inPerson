@@ -25,7 +25,7 @@ def create_user(username):
     # information is 1) login system 2) university 3) netid
     info = username.split("-")
     if not User.objects.filter(netid=info[2]).exists():
-        User.objects.create(netid=info[2], university=info[1])
+        User.objects.create(first_name=info[2], netid=info[2], university=info[1])
         print("just created user")
         return 1
     return 0
