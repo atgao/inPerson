@@ -9,7 +9,8 @@ def menu_view(request):
     if request.user.is_anonymous:
         return render(request, 'home.html')
     schedule = Schedule.objects.filter(owner=request.user, term=CURRENT_TERM)
-    create_user(request.user.username)
+    created = create_user(request.user.username)
+    # print(created)
     if schedule.count() == 0:
         s = Schedule.objects.create(owner=request.user, term=CURRENT_TERM)
         s.save()
@@ -24,8 +25,9 @@ def create_user(username):
     User = get_user_model()
     # information is 1) login system 2) university 3) netid
     info = username.split("-")
-    if not User.objects.filter(netid=info[2]).exists():
-        User.objects.update_or_create(first_name=info[2], netid=info[2], university=info[1], username=username)
-        print("just created user")
-        return 1
-    return 0
+    # create or update the user as needed
+    user, created = User.objects.update_or_create(username=username, netid=info[2],
+                                                  defaults={"first_name":info[2],
+                                                  "netid":info[2], "university":info[1],
+                                                  "username":username})
+    return created
