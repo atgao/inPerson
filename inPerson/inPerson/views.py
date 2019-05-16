@@ -26,8 +26,7 @@ def create_user(username):
     # information is 1) login system 2) university 3) netid
     info = username.split("-")
     # create or update the user as needed
-    user, created = User.objects.update_or_create(username=username, netid=info[2],
-                                                  defaults={"first_name":info[2],
+    user, created = User.objects.update_or_create(netid=info[2], defaults={"first_name":info[2],
                                                   "netid":info[2], "university":info[1],
                                                   "username":username})
     return created
