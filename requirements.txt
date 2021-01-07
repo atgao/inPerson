@@ -12,7 +12,7 @@ django-react-templatetags==5.2.1
 djangorestframework==3.9.2
 gunicorn==19.9.0
 idna==2.8
-lxml==4.3.3
+lxml==4.6.2
 Pillow==5.4.1
 psycopg2==2.7.7
 python-cas==1.4.0
