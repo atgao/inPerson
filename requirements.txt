@@ -9,7 +9,7 @@ django-friendship==1.8.0
 django-heroku==0.3.1
 django-uniauth==1.0.5
 django-react-templatetags==5.2.1
-djangorestframework==3.9.2
+djangorestframework==3.11.2
 gunicorn==19.9.0
 idna==2.8
 lxml==4.3.3
